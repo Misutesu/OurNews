@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_search_footer_text"
+    android:layout_width="match_parent"
+    android:layout_height="58dp"
+    android:layout_gravity="center"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:gravity="center"
+    android:text="@string/clear_search_history"
+    android:textColor="?attr/textColor1"
+    android:textSize="14sp"/>

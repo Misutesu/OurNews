@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryBlue">#2196F3</color>
+    <color name="colorPrimaryBlueBlack">#673AB7</color>
+    <color name="colorPrimaryGreen">#00c54b</color>
+    <color name="colorPrimaryGreenBlack">#009688</color>
+    <color name="colorPrimaryYellow">#FFEB3B</color>
+    <color name="colorPrimaryRed">#F44336</color>
+    <color name="colorPrimaryPink">#F96F6F</color>
+    <color name="colorPrimaryBrown">#795548</color>
+
+    <color name="day_windows_background">#f7f7f7</color>
+    <color name="night_windows_background">#474747</color>
+    <color name="night_item_background">#6c6c6c</color>
+    <color name="night_button_background">#1c1c1c</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="black_1">#272727</color>
+    <color name="black_2">#3e3e3e</color>
+    <color name="yellow">#ffd900</color>
+
+    <color name="gray">#e9e9e9</color>
+    <color name="gray_1">#d1d1d1</color>
+    <color name="gray_2">#939393</color>
+    <color name="gray_4">#757575</color>
+
+    <color name="blur_background_color">#96ffffff</color>
+    <color name="blur_background_color_1">#4f000000</color>
+
+    <color name="transparent">#a4000000</color>
+    <color name="transparent1">#51000000</color>
+
+    <color name="all_transparent">#00000000</color>
+
+    <color name="first_color">#e4e4e4</color>
+</resources>

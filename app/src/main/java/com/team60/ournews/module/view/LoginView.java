@@ -1,0 +1,15 @@
+package com.team60.ournews.module.view;
+
+import com.team60.ournews.module.view.base.BaseView;
+
+/**
+ * Created by Misutesu on 2016/12/26 0026.
+ */
+
+public interface LoginView extends BaseView {
+    void loginEnd();
+
+    void loginSuccess();
+
+    void loginError(String message);
+}
