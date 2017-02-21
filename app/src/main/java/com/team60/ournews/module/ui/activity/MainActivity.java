@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.team60.ournews.R;
 import com.team60.ournews.event.ChangeViewPagerPageEvent;
 import com.team60.ournews.event.ShowSnackEvent;
@@ -71,7 +72,7 @@ public class MainActivity extends BaseActivity implements MainView {
     @BindView(R.id.activity_main_tool_bar_user_layout)
     LinearLayout mUserLayout;
     @BindView(R.id.activity_main_user_avatar_img)
-    ImageView mUserAvatarImg;
+    SimpleDraweeView mUserAvatarImg;
     @BindView(R.id.activity_main_user_name_text)
     TextView mUserNameText;
     @BindView(R.id.activity_main_tab_layout)

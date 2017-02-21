@@ -43,7 +43,7 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-                        <ImageView
+                        <com.facebook.drawee.view.SimpleDraweeView
                             android:id="@+id/activity_main_user_avatar_img"
                             android:layout_width="36dp"
                             android:layout_height="36dp"
