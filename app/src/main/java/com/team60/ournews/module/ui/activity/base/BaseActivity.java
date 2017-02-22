@@ -74,5 +74,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public abstract void init();
 
+    public void init(Bundle savedInstanceState) {
+        init();
+    }
+
     public abstract void setListener();
 }

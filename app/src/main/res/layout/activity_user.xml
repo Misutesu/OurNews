@@ -28,12 +28,10 @@
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.8">
 
-                <ImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/activity_user_background_img"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/user_default_avatar" />
+                    android:layout_height="match_parent" />
 
                 <View
                     android:layout_width="match_parent"

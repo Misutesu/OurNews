@@ -1,6 +1,7 @@
 package com.team60.ournews.module.ui.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.internal.NavigationMenuView;
@@ -23,8 +24,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.team60.ournews.R;
 import com.team60.ournews.event.ChangeViewPagerPageEvent;
@@ -34,6 +33,7 @@ import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.ui.fragment.HomeFragment;
 import com.team60.ournews.module.ui.fragment.TypeFragment;
 import com.team60.ournews.module.view.MainView;
+import com.team60.ournews.util.ImageLoader;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
@@ -47,7 +47,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class MainActivity extends BaseActivity implements MainView {
 
@@ -55,7 +54,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     private List<Fragment> fragments;
 
-    private ImageView mHeaderUserAvatarImg;
+    private SimpleDraweeView mHeaderUserAvatarImg;
     private TextView mHeaderUserNameText;
     private ImageView mHeaderNightModeImg;
 
@@ -87,14 +86,8 @@ public class MainActivity extends BaseActivity implements MainView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        init();
+        init(savedInstanceState);
         setListener();
-    }
-
-    @Override
-    protected void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
     }
 
     @Override
@@ -102,10 +95,9 @@ public class MainActivity extends BaseActivity implements MainView {
         EventBus.getDefault().register(this);
 
         View mHeaderView = mNavView.getHeaderView(0);
-        mHeaderUserAvatarImg = (ImageView) mHeaderView.findViewById(R.id.header_user_avatar_img);
+        mHeaderUserAvatarImg = (SimpleDraweeView) mHeaderView.findViewById(R.id.header_user_avatar_img);
         mHeaderUserNameText = (TextView) mHeaderView.findViewById(R.id.header_user_name_text);
         mHeaderNightModeImg = (ImageView) mHeaderView.findViewById(R.id.header_night_mode_img);
-
         if (mNavView != null) {
             NavigationMenuView navigationMenuView = (NavigationMenuView) mNavView.getChildAt(0);
             if (navigationMenuView != null) {
@@ -127,8 +119,18 @@ public class MainActivity extends BaseActivity implements MainView {
         if (ThemeUtil.isNightMode())
             mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
 
-        initViewPager();
         setUserInfo();
+    }
+
+    @Override
+    public void init(Bundle savedInstanceState) {
+        initViewPager(savedInstanceState);
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     @Override
@@ -169,11 +171,9 @@ public class MainActivity extends BaseActivity implements MainView {
                 } else {
                     ThemeUtil.setNightMode(true);
                 }
-                initViewPager();
                 recreate();
 //                mDrawerLayout.closeDrawer(GravityCompat.START);
 //                startActivity(new Intent(MainActivity.this, LoginTempActivity.class));
-
             }
         });
 
@@ -198,19 +198,33 @@ public class MainActivity extends BaseActivity implements MainView {
         });
     }
 
-    private void initViewPager() {
-        mHomeFragment = new HomeFragment();
-
+    private void initViewPager(Bundle savedInstanceState) {
         if (fragments == null) {
             fragments = new ArrayList<>();
         } else {
             fragments.clear();
         }
+        mHomeFragment = new HomeFragment();
 
         fragments.add(mHomeFragment);
         for (int i = 1; i < 6; i++) {
             fragments.add(TypeFragment.newInstance(i));
         }
+//        if (savedInstanceState != null) {
+//            mHomeFragment = savedInstanceState.
+//
+//            fragments.add(mHomeFragment);
+//            for (int i = 1; i < 6; i++) {
+//                fragments.add(TypeFragment.newInstance(i));
+//            }
+//        } else {
+//            mHomeFragment = new HomeFragment();
+//
+//            fragments.add(mHomeFragment);
+//            for (int i = 1; i < 6; i++) {
+//                fragments.add(TypeFragment.newInstance(i));
+//            }
+//        }
 
         mViewPager.setOffscreenPageLimit(fragments.size());
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -234,19 +248,40 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     private void setUserInfo() {
-        if (User.isLogin()) {
-            mUserNameText.setText(user.getNickName());
-            mHeaderUserNameText.setText(user.getNickName());
-            if (!user.getPhoto().equals("NoImage")) {
-                Glide.with(this).load(MyUtil.getPhotoUrl(user.getPhoto())).diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .bitmapTransform(new CropCircleTransformation(this)).into(mUserAvatarImg);
-                Glide.with(this).load(MyUtil.getPhotoUrl(user.getPhoto())).diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .bitmapTransform(new CropCircleTransformation(this)).into(mHeaderUserAvatarImg);
-            }
+        if (User.isLogin() && !user.getPhoto().equals("NoImage")) {
+            ImageLoader.with(MainActivity.this)
+                    .setCircle()
+                    .setBorder(2, Color.WHITE)
+                    .setImage(MyUtil.getPhotoUrl(user.getPhoto()))
+                    .into(mUserAvatarImg);
+            ImageLoader.with(MainActivity.this)
+                    .setCircle()
+                    .setBorder(4, Color.WHITE)
+                    .setImage(MyUtil.getPhotoUrl(user.getPhoto()))
+                    .into(mHeaderUserAvatarImg);
         } else {
-            mUserNameText.setText(getString(R.string.no_login));
-            mHeaderUserNameText.setText(getString(R.string.click_avatar_to_login));
+            ImageLoader.with(MainActivity.this)
+                    .setCircle()
+                    .setBorder(2, Color.WHITE)
+                    .setImage(R.drawable.user_default_avatar)
+                    .into(mUserAvatarImg);
+            ImageLoader.with(MainActivity.this)
+                    .setCircle()
+                    .setBorder(4, Color.WHITE)
+                    .setImage(R.drawable.user_default_avatar)
+                    .into(mHeaderUserAvatarImg);
         }
+
+        String userName;
+        String headerUserName;
+        if (User.isLogin()) {
+            userName = headerUserName = user.getNickName();
+        } else {
+            userName = getString(R.string.no_login);
+            headerUserName = getString(R.string.click_avatar_to_login);
+        }
+        mUserNameText.setText(userName);
+        mHeaderUserNameText.setText(headerUserName);
     }
 
     @Override

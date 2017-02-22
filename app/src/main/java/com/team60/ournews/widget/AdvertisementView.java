@@ -138,8 +138,6 @@ public class AdvertisementView extends LinearLayout {
                 }
             }
         });
-
-        this.addView(view);
     }
 
     public void setData(final List<New> news) {
