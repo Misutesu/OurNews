@@ -11,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -128,6 +129,16 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        FragmentManager manager = getSupportFragmentManager();
+        manager.putFragment(outState, HomeFragment.class.getName(), mHomeFragment);
+        for (int i = 0; i < 6; i++) {
+
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
@@ -204,27 +215,29 @@ public class MainActivity extends BaseActivity implements MainView {
         } else {
             fragments.clear();
         }
-        mHomeFragment = new HomeFragment();
 
-        fragments.add(mHomeFragment);
-        for (int i = 1; i < 6; i++) {
-            fragments.add(TypeFragment.newInstance(i));
-        }
-//        if (savedInstanceState != null) {
-//            mHomeFragment = savedInstanceState.
+//        mHomeFragment = new HomeFragment();
 //
-//            fragments.add(mHomeFragment);
-//            for (int i = 1; i < 6; i++) {
-//                fragments.add(TypeFragment.newInstance(i));
-//            }
-//        } else {
-//            mHomeFragment = new HomeFragment();
-//
-//            fragments.add(mHomeFragment);
-//            for (int i = 1; i < 6; i++) {
-//                fragments.add(TypeFragment.newInstance(i));
-//            }
+//        fragments.add(mHomeFragment);
+//        for (int i = 1; i < 6; i++) {
+//            fragments.add(TypeFragment.newInstance(i));
 //        }
+
+        if (savedInstanceState != null) {
+            FragmentManager manager = getSupportFragmentManager();
+            mHomeFragment = (HomeFragment) manager.getFragment(savedInstanceState, HomeFragment.class.getName());
+            fragments.add(mHomeFragment);
+            for (int i = 1; i < 6; i++) {
+                fragments.add(manager.getFragment(savedInstanceState, TypeFragment.class.getName() + i));
+            }
+        } else {
+            mHomeFragment = new HomeFragment();
+
+            fragments.add(mHomeFragment);
+            for (int i = 1; i < 6; i++) {
+                fragments.add(TypeFragment.newInstance(i));
+            }
+        }
 
         mViewPager.setOffscreenPageLimit(fragments.size());
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
