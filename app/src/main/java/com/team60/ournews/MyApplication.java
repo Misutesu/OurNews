@@ -3,8 +3,7 @@ package com.team60.ournews;
 import android.app.Application;
 import android.content.Context;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.mistesu.frescoloader.FrescoLoader;
 
 /**
  * Created by Misutesu on 2016/12/26 0026.
@@ -22,9 +21,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mApplication = this;
-        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(this)
-                .setDownsampleEnabled(true)
-                .build();
-        Fresco.initialize(this, config);
+        FrescoLoader.init(this);
     }
 }

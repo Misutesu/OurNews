@@ -13,7 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.module.model.New;
@@ -40,7 +41,7 @@ public class BrowseView extends LinearLayout {
 
     private List<New> news;
     private List<CardView> mCardViews;
-    private List<ImageView> mCoverImgs;
+    private List<SimpleDraweeView> mCoverImages;
     private List<TextView> mTitleTexts;
 
     private AlphaAnimation inAnimation = new AlphaAnimation(0, 1);
@@ -117,6 +118,8 @@ public class BrowseView extends LinearLayout {
     }
 
     private void init(Context context) {
+        setOrientation(VERTICAL);
+
         this.context = context;
 
         inAnimation.setDuration(200);
@@ -129,7 +132,7 @@ public class BrowseView extends LinearLayout {
         View view = LayoutInflater.from(context).inflate(R.layout.layout_browse_view, this, true);
 
         mCardViews = new ArrayList<>();
-        mCoverImgs = new ArrayList<>();
+        mCoverImages = new ArrayList<>();
         mTitleTexts = new ArrayList<>();
 
         mTypeImg = (ImageView) view.findViewById(R.id.browse_view_type_img);
@@ -144,10 +147,10 @@ public class BrowseView extends LinearLayout {
         mCardViews.add((CardView) view.findViewById(R.id.item_home_card_view_3));
         mCardViews.add((CardView) view.findViewById(R.id.item_home_card_view_4));
 
-        mCoverImgs.add((ImageView) view.findViewById(R.id.item_home_cover_img_1));
-        mCoverImgs.add((ImageView) view.findViewById(R.id.item_home_cover_img_2));
-        mCoverImgs.add((ImageView) view.findViewById(R.id.item_home_cover_img_3));
-        mCoverImgs.add((ImageView) view.findViewById(R.id.item_home_cover_img_4));
+        mCoverImages.add((SimpleDraweeView) view.findViewById(R.id.item_home_cover_img_1));
+        mCoverImages.add((SimpleDraweeView) view.findViewById(R.id.item_home_cover_img_2));
+        mCoverImages.add((SimpleDraweeView) view.findViewById(R.id.item_home_cover_img_3));
+        mCoverImages.add((SimpleDraweeView) view.findViewById(R.id.item_home_cover_img_4));
 
         mTitleTexts.add((TextView) view.findViewById(R.id.item_home_title_text_1));
         mTitleTexts.add((TextView) view.findViewById(R.id.item_home_title_text_2));
@@ -184,15 +187,14 @@ public class BrowseView extends LinearLayout {
         for (int i = 0; i < 4; i++) {
             final int finalI = i;
             final New n = BrowseView.this.news.get(i);
-            Glide.with(MyApplication.getContext()).load(MyUtil.getPhotoUrl(n.getCover())).centerCrop()
-                    .into(mCoverImgs.get(i));
+            FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover())).into(mCoverImages.get(i));
             mTitleTexts.get(i).setText(n.getTitle());
             mCardViews.get(i).setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (!isRefresh && !isRefreshAll) {
                         if (onActionListener != null) {
-                            onActionListener.onNewClick(n, mCoverImgs.get(finalI));
+                            onActionListener.onNewClick(n, mCoverImages.get(finalI));
                         }
                     }
                 }

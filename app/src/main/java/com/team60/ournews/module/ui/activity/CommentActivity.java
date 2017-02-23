@@ -86,13 +86,13 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
         ButterKnife.bind(this);
-        init();
+        init(savedInstanceState);
         setListener();
         startGetComments();
     }
 
     @Override
-    public void init() {
+    public void init(Bundle savedInstanceState) {
         mPresenter = new CommentPresenterImpl(this);
 
         n = getIntent().getParcelableExtra(New.class.getName());

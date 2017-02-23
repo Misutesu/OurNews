@@ -10,13 +10,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/item_comment_avatar_img"
             android:layout_width="54dp"
             android:layout_height="54dp"
-            android:layout_margin="16dp"
-            android:src="@drawable/user_default_avatar"
-            android:tint="?attr/textColor" />
+            android:layout_margin="16dp" />
     </RelativeLayout>
 
     <LinearLayout

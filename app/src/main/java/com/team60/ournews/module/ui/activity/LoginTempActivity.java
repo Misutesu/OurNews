@@ -13,12 +13,12 @@ public class LoginTempActivity extends BaseActivity {
         getWindow().setBackgroundDrawableResource(R.color.transparent);
         hideNavigationBar();
         setContentView(R.layout.activity_login_temp);
-        init();
+        init(savedInstanceState);
         setListener();
     }
 
     @Override
-    public void init() {
+    public void init(Bundle savedInstanceState) {
     }
 
     @Override

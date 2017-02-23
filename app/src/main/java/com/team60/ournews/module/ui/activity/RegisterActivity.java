@@ -60,12 +60,12 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
-        init();
+        init(savedInstanceState);
         setListener();
     }
 
     @Override
-    public void init() {
+    public void init(Bundle savedInstanceState) {
         mPresenter = new RegisterPresenterImpl(this);
 
         mToolBar.setTitle(getString(R.string.login));

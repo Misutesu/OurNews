@@ -2,6 +2,7 @@ package com.team60.ournews.module.ui.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,12 +19,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.bm.library.PhotoView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.team60.ournews.R;
 import com.team60.ournews.listener.DownListener;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
@@ -33,6 +32,7 @@ import com.team60.ournews.util.UiUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.relex.photodraweeview.PhotoDraweeView;
 
 public class PhotoActivity extends BaseActivity implements BaseView {
 
@@ -46,7 +46,7 @@ public class PhotoActivity extends BaseActivity implements BaseView {
     @BindView(R.id.activity_photo_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.activity_photo_photo_view)
-    PhotoView mPhotoView;
+    PhotoDraweeView mPhotoView;
     @BindView(R.id.activity_photo_progress_bar)
     ProgressBar mProgressBar;
     @BindView(R.id.activity_photo_retry_btn)
@@ -63,13 +63,13 @@ public class PhotoActivity extends BaseActivity implements BaseView {
         setContentView(R.layout.activity_photo);
         ButterKnife.bind(this);
         hideNavigationBar();
-        init();
+        init(savedInstanceState);
         setListener();
         loadPhoto();
     }
 
     @Override
-    public void init() {
+    public void init(Bundle savedInstanceState) {
         title = getIntent().getStringExtra(TITLE_VALUE);
         photoUrl = MyUtil.getPhotoUrl(getIntent().getStringExtra(PHOTO_NAME_VALUE));
 
@@ -81,8 +81,6 @@ public class PhotoActivity extends BaseActivity implements BaseView {
         setSupportActionBar(mToolBar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mPhotoView.enable();
     }
 
     @Override
@@ -105,21 +103,29 @@ public class PhotoActivity extends BaseActivity implements BaseView {
     }
 
     private void loadPhoto() {
-        Glide.with(this).load(photoUrl).thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.SOURCE).listener(new RequestListener<String, GlideDrawable>() {
+        PipelineDraweeControllerBuilder controller = Fresco.newDraweeControllerBuilder();
+        controller.setUri(photoUrl);
+        controller.setOldController(mPhotoView.getController());
+        controller.setControllerListener(new BaseControllerListener<ImageInfo>() {
             @Override
-            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                mRetryBtn.setVisibility(View.VISIBLE);
+            public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+                super.onFinalImageSet(id, imageInfo, animatable);
+                if (imageInfo == null || mPhotoView == null) {
+                    return;
+                }
+                mPhotoView.update(imageInfo.getWidth(), imageInfo.getHeight());
                 mProgressBar.setVisibility(View.GONE);
-                return false;
+                isLoadSuccess = true;
             }
 
             @Override
-            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+            public void onFailure(String id, Throwable throwable) {
+                super.onFailure(id, throwable);
+                mRetryBtn.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
-                isLoadSuccess = true;
-                return false;
             }
-        }).into(mPhotoView);
+        });
+        mPhotoView.setController(controller.build());
     }
 
     @Override
@@ -143,7 +149,8 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                 int checkCallPhonePermission = ContextCompat.checkSelfPermission(PhotoActivity.this
                         , Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(PhotoActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 100);
+                    ActivityCompat.requestPermissions(PhotoActivity.this
+                            , new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
                 } else {
                     savePhoto();
                 }
@@ -176,8 +183,7 @@ public class PhotoActivity extends BaseActivity implements BaseView {
     }
 
     private void savePhoto() {
-        mPhotoView.buildDrawingCache();
-        MyUtil.savePhoto(mPhotoView.getDrawingCache(), new DownListener() {
+        MyUtil.savePhoto(photoUrl, new DownListener() {
             @Override
             public void success() {
                 showSnackBar(getString(R.string.save_img_success));

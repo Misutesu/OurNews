@@ -64,12 +64,12 @@ public class SearchActivity extends BaseActivity {
         hideNavigationBar();
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
-        init();
+        init(savedInstanceState);
         setListener();
     }
 
     @Override
-    public void init() {
+    public void init(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             mTopView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtil.getStatusBarHeight()));
 

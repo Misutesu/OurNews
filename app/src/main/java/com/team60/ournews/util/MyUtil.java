@@ -3,7 +3,6 @@ package com.team60.ournews.util;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -11,15 +10,20 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.facebook.binaryresource.FileBinaryResource;
+import com.facebook.cache.common.SimpleCacheKey;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.listener.DownListener;
 import com.team60.ournews.module.connection.RetrofitUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -73,55 +77,66 @@ public class MyUtil {
         return stringBuffer.toString();
     }
 
-    public static void savePhoto(final Bitmap bitmap, final DownListener downListener) {
+    public static void savePhoto(final String photoUrl, final DownListener downListener) {
         Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
-                // 首先保存图片
-                File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsoluteFile();//注意小米手机必须这样获得public绝对路径
-//                String fileName = MyApplication.getContext().getString(R.string.app_name);
-                String fileName = "OurNews";
-                File appDir = new File(file, fileName);
-                if (!appDir.exists()) {
-                    appDir.mkdirs();
-                }
-                fileName = System.currentTimeMillis() + ".jpg";
-                File currentFile = new File(appDir, fileName);
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(currentFile);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    fos.flush();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    subscriber.onError(e);
-                    if (currentFile.exists())
-                        currentFile.delete();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    subscriber.onError(e);
-                    if (currentFile.exists())
-                        currentFile.delete();
-                } finally {
+                FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory()
+                        .getMainDiskStorageCache().getResource(new SimpleCacheKey(photoUrl));
+                File tempPhoto = resource.getFile();
+                if (tempPhoto.exists()) {
+                    // 首先保存图片
+                    File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsoluteFile();//注意小米手机必须这样获得public绝对路径
+                    String fileName = "OurNews";
+                    File appDir = new File(file, fileName);
+                    if (!appDir.exists()) {
+                        appDir.mkdirs();
+                    }
+                    fileName = System.currentTimeMillis() + ".jpg";
+                    File currentFile = new File(appDir, fileName);
+
+                    InputStream inputStream = null;
+                    FileOutputStream fileOutputStream = null;
                     try {
-                        if (fos != null) {
-                            fos.close();
+                        int byteRead;
+                        inputStream = new FileInputStream(tempPhoto);
+                        fileOutputStream = new FileOutputStream(currentFile);
+                        byte[] buffer = new byte[1024];
+                        while ((byteRead = inputStream.read(buffer)) != -1) {
+                            fileOutputStream.write(buffer, 0, byteRead);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
+                        subscriber.onError(e);
+                    } finally {
+                        if(inputStream!=null)
+                            try {
+                                inputStream.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        if(fileOutputStream!=null)
+                            try {
+                                fileOutputStream.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                     }
+
+                    subscriber.onNext(null);
+                    // 其次把文件插入到系统图库
+                    try {
+                        MediaStore.Images.Media.insertImage(MyApplication.getContext().getContentResolver(),
+                                currentFile.getAbsolutePath(), fileName, null);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    // 最后通知图库更新
+                    MyApplication.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                            Uri.fromFile(new File(currentFile.getPath()))));
+                } else {
+                    subscriber.onError(new Exception());
                 }
-                subscriber.onNext(null);
-                // 其次把文件插入到系统图库
-                try {
-                    MediaStore.Images.Media.insertImage(MyApplication.getContext().getContentResolver(),
-                            currentFile.getAbsolutePath(), fileName, null);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                // 最后通知图库更新
-                MyApplication.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                        Uri.fromFile(new File(currentFile.getPath()))));
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Object>() {

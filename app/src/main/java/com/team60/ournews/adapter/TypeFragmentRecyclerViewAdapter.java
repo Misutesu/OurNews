@@ -5,12 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.R;
 import com.team60.ournews.module.model.New;
 import com.team60.ournews.util.MyUtil;
@@ -69,7 +69,10 @@ public class TypeFragmentRecyclerViewAdapter extends RecyclerView.Adapter {
             final New n = news.get(positionTemp);
             viewHolder.mTitleText.setText(n.getTitle());
             viewHolder.mTimeText.setText(n.getCreateTime());
-            Glide.with(context).load(MyUtil.getPhotoUrl(n.getCover())).centerCrop().into(viewHolder.mCoverImg);
+
+            FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover()))
+                    .setCircleRound(6)
+                    .into(viewHolder.mCoverImg);
 
             viewHolder.mLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -107,7 +110,7 @@ public class TypeFragmentRecyclerViewAdapter extends RecyclerView.Adapter {
         @BindView(R.id.item_type_new_layout)
         LinearLayout mLayout;
         @BindView(R.id.item_type_new_img)
-        ImageView mCoverImg;
+        SimpleDraweeView mCoverImg;
         @BindView(R.id.item_type_new_title_text)
         TextView mTitleText;
         @BindView(R.id.item_type_new_create_time_text)

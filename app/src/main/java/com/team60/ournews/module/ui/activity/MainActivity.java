@@ -2,6 +2,7 @@ package com.team60.ournews.module.ui.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.internal.NavigationMenuView;
@@ -26,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.R;
 import com.team60.ournews.event.ChangeViewPagerPageEvent;
 import com.team60.ournews.event.ShowSnackEvent;
@@ -34,7 +36,6 @@ import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.ui.fragment.HomeFragment;
 import com.team60.ournews.module.ui.fragment.TypeFragment;
 import com.team60.ournews.module.view.MainView;
-import com.team60.ournews.util.ImageLoader;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
@@ -92,7 +93,7 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     @Override
-    public void init() {
+    public void init(Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
 
         View mHeaderView = mNavView.getHeaderView(0);
@@ -120,21 +121,24 @@ public class MainActivity extends BaseActivity implements MainView {
         if (ThemeUtil.isNightMode())
             mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
 
-        setUserInfo();
-    }
-
-    @Override
-    public void init(Bundle savedInstanceState) {
         initViewPager(savedInstanceState);
+
+        setUserInfo();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         FragmentManager manager = getSupportFragmentManager();
-        manager.putFragment(outState, HomeFragment.class.getName(), mHomeFragment);
         for (int i = 0; i < 6; i++) {
-
+            String fragmentName;
+            if (i == 0) {
+                fragmentName = HomeFragment.class.getName();
+                manager.putFragment(outState, HomeFragment.class.getName(), fragments.get(i));
+            } else {
+                fragmentName = TypeFragment.class.getName() + i;
+            }
+            manager.putFragment(outState, fragmentName, fragments.get(i));
         }
     }
 
@@ -182,9 +186,8 @@ public class MainActivity extends BaseActivity implements MainView {
                 } else {
                     ThemeUtil.setNightMode(true);
                 }
+                mDrawerLayout.closeDrawers();
                 recreate();
-//                mDrawerLayout.closeDrawer(GravityCompat.START);
-//                startActivity(new Intent(MainActivity.this, LoginTempActivity.class));
             }
         });
 
@@ -215,13 +218,6 @@ public class MainActivity extends BaseActivity implements MainView {
         } else {
             fragments.clear();
         }
-
-//        mHomeFragment = new HomeFragment();
-//
-//        fragments.add(mHomeFragment);
-//        for (int i = 1; i < 6; i++) {
-//            fragments.add(TypeFragment.newInstance(i));
-//        }
 
         if (savedInstanceState != null) {
             FragmentManager manager = getSupportFragmentManager();
@@ -261,40 +257,33 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     private void setUserInfo() {
-        if (User.isLogin() && !user.getPhoto().equals("NoImage")) {
-            ImageLoader.with(MainActivity.this)
-                    .setCircle()
-                    .setBorder(2, Color.WHITE)
-                    .setImage(MyUtil.getPhotoUrl(user.getPhoto()))
-                    .into(mUserAvatarImg);
-            ImageLoader.with(MainActivity.this)
-                    .setCircle()
-                    .setBorder(4, Color.WHITE)
-                    .setImage(MyUtil.getPhotoUrl(user.getPhoto()))
-                    .into(mHeaderUserAvatarImg);
-        } else {
-            ImageLoader.with(MainActivity.this)
-                    .setCircle()
-                    .setBorder(2, Color.WHITE)
-                    .setImage(R.drawable.user_default_avatar)
-                    .into(mUserAvatarImg);
-            ImageLoader.with(MainActivity.this)
-                    .setCircle()
-                    .setBorder(4, Color.WHITE)
-                    .setImage(R.drawable.user_default_avatar)
-                    .into(mHeaderUserAvatarImg);
-        }
-
+        Uri uri;
         String userName;
         String headerUserName;
+
+        if (User.isLogin() && !user.getPhoto().equals("NoImage")) {
+            uri = FrescoLoader.getUri(MyUtil.getPhotoUrl(user.getPhoto()));
+        } else {
+            uri = FrescoLoader.getUri(R.drawable.user_default_avatar);
+        }
+
         if (User.isLogin()) {
             userName = headerUserName = user.getNickName();
         } else {
             userName = getString(R.string.no_login);
             headerUserName = getString(R.string.click_avatar_to_login);
         }
+
         mUserNameText.setText(userName);
         mHeaderUserNameText.setText(headerUserName);
+        FrescoLoader.load(uri)
+                .setCircle()
+                .setBorder(2, Color.WHITE)
+                .into(mUserAvatarImg);
+        FrescoLoader.load(uri)
+                .setCircle()
+                .setBorder(4, Color.WHITE)
+                .into(mHeaderUserAvatarImg);
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.team60.ournews.module.ui.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -11,6 +10,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -18,16 +18,13 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.R;
 import com.team60.ournews.module.model.New;
 import com.team60.ournews.module.model.User;
@@ -49,7 +46,7 @@ import butterknife.ButterKnife;
 public class NewActivity extends BaseActivity implements NewView {
 
     @BindView(R.id.activity_new_background_img)
-    ImageView mBackgroundImg;
+    SimpleDraweeView mBackgroundImg;
     @BindView(R.id.activity_new_tool_bar)
     Toolbar mToolBar;
     @BindView(R.id.activity_new_app_bar_layout)
@@ -68,6 +65,8 @@ public class NewActivity extends BaseActivity implements NewView {
     Button mRetryBtn;
     @BindView(R.id.activity_new_content_view)
     NewTextAndImageView mContentView;
+    @BindView(R.id.activity_new_recycler_view)
+    RecyclerView mRecyclerView;
     @BindView(R.id.activity_new_nested_scroll_view)
     NestedScrollView mNestedScrollView;
     @BindView(R.id.activity_new_bottom_action_layout)
@@ -88,16 +87,10 @@ public class NewActivity extends BaseActivity implements NewView {
     private AlphaAnimation inAnimation = new AlphaAnimation(0, 1);
     private AlphaAnimation outAnimation = new AlphaAnimation(1, 0);
 
-//    private TranslateAnimation upAnimation;
-//    private TranslateAnimation downAnimation;
-
     private TranslateAnimation showAnimation;
     private TranslateAnimation hideAnimation;
 
     private NewPresenter mPresenter;
-
-    //    private boolean isUp = false;
-//    private boolean isDown = false;
     private boolean isHide = false;
     private boolean isShow = false;
 
@@ -114,7 +107,7 @@ public class NewActivity extends BaseActivity implements NewView {
             showToast(getString(R.string.open_new_error));
             finish();
         } else {
-            init();
+            init(savedInstanceState);
             setListener();
             showNewInfo();
             getNewContent();
@@ -122,7 +115,7 @@ public class NewActivity extends BaseActivity implements NewView {
     }
 
     @Override
-    public void init() {
+    public void init(Bundle savedInstanceState) {
         mPresenter = new NewPresenterImpl(this);
 
         inAnimation.setDuration(200);
@@ -176,11 +169,6 @@ public class NewActivity extends BaseActivity implements NewView {
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mBackgroundImg.setTransitionName(SkipUtil.SHARE_IMAGE_VIEW);
-//            postponeEnterTransition();
-        }
     }
 
     @Override
@@ -200,13 +188,11 @@ public class NewActivity extends BaseActivity implements NewView {
                     if (mTitleText.getVisibility() == View.GONE) {
                         mTitleText.setVisibility(View.VISIBLE);
                         mTitleText.startAnimation(inAnimation);
-//                        mContentLayout.startAnimation(downAnimation);
                     }
                 } else {
                     if (mTitleText.getVisibility() == View.VISIBLE) {
                         mTitleText.startAnimation(outAnimation);
                         mTitleText.setVisibility(View.GONE);
-//                        mContentLayout.startAnimation(upAnimation);
                     }
                 }
             }
@@ -293,67 +279,11 @@ public class NewActivity extends BaseActivity implements NewView {
     }
 
     private void showNewInfo() {
+        FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover()))
+                .into(mBackgroundImg);
         mCollapsingToolBarLayout.setTitle(n.getTitle());
-        Glide.with(this).load(MyUtil.getPhotoUrl(n.getCover()))
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-//                    startPostponedEnterTransition();
-                        return false;
-                    }
-                }).into(mBackgroundImg);
         mTitleText.setText(n.getTitle());
         mCreateTimeText.setText(n.getCreateTime());
-
-//        mTitleText.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                upAnimation = new TranslateAnimation(0, 0, UiUtil.dip2px(24) + mTitleText.getHeight(), 0);
-//                downAnimation = new TranslateAnimation(0, 0, 0, UiUtil.dip2px(24) + mTitleText.getHeight());
-//                upAnimation.setDuration(200);
-//                downAnimation.setDuration(200);
-//                upAnimation.setAnimationListener(new Animation.AnimationListener() {
-//                    @Override
-//                    public void onAnimationStart(Animation animation) {
-//                        isUp = true;
-//                    }
-//
-//                    @Override
-//                    public void onAnimationEnd(Animation animation) {
-//                        isUp = false;
-//                        isDown = false;
-//                    }
-//
-//                    @Override
-//                    public void onAnimationRepeat(Animation animation) {
-//
-//                    }
-//                });
-//                downAnimation.setAnimationListener(new Animation.AnimationListener() {
-//                    @Override
-//                    public void onAnimationStart(Animation animation) {
-//                        isDown = true;
-//                    }
-//
-//                    @Override
-//                    public void onAnimationEnd(Animation animation) {
-//                        isUp = false;
-//                        isDown = false;
-//                    }
-//
-//                    @Override
-//                    public void onAnimationRepeat(Animation animation) {
-//
-//                    }
-//                });
-//            }
-//        });
     }
 
     private void getNewContent() {

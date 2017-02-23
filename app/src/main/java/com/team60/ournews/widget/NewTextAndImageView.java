@@ -6,14 +6,12 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.mistesu.frescoloader.FrescoLoader;
+import com.mistesu.frescoloader.OnDownloadListener;
 import com.team60.ournews.R;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.ThemeUtil;
@@ -90,7 +88,7 @@ public class NewTextAndImageView extends LinearLayout {
 
         for (int i = 0; i < contents.size(); i++) {
             if (contents.get(i).startsWith(DIFFERENCE_STRING)) {
-                final ImageView imageView = new ImageView(context);
+                final SimpleDraweeView simpleDraweeView = new SimpleDraweeView(context);
                 JSONObject jsonObject = new JSONObject(contents.get(i).substring(DIFFERENCE_STRING.length(), contents.get(i).length()));
                 int imgWidth = jsonObject.getInt("width");
                 int imgHeight = jsonObject.optInt("height");
@@ -109,29 +107,29 @@ public class NewTextAndImageView extends LinearLayout {
                     } else {
                         layoutParams.setMargins(UiUtil.dip2px(12), UiUtil.dip2px(16), UiUtil.dip2px(12), UiUtil.dip2px(16));
                     }
-                    imageView.setLayoutParams(layoutParams);
+                    simpleDraweeView.setLayoutParams(layoutParams);
 
-                    this.addView(imageView);
-                    Glide.with(context).load(MyUtil.getPhotoUrl(name))
-                            .override(imgWidth, imgHeight).listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            return false;
-                        }
+                    this.addView(simpleDraweeView);
 
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            imageView.setOnClickListener(new OnClickListener() {
+                    FrescoLoader.load(MyUtil.getPhotoUrl(name))
+                            .resize(imgWidth, imgHeight)
+                            .setOnDownloadListener(new OnDownloadListener() {
                                 @Override
-                                public void onClick(View v) {
-                                    if (onActionListener != null) {
-                                        onActionListener.onPhotoLoadEnd(imageView, name);
-                                    }
+                                public void onDownloadSuccess() {
+                                    simpleDraweeView.setOnClickListener(new OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (onActionListener != null)
+                                                onActionListener.onPhotoLoadEnd(simpleDraweeView, name);
+                                        }
+                                    });
                                 }
-                            });
-                            return false;
-                        }
-                    }).into(imageView);
+
+                                @Override
+                                public void onDownloadFail() {
+
+                                }
+                            }).into(simpleDraweeView);
                 }
             } else {
                 TextView textView = new TextView(context);

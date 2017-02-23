@@ -45,13 +45,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/activity_edit_user_avatar_background_img"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:scaleType="centerCrop" />
+                    android:layout_height="120dp" />
 
-                <ImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/activity_edit_user_avatar_img"
                     android:layout_width="90dp"
                     android:layout_height="90dp"

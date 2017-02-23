@@ -1,6 +1,5 @@
 package com.team60.ournews.module.ui.activity;
 
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,9 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.team60.ournews.R;
-import com.team60.ournews.module.model.Comment;
 import com.team60.ournews.module.model.New;
-import com.team60.ournews.module.model.OtherUser;
 import com.team60.ournews.module.presenter.WriteCommentPresenter;
 import com.team60.ournews.module.presenter.impl.WriteCommentPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
@@ -70,13 +67,13 @@ public class WriteCommentActivity extends BaseActivity implements WriteCommentVi
         getWindow().setBackgroundDrawableResource(R.color.transparent);
         setContentView(R.layout.activity_write_comment);
         ButterKnife.bind(this);
-        init();
+        init(savedInstanceState);
         setListener();
         showInfo();
     }
 
     @Override
-    public void init() {
+    public void init(Bundle savedInstanceState) {
         n = getIntent().getParcelableExtra(New.class.getName());
 
         mPresenter = new WriteCommentPresenterImpl(this);

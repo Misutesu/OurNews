@@ -69,13 +69,13 @@ public class SearchResultActivity extends BaseActivity implements SearchResultVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
         ButterKnife.bind(this);
-        init();
+        init(savedInstanceState);
         setListener();
         mPresenter.searchNews(searchStr, page, sort);
     }
 
     @Override
-    public void init() {
+    public void init(Bundle savedInstanceState) {
         mPresenter = new SearchResultPresenterImpl(this);
 
         searchStr = getIntent().getStringExtra("searchText");

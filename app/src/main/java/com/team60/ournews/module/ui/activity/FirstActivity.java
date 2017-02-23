@@ -1,10 +1,8 @@
 package com.team60.ournews.module.ui.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.team60.ournews.R;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 
 public class FirstActivity extends BaseActivity {
@@ -18,7 +16,7 @@ public class FirstActivity extends BaseActivity {
     }
 
     @Override
-    public void init() {
+    public void init(Bundle savedInstanceState) {
 
     }
 

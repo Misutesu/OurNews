@@ -3,6 +3,7 @@ package com.team60.ournews.module.ui.activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,11 +17,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.jph.takephoto.app.TakePhoto;
 import com.jph.takephoto.app.TakePhotoImpl;
 import com.jph.takephoto.compress.CompressConfig;
@@ -31,6 +30,7 @@ import com.jph.takephoto.model.TResult;
 import com.jph.takephoto.permission.InvokeListener;
 import com.jph.takephoto.permission.PermissionManager;
 import com.jph.takephoto.permission.TakePhotoInvocationHandler;
+import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.R;
 import com.team60.ournews.module.presenter.EditUserPresenter;
 import com.team60.ournews.module.presenter.impl.EditUserPresenterImpl;
@@ -43,8 +43,7 @@ import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import jp.wasabeef.glide.transformations.BlurTransformation;
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import jp.wasabeef.fresco.processors.BlurPostprocessor;
 
 public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResultListener, InvokeListener, EditUserView {
 
@@ -58,9 +57,9 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
     @BindView(R.id.activity_eidt_user_tool_bar)
     Toolbar mToolBar;
     @BindView(R.id.activity_edit_user_avatar_background_img)
-    ImageView mAvatarBackgroundImg;
+    SimpleDraweeView mAvatarBackgroundImg;
     @BindView(R.id.activity_edit_user_avatar_img)
-    ImageView mAvatarImg;
+    SimpleDraweeView mAvatarImg;
     @BindView(R.id.activity_edit_user_avatar_car_view)
     CardView mAvatarCarView;
     @BindView(R.id.activity_edit_user_coordinator_layout)
@@ -103,7 +102,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
         getTakePhoto().onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user);
         ButterKnife.bind(this);
-        init();
+        init(savedInstanceState);
         setListener();
         setUserInfo();
     }
@@ -119,7 +118,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
     }
 
     @Override
-    public void init() {
+    public void init(Bundle savedInstanceState) {
         mPresenter = new EditUserPresenterImpl(this);
 
         mToolBar.setTitle(getString(R.string.edit_info));
@@ -244,12 +243,21 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
     }
 
     private void setUserInfo() {
+        Uri uri;
         if (!user.getPhoto().equals("NoImage")) {
-            Glide.with(this).load(MyUtil.getPhotoUrl(user.getPhoto())).diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .bitmapTransform(new BlurTransformation(this, 25)).override(128, 128).into(mAvatarBackgroundImg);
-            Glide.with(this).load(MyUtil.getPhotoUrl(user.getPhoto())).diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .bitmapTransform(new CropCircleTransformation(this)).into(mAvatarImg);
+            uri = FrescoLoader.getUri(MyUtil.getPhotoUrl(user.getPhoto()));
+        } else {
+            uri = FrescoLoader.getUri(R.drawable.user_default_avatar);
         }
+        FrescoLoader.load(uri)
+                .setCircle()
+                .setBorder(4, Color.WHITE)
+                .into(mAvatarImg);
+        FrescoLoader.load(uri)
+                .resize(128, 64)
+                .setPostprocessor(new BlurPostprocessor(EditUserActivity.this))
+                .into(mAvatarBackgroundImg);
+
         mLoginNameText.setText(user.getLoginName());
         mNickNameText.setText(user.getNickName());
         switch (user.getSex()) {
@@ -276,13 +284,16 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
         String path = result.getImage().getCompressPath();
         File file = new File(path);
         if (file.exists()) {
-
-            Glide.with(this).load(file).bitmapTransform(new CropCircleTransformation(this)).into(mAvatarImg);
-
-            Glide.with(this).load(file).bitmapTransform(new CropCircleTransformation(this)).skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE).into(mAvatarImg);
-            Glide.with(this).load(file).bitmapTransform(new BlurTransformation(this, 50)).skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE).override(128, 128).into(mAvatarBackgroundImg);
+            FrescoLoader.load(file)
+                    .setCircle()
+                    .setBorder(4, Color.WHITE)
+                    .clearImgCache()
+                    .into(mAvatarImg);
+            FrescoLoader.load(file)
+                    .resize(128, 64)
+                    .setPostprocessor(new BlurPostprocessor(EditUserActivity.this))
+                    .clearImgCache()
+                    .into(mAvatarImg);
             isSelectPhoto = true;
         } else {
             showSnackBar(getString(R.string.get_photo_error));

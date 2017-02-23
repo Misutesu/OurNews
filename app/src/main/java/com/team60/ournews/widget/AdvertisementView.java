@@ -11,9 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.R;
 import com.team60.ournews.module.model.New;
 import com.team60.ournews.util.MyUtil;
@@ -26,7 +27,7 @@ import java.util.List;
  * Created by Misutesu on 2016/12/27 0027.
  */
 
-public class AdvertisementView extends LinearLayout {
+public class AdvertisementView extends RelativeLayout {
 
     private final int TIME = 4000;
 
@@ -37,7 +38,7 @@ public class AdvertisementView extends LinearLayout {
     private PagerAdapter mAdapter;
 
     private ImageView[] mCircles = new ImageView[4];
-    private List<ImageView> mImageViews;
+    private List<SimpleDraweeView> mImageViews;
     private List<New> news;
 
     private Handler handler;
@@ -92,10 +93,9 @@ public class AdvertisementView extends LinearLayout {
 
         mImageViews = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            ImageView mImg = new ImageView(context);
-            mImg.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            mImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            mImageViews.add(mImg);
+            SimpleDraweeView simpleDraweeView = new SimpleDraweeView(context);
+            simpleDraweeView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            mImageViews.add(simpleDraweeView);
         }
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -169,7 +169,7 @@ public class AdvertisementView extends LinearLayout {
                             position = position + 4;
                         }
 
-                        final ImageView mImg = mImageViews.get(position);
+                        final SimpleDraweeView mImg = mImageViews.get(position);
                         final New n = AdvertisementView.this.news.get(position);
 
                         ViewParent mViewParent = mImg.getParent();
@@ -178,7 +178,8 @@ public class AdvertisementView extends LinearLayout {
                             mViewGroup.removeView(mImg);
                         }
 
-                        Glide.with(context).load(MyUtil.getPhotoUrl(n.getCover())).into(mImg);
+                        FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover()))
+                                .into(mImg);
 
                         mImg.setOnClickListener(new OnClickListener() {
                             @Override

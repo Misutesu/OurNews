@@ -98,7 +98,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
     public void init() {
         mPresenter = new HomePresenterImpl(this);
 
-        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtil.getColor(getActivity().getTheme(), R.attr.colorPrimary));
+        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtil.getColor(getActivity().getTheme(), R.attr.textColor));
 
         mBrowseViews = new ArrayList<>();
         mBrowseViews.add(mComicBrowseView);

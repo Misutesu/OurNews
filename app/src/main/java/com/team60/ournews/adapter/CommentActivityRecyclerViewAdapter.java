@@ -1,18 +1,19 @@
 package com.team60.ournews.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.R;
 import com.team60.ournews.module.model.Comment;
 import com.team60.ournews.module.model.New;
@@ -24,7 +25,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by Misutesu on 2016/12/29 0029.
@@ -108,10 +108,16 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
             viewHolder.mUserNameText.setText(user.getNickName());
             viewHolder.mContentText.setText(comment.getContent());
             viewHolder.mTimeText.setText(comment.getCreateTime());
+
+            Uri uri;
             if (!user.getPhoto().equals("NoImage")) {
-                Glide.with(context).load(MyUtil.getPhotoUrl(user.getPhoto()))
-                        .bitmapTransform(new CropCircleTransformation(context)).into(viewHolder.mAvatarImg);
+                uri = FrescoLoader.getUri(MyUtil.getPhotoUrl(user.getPhoto()));
+            } else {
+                uri = FrescoLoader.getUri(R.drawable.user_default_avatar);
             }
+            FrescoLoader.load(uri)
+                    .setCircle()
+                    .into(viewHolder.mAvatarImg);
         }
     }
 
@@ -150,7 +156,7 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
     public class NormalViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_comment_avatar_img)
-        ImageView mAvatarImg;
+        SimpleDraweeView mAvatarImg;
         @BindView(R.id.item_comment_user_name_text)
         TextView mUserNameText;
         @BindView(R.id.item_comment_content_text)

@@ -8,7 +8,7 @@
               android:orientation="horizontal"
               android:padding="8dp">
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/item_type_new_img"
         android:layout_width="160dp"
         android:layout_height="108dp"/>
