@@ -235,6 +235,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
             fragments.add(mHomeFragment);
             for (int i = 1; i < 6; i++) {
+
                 fragments.add(TypeFragment.newInstance(i));
             }
         }
