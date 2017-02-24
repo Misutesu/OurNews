@@ -29,7 +29,7 @@ import java.util.List;
 
 public class AdvertisementView extends RelativeLayout {
 
-    private final int TIME = 4000;
+    private final int TIME = 5000;
 
     private Context context;
 
@@ -200,7 +200,7 @@ public class AdvertisementView extends RelativeLayout {
 
             mAdapter.notifyDataSetChanged();
 
-            mViewPager.setCurrentItem(Integer.MAX_VALUE / 2, false);
+            mViewPager.setCurrentItem((Integer.MAX_VALUE / 2) + 1, false);
 
             initHandler();
 

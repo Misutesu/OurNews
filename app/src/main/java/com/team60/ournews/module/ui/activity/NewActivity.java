@@ -10,7 +10,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -65,8 +64,8 @@ public class NewActivity extends BaseActivity implements NewView {
     Button mRetryBtn;
     @BindView(R.id.activity_new_content_view)
     NewTextAndImageView mContentView;
-    @BindView(R.id.activity_new_recycler_view)
-    RecyclerView mRecyclerView;
+//    @BindView(R.id.activity_new_recycler_view)
+//    RecyclerView mRecyclerView;
     @BindView(R.id.activity_new_nested_scroll_view)
     NestedScrollView mNestedScrollView;
     @BindView(R.id.activity_new_bottom_action_layout)
