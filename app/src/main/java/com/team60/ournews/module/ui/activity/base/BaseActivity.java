@@ -12,6 +12,7 @@ import android.view.WindowManager;
 
 import com.team60.ournews.R;
 import com.team60.ournews.module.model.User;
+import com.team60.ournews.module.presenterTemp.impl.base.BasePresenter;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
 
@@ -19,12 +20,14 @@ import com.team60.ournews.util.UiUtil;
  * Created by Misutesu on 2016/12/26 0026.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity {
+    protected P mPresenter;
 
     public User user = User.newInstance();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        mPresenter = createPresenter();
         super.onCreate(savedInstanceState);
 
         UiUtil.initialize(this);
@@ -42,8 +45,15 @@ public abstract class BaseActivity extends AppCompatActivity {
                     setTheme(styleId);
             }
         }
-
         hideStatusBar();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mPresenter != null) {
+            mPresenter.detachView();
+        }
     }
 
     private void hideStatusBar() {
@@ -71,6 +81,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             window.setNavigationBarColor(Color.TRANSPARENT);
         }
     }
+
+    protected abstract P createPresenter();
 
     public abstract void init(Bundle savedInstanceState);
 

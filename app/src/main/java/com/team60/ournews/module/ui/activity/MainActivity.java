@@ -32,6 +32,7 @@ import com.team60.ournews.R;
 import com.team60.ournews.event.ChangeViewPagerPageEvent;
 import com.team60.ournews.event.ShowSnackEvent;
 import com.team60.ournews.module.model.User;
+import com.team60.ournews.module.presenterTemp.impl.base.BasePresenter;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.ui.fragment.HomeFragment;
 import com.team60.ournews.module.ui.fragment.TypeFragment;
@@ -146,6 +147,11 @@ public class MainActivity extends BaseActivity implements MainView {
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    @Override
+    protected BasePresenter createPresenter() {
+        return null;
     }
 
     @Override

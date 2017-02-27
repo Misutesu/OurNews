@@ -1,7 +1,11 @@
 package com.team60.ournews.module.connection;
 
+import com.team60.ournews.module.model.New;
+
+import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Flowable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -46,7 +50,10 @@ public interface ApiStore {
     Call<ResponseBody> changePhotoAndSexAndNickName(@Query("id") long id, @Query("photo") String photo, @Query("sex") int sex, @Query("nickname") String nickName);
 
     @POST("getHomeNews")
-    Call<ResponseBody> getHomeNews();
+    Flowable<List<New>> getHomeNews();
+
+//    @POST("getHomeNews")
+//    Call<ResponseBody> getHomeNews();
 
     @POST("getHomeNews")
     Call<ResponseBody> getHomeNewsUseType(@Query("type") int type);
