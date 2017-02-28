@@ -5,6 +5,7 @@ package com.team60.ournews.common;
  */
 
 public class Constants {
+
     public static final int New_EVERY_PAGE_SIZE = 10;
 
     public static final int COMMENT_EVERY_PAGE_SIZE = 6;
