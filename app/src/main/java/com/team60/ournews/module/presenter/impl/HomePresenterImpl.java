@@ -33,7 +33,7 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void getHomeNews(final int type) {
-        Observable.create(new Observable.OnSubscribe<SparseArray<List<New>>>() {
+        mView.addSubscription(Observable.create(new Observable.OnSubscribe<SparseArray<List<New>>>() {
             @Override
             public void call(Subscriber<? super SparseArray<List<New>>> subscriber) {
                 try {
@@ -78,6 +78,6 @@ public class HomePresenterImpl implements HomePresenter {
                     public void onNext(SparseArray<List<New>> news) {
                         mView.getNewsSuccess(news, type);
                     }
-                });
+                }));
     }
 }

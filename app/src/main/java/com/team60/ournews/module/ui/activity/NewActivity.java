@@ -64,8 +64,6 @@ public class NewActivity extends BaseActivity implements NewView {
     Button mRetryBtn;
     @BindView(R.id.activity_new_content_view)
     NewTextAndImageView mContentView;
-//    @BindView(R.id.activity_new_recycler_view)
-//    RecyclerView mRecyclerView;
     @BindView(R.id.activity_new_nested_scroll_view)
     NestedScrollView mNestedScrollView;
     @BindView(R.id.activity_new_bottom_action_layout)
@@ -82,6 +80,7 @@ public class NewActivity extends BaseActivity implements NewView {
     LinearLayout mContentLayout;
 
     private New n;
+    private NewPresenter mPresenter;
 
     private AlphaAnimation inAnimation = new AlphaAnimation(0, 1);
     private AlphaAnimation outAnimation = new AlphaAnimation(1, 0);
@@ -89,7 +88,6 @@ public class NewActivity extends BaseActivity implements NewView {
     private TranslateAnimation showAnimation;
     private TranslateAnimation hideAnimation;
 
-    private NewPresenter mPresenter;
     private boolean isHide = false;
     private boolean isShow = false;
 

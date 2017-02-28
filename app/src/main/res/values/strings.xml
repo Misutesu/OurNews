@@ -3,6 +3,11 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="select_theme">选择主题</string>
+    <string name="logout">退出登录</string>
+    <string name="are_you_sure_logout">您确定要退出登录吗?</string>
+    <string name="select_theme_hint">您当前处于夜间模式下\n\n确定要退出夜间模式以便您选择的主题生效\n\n(否则您选择的主题将在退出夜间模式时生效)</string>
+
     <string name="internet_error">网络错误</string>
     <string name="server_error">返回参数错误</string>
     <string name="no_login_name_or_password_error">用户名或密码错误</string>

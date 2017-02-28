@@ -19,7 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.team60.ournews.R;
-import com.team60.ournews.adapter.TypeFragmentRecyclerViewAdapter;
+import com.team60.ournews.module.adapter.TypeFragmentRecyclerViewAdapter;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.model.New;
 import com.team60.ournews.module.presenter.SearchResultPresenter;

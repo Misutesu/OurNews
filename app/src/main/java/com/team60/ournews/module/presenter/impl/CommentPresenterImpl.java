@@ -33,7 +33,7 @@ public class CommentPresenterImpl implements CommentPresenter {
 
     @Override
     public void getComments(final long nid, final int page, final int sort) {
-        Observable.create(new Observable.OnSubscribe<List<Comment>>() {
+        mView.addSubscription(Observable.create(new Observable.OnSubscribe<List<Comment>>() {
             @Override
             public void call(Subscriber<? super List<Comment>> subscriber) {
                 try {
@@ -71,6 +71,6 @@ public class CommentPresenterImpl implements CommentPresenter {
                     public void onNext(List<Comment> comments) {
                         mView.getCommentsSuccess(comments, page);
                     }
-                });
+                }));
     }
 }

@@ -30,7 +30,7 @@ public class LoginPresenterImpl implements LoginPresenter {
 
     @Override
     public void login(final String loginName, final String password) {
-        Observable.create(new Observable.OnSubscribe<Integer>() {
+        mView.addSubscription(Observable.create(new Observable.OnSubscribe<Integer>() {
             @Override
             public void call(Subscriber<? super Integer> subscriber) {
                 try {
@@ -70,6 +70,6 @@ public class LoginPresenterImpl implements LoginPresenter {
                     public void onNext(Integer errorCode) {
                         mView.loginSuccess();
                     }
-                });
+                }));
     }
 }

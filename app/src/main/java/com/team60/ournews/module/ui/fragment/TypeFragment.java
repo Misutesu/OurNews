@@ -15,7 +15,7 @@ import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 
 import com.team60.ournews.R;
-import com.team60.ournews.adapter.TypeFragmentRecyclerViewAdapter;
+import com.team60.ournews.module.adapter.TypeFragmentRecyclerViewAdapter;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.event.ShowSnackEvent;
 import com.team60.ournews.module.model.New;
@@ -156,11 +156,6 @@ public class TypeFragment extends BaseFragment implements TypeView {
         isLoad = true;
         mSwipeRefresh.setRefreshing(true);
         mPresenter.getNewList(type, page, sort);
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//            }
-//        }, 500);
     }
 
     @Override

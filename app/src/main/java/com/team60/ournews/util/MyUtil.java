@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -69,12 +70,9 @@ public class MyUtil {
         imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
     }
 
-    public static String getPhotoUrl(String photoName) {
-        if (photoName == null)
-            return null;
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append(RetrofitUtil.BASE_URL).append("downloadImage?name=").append(photoName);
-        return stringBuffer.toString();
+    public static String getPhotoUrl(@NonNull String photoName) {
+        return new StringBuilder().append(RetrofitUtil.BASE_URL)
+                .append("downloadImage?name=").append(photoName).toString();
     }
 
     public static void savePhoto(final String photoUrl, final DownListener downListener) {

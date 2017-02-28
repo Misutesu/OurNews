@@ -51,11 +51,6 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/activity_new_recycler_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"/>-->
-
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/activity_new_nested_scroll_view"
             android:layout_width="match_parent"

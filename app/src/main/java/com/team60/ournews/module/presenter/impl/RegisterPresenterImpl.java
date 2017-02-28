@@ -31,7 +31,7 @@ public class RegisterPresenterImpl implements RegisterPresenter {
 
     @Override
     public void register(final String loginName, final String password) {
-        Observable.create(new Observable.OnSubscribe<Integer>() {
+        mView.addSubscription(Observable.create(new Observable.OnSubscribe<Integer>() {
             @Override
             public void call(Subscriber<? super Integer> subscriber) {
                 try {
@@ -74,6 +74,6 @@ public class RegisterPresenterImpl implements RegisterPresenter {
                     public void onNext(Integer integer) {
                         mView.registerSuccess();
                     }
-                });
+                }));
     }
 }

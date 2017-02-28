@@ -36,6 +36,8 @@ import me.relex.photodraweeview.PhotoDraweeView;
 
 public class PhotoActivity extends BaseActivity implements BaseView {
 
+    private final int PERMISSION_CODE = 100;
+
     public static final String TITLE_VALUE = "title";
     public static final String PHOTO_NAME_VALUE = "photo_name";
 
@@ -150,7 +152,7 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                         , Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(PhotoActivity.this
-                            , new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+                            , new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
                 } else {
                     savePhoto();
                 }
@@ -165,7 +167,7 @@ public class PhotoActivity extends BaseActivity implements BaseView {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case 100:
+            case PERMISSION_CODE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     savePhoto();
                 } else {

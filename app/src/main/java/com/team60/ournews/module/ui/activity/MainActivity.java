@@ -1,5 +1,6 @@
 package com.team60.ournews.module.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -12,12 +13,15 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,8 +35,9 @@ import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.R;
 import com.team60.ournews.event.ChangeViewPagerPageEvent;
 import com.team60.ournews.event.ShowSnackEvent;
+import com.team60.ournews.module.adapter.ThemeSelectRecyclerViewAdapter;
+import com.team60.ournews.module.model.Theme;
 import com.team60.ournews.module.model.User;
-import com.team60.ournews.module.presenterTemp.impl.base.BasePresenter;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.ui.fragment.HomeFragment;
 import com.team60.ournews.module.ui.fragment.TypeFragment;
@@ -60,6 +65,8 @@ public class MainActivity extends BaseActivity implements MainView {
     private SimpleDraweeView mHeaderUserAvatarImg;
     private TextView mHeaderUserNameText;
     private ImageView mHeaderNightModeImg;
+    private LinearLayout mSelectThemeLayout;
+    private LinearLayout mLogoutLayout;
 
     @BindView(R.id.activity_main_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
@@ -84,6 +91,13 @@ public class MainActivity extends BaseActivity implements MainView {
 
     private HomeFragment mHomeFragment;
 
+    private AlertDialog mThemeDialog;
+    private RecyclerView mThemeRecyclerView;
+    private ThemeSelectRecyclerViewAdapter mThemeAdapter;
+
+    private AlertDialog mThemeHintDialog;
+    private AlertDialog mLogoutDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +115,9 @@ public class MainActivity extends BaseActivity implements MainView {
         mHeaderUserAvatarImg = (SimpleDraweeView) mHeaderView.findViewById(R.id.header_user_avatar_img);
         mHeaderUserNameText = (TextView) mHeaderView.findViewById(R.id.header_user_name_text);
         mHeaderNightModeImg = (ImageView) mHeaderView.findViewById(R.id.header_night_mode_img);
+        mSelectThemeLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_theme_select_layout);
+        mLogoutLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_logout_layout);
+
         if (mNavView != null) {
             NavigationMenuView navigationMenuView = (NavigationMenuView) mNavView.getChildAt(0);
             if (navigationMenuView != null) {
@@ -119,28 +136,17 @@ public class MainActivity extends BaseActivity implements MainView {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             mTopView.setLayoutParams(new AppBarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtil.getStatusBarHeight()));
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mDrawerLayout.setFitsSystemWindows(true);
+            mDrawerLayout.setClipToPadding(false);
+        }
+
         if (ThemeUtil.isNightMode())
             mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
 
-        initViewPager(savedInstanceState);
+        initViewPager();
 
         setUserInfo();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        FragmentManager manager = getSupportFragmentManager();
-        for (int i = 0; i < 6; i++) {
-            String fragmentName;
-            if (i == 0) {
-                fragmentName = HomeFragment.class.getName();
-                manager.putFragment(outState, HomeFragment.class.getName(), fragments.get(i));
-            } else {
-                fragmentName = TypeFragment.class.getName() + i;
-            }
-            manager.putFragment(outState, fragmentName, fragments.get(i));
-        }
     }
 
     @Override
@@ -150,21 +156,7 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     @Override
-    protected BasePresenter createPresenter() {
-        return null;
-    }
-
-    @Override
     public void setListener() {
-        mUserLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                User.breakLogin();
-                recreate();
-                return false;
-            }
-        });
-
         mUserLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -197,6 +189,35 @@ public class MainActivity extends BaseActivity implements MainView {
             }
         });
 
+        mSelectThemeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initThemeDialog();
+                mThemeDialog.show();
+            }
+        });
+
+        mLogoutLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mLogoutDialog == null) {
+                    mLogoutDialog = new AlertDialog.Builder(MainActivity.this)
+                            .setMessage(getString(R.string.are_you_sure_logout))
+                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    User.breakLogin();
+                                    setUserInfo();
+                                    mDrawerLayout.closeDrawers();
+                                }
+                            })
+                            .setNegativeButton(getString(R.string.no), null)
+                            .create();
+                }
+                mLogoutDialog.show();
+            }
+        });
+
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -218,27 +239,18 @@ public class MainActivity extends BaseActivity implements MainView {
         });
     }
 
-    private void initViewPager(Bundle savedInstanceState) {
+    private void initViewPager() {
         if (fragments == null) {
             fragments = new ArrayList<>();
         } else {
             fragments.clear();
         }
 
-        if (savedInstanceState != null) {
-            FragmentManager manager = getSupportFragmentManager();
-            mHomeFragment = (HomeFragment) manager.getFragment(savedInstanceState, HomeFragment.class.getName());
-            fragments.add(mHomeFragment);
-            for (int i = 1; i < 6; i++) {
-                fragments.add(manager.getFragment(savedInstanceState, TypeFragment.class.getName() + i));
-            }
-        } else {
-            mHomeFragment = new HomeFragment();
+        mHomeFragment = new HomeFragment();
 
-            fragments.add(mHomeFragment);
-            for (int i = 1; i < 6; i++) {
-                fragments.add(TypeFragment.newInstance(i));
-            }
+        fragments.add(mHomeFragment);
+        for (int i = 1; i < 6; i++) {
+            fragments.add(TypeFragment.newInstance(i));
         }
 
         mViewPager.setOffscreenPageLimit(fragments.size());
@@ -275,9 +287,11 @@ public class MainActivity extends BaseActivity implements MainView {
 
         if (User.isLogin()) {
             userName = headerUserName = user.getNickName();
+            mLogoutLayout.setVisibility(View.VISIBLE);
         } else {
             userName = getString(R.string.no_login);
             headerUserName = getString(R.string.click_avatar_to_login);
+            mLogoutLayout.setVisibility(View.GONE);
         }
 
         mUserNameText.setText(userName);
@@ -290,6 +304,52 @@ public class MainActivity extends BaseActivity implements MainView {
                 .setCircle()
                 .setBorder(4, Color.WHITE)
                 .into(mHeaderUserAvatarImg);
+    }
+
+    private void initThemeDialog() {
+        if (mThemeDialog == null) {
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_select_theme, null);
+            mThemeRecyclerView = (RecyclerView) view.findViewById(R.id.layout_select_item_recycler_view);
+            mThemeAdapter = new ThemeSelectRecyclerViewAdapter(this);
+            mThemeRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+            mThemeRecyclerView.setHasFixedSize(true);
+            mThemeRecyclerView.setAdapter(mThemeAdapter);
+
+            mThemeDialog = new AlertDialog.Builder(this)
+                    .setView(view)
+                    .create();
+
+            mThemeAdapter.setOnItemClickListener(new ThemeSelectRecyclerViewAdapter.OnItemClickListener() {
+                @Override
+                public void onClick(final Theme theme, final int position) {
+                    if (theme.getThemeId() != ThemeUtil.getStyle()) {
+                        if (ThemeUtil.isNightMode()) {
+                            if (mThemeHintDialog == null)
+                                mThemeHintDialog = new AlertDialog.Builder(MainActivity.this)
+                                        .setTitle(getString(R.string.hint))
+                                        .setMessage(getString(R.string.select_theme_hint))
+                                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                ThemeUtil.setStyle(position);
+                                                ThemeUtil.setNightMode(false);
+                                                mDrawerLayout.closeDrawers();
+                                                recreate();
+                                            }
+                                        })
+                                        .setNegativeButton(getString(R.string.no), null)
+                                        .create();
+                            mThemeHintDialog.show();
+                        } else {
+                            ThemeUtil.setStyle(position);
+                            mDrawerLayout.closeDrawers();
+                            recreate();
+                        }
+                    }
+                    mThemeDialog.dismiss();
+                }
+            });
+        }
     }
 
     @Override

@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.team60.ournews.R;
-import com.team60.ournews.adapter.SearchActivityRecyclerViewAdapter;
+import com.team60.ournews.module.adapter.SearchActivityRecyclerViewAdapter;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.util.MyUtil;

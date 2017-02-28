@@ -2,6 +2,7 @@ package com.team60.ournews.util;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.support.annotation.AttrRes;
 import android.util.TypedValue;
 
 import com.team60.ournews.R;
@@ -18,7 +19,7 @@ public class ThemeUtil {
 
     private static SharedPreferences sharedPreferences;
 
-    public static int getColor(Resources.Theme theme, int id) {
+    public static int getColor(Resources.Theme theme, @AttrRes int id) {
         TypedValue typedValue = new TypedValue();
         theme.resolveAttribute(id, typedValue, true);
         return typedValue.data;
@@ -29,7 +30,7 @@ public class ThemeUtil {
             synchronized (ThemeUtil.class) {
                 sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_THEME);
                 styles[0] = -1;
-                styles[1] = R.style.BlueTheme;
+                styles[1] = R.style.BlueBlackTheme;
                 styles[2] = R.style.GreenTheme;
                 styles[3] = R.style.GreenBlackTheme;
                 styles[4] = R.style.YellowTheme;

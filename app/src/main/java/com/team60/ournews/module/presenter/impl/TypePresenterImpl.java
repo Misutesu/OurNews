@@ -33,7 +33,7 @@ public class TypePresenterImpl implements TypePresenter {
 
     @Override
     public void getNewList(final int type, final int page, final int sort) {
-        Observable.create(new Observable.OnSubscribe<List<New>>() {
+        mView.addSubscription(Observable.create(new Observable.OnSubscribe<List<New>>() {
             @Override
             public void call(Subscriber<? super List<New>> subscriber) {
                 try {
@@ -49,7 +49,7 @@ public class TypePresenterImpl implements TypePresenter {
                 } catch (IOException e) {
                     e.printStackTrace();
                     subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.internet_error)));
-                }finally {
+                } finally {
                     subscriber.onCompleted();
                 }
             }
@@ -71,6 +71,6 @@ public class TypePresenterImpl implements TypePresenter {
                     public void onNext(List<New> news) {
                         mView.getNewListSuccess(news, page);
                     }
-                });
+                }));
     }
 }

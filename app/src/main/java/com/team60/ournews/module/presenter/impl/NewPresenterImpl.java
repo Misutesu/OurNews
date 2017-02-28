@@ -31,7 +31,7 @@ public class NewPresenterImpl implements NewPresenter {
 
     @Override
     public void getNewContent(final long id, final long uid) {
-        Observable.create(new Observable.OnSubscribe<New>() {
+        mView.addSubscription(Observable.create(new Observable.OnSubscribe<New>() {
             @Override
             public void call(Subscriber<? super New> subscriber) {
                 try {
@@ -81,6 +81,6 @@ public class NewPresenterImpl implements NewPresenter {
                             onError(new Exception(MyApplication.getContext().getString(R.string.load_new_image_error)));
                         }
                     }
-                });
+                }));
     }
 }

@@ -35,7 +35,7 @@ public class SearchResultPresenterImpl implements SearchResultPresenter {
 
     @Override
     public void searchNews(final String name, final int page, final int sort) {
-        Observable.create(new Observable.OnSubscribe<List<New>>() {
+        mView.addSubscription(Observable.create(new Observable.OnSubscribe<List<New>>() {
             @Override
             public void call(Subscriber<? super List<New>> subscriber) {
                 try {
@@ -74,6 +74,6 @@ public class SearchResultPresenterImpl implements SearchResultPresenter {
                     public void onNext(List<New> news) {
                         mView.searchSuccess(news, page);
                     }
-                });
+                }));
     }
 }

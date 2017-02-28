@@ -1,4 +1,4 @@
-package com.team60.ournews.adapter;
+package com.team60.ournews.module.adapter;
 
 import android.content.Context;
 import android.net.Uri;

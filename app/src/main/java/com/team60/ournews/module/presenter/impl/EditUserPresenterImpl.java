@@ -40,7 +40,7 @@ public class EditUserPresenterImpl implements EditUserPresenter {
 
     @Override
     public void saveInfo(final String nickName, final int sex, final String photo) {
-        Observable.create(new Observable.OnSubscribe<Object>() {
+        mView.addSubscription(Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 try {
@@ -139,6 +139,6 @@ public class EditUserPresenterImpl implements EditUserPresenter {
                     public void onNext(Object o) {
                         mView.saveSuccess();
                     }
-                });
+                }));
     }
 }

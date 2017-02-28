@@ -1,9 +1,6 @@
 package com.team60.ournews.module.connection;
 
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Misutesu on 2016/12/26 0026.
@@ -23,8 +20,6 @@ public class RetrofitUtil {
         if (apiStore == null) {
             synchronized (RetrofitUtil.class) {
                 apiStore = new Retrofit.Builder().baseUrl(BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                         .build()
                         .create(ApiStore.class);
             }

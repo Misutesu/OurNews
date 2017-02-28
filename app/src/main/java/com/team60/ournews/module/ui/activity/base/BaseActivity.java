@@ -3,6 +3,7 @@ package com.team60.ournews.module.ui.activity.base;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -12,22 +13,24 @@ import android.view.WindowManager;
 
 import com.team60.ournews.R;
 import com.team60.ournews.module.model.User;
-import com.team60.ournews.module.presenterTemp.impl.base.BasePresenter;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
+
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Misutesu on 2016/12/26 0026.
  */
 
-public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity {
-    protected P mPresenter;
+public abstract class BaseActivity extends AppCompatActivity {
 
     public User user = User.newInstance();
 
+    private CompositeSubscription mSubscription;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        mPresenter = createPresenter();
         super.onCreate(savedInstanceState);
 
         UiUtil.initialize(this);
@@ -51,9 +54,14 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPresenter != null) {
-            mPresenter.detachView();
-        }
+        if (mSubscription != null && mSubscription.hasSubscriptions())
+            mSubscription.clear();
+    }
+
+    public void addSubscription(@NonNull Subscription subscription) {
+        if (mSubscription == null)
+            mSubscription = new CompositeSubscription();
+        mSubscription.add(subscription);
     }
 
     private void hideStatusBar() {
@@ -81,8 +89,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
             window.setNavigationBarColor(Color.TRANSPARENT);
         }
     }
-
-    protected abstract P createPresenter();
 
     public abstract void init(Bundle savedInstanceState);
 

@@ -7,7 +7,6 @@ import com.team60.ournews.module.connection.RetrofitUtil;
 import com.team60.ournews.module.presenter.WriteCommentPresenter;
 import com.team60.ournews.module.view.WriteCommentView;
 import com.team60.ournews.util.DateUtil;
-import com.team60.ournews.util.MyUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +32,7 @@ public class WriteCommentPresenterImpl implements WriteCommentPresenter {
 
     @Override
     public void sendComment(final long uid, final long nid, final String content) {
-        Observable.create(new Observable.OnSubscribe<Object>() {
+        mView.addSubscription(Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 try {
@@ -75,6 +74,6 @@ public class WriteCommentPresenterImpl implements WriteCommentPresenter {
                     public void onNext(Object o) {
                         mView.sendCommentSuccess();
                     }
-                });
+                }));
     }
 }

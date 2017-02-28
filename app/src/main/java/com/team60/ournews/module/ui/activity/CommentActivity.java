@@ -21,7 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.team60.ournews.R;
-import com.team60.ournews.adapter.CommentActivityRecyclerViewAdapter;
+import com.team60.ournews.module.adapter.CommentActivityRecyclerViewAdapter;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.model.Comment;
 import com.team60.ournews.module.model.New;
