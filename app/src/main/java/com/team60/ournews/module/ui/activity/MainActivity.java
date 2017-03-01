@@ -172,7 +172,9 @@ public class MainActivity extends BaseActivity implements MainView {
                 } else {
                     startActivityForResult(new Intent(MainActivity.this, LoginActivity.class), LoginActivity.CODE_LOGIN);
                 }
-                mDrawerLayout.closeDrawer(GravityCompat.START);
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                }
             }
         });
 
@@ -184,7 +186,9 @@ public class MainActivity extends BaseActivity implements MainView {
                 } else {
                     ThemeUtil.setNightMode(true);
                 }
-                mDrawerLayout.closeDrawers();
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                }
                 recreate();
             }
         });
@@ -208,7 +212,9 @@ public class MainActivity extends BaseActivity implements MainView {
                                 public void onClick(DialogInterface dialog, int which) {
                                     User.breakLogin();
                                     setUserInfo();
-                                    mDrawerLayout.closeDrawers();
+                                    if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                                    }
                                 }
                             })
                             .setNegativeButton(getString(R.string.no), null)
@@ -247,7 +253,6 @@ public class MainActivity extends BaseActivity implements MainView {
         }
 
         mHomeFragment = new HomeFragment();
-
         fragments.add(mHomeFragment);
         for (int i = 1; i < 6; i++) {
             fragments.add(TypeFragment.newInstance(i));
@@ -333,7 +338,9 @@ public class MainActivity extends BaseActivity implements MainView {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 ThemeUtil.setStyle(position);
                                                 ThemeUtil.setNightMode(false);
-                                                mDrawerLayout.closeDrawers();
+                                                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                                                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                                                }
                                                 recreate();
                                             }
                                         })
@@ -342,7 +349,9 @@ public class MainActivity extends BaseActivity implements MainView {
                             mThemeHintDialog.show();
                         } else {
                             ThemeUtil.setStyle(position);
-                            mDrawerLayout.closeDrawers();
+                            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                                mDrawerLayout.closeDrawer(GravityCompat.START);
+                            }
                             recreate();
                         }
                     }

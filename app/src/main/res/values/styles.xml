@@ -143,7 +143,8 @@
     <style name="NightTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/night_windows_background</item>
         <item name="colorPrimaryDark">@color/night_windows_background</item>
-        <item name="colorAccent">@color/night_button_background</item>
+        <!--<item name="colorAccent">@color/night_button_background</item>-->
+        <item name="colorAccent">@color/gray_1</item>
         <item name="android:windowBackground">@color/night_windows_background</item>
         <item name="windowsBackgroundColor">@color/night_windows_background</item>
         <item name="itemBackgroundColor">@color/night_item_background</item>
@@ -151,7 +152,7 @@
         <item name="textColor">@color/day_windows_background</item>
         <item name="textColor1">@color/white</item>
         <item name="textColor2">@color/gray_1</item>
-        <item name="textColor3">@color/gray_2</item>
+        <item name="textColor3">@color/gray_1</item>
         <item name="viewColor">@color/gray_4</item>
     </style>
 

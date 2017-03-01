@@ -51,6 +51,7 @@ public class TypeFragment extends BaseFragment implements TypeView {
     private TypeFragmentRecyclerViewAdapter mAdapter;
     private List<New> news;
 
+    private boolean isCreated = false;
     private boolean isGet = false;
     private boolean isLoad = false;
     private boolean hasMore = true;
@@ -90,6 +91,12 @@ public class TypeFragment extends BaseFragment implements TypeView {
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        isCreated = true;
+    }
+
+    @Override
     public void init() {
         inAnimation.setDuration(200);
         outAnimation.setDuration(200);
@@ -100,6 +107,7 @@ public class TypeFragment extends BaseFragment implements TypeView {
 
         if (news == null) news = new ArrayList<>();
         else news.clear();
+
         mAdapter = new TypeFragmentRecyclerViewAdapter(getContext(), news);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -142,7 +150,7 @@ public class TypeFragment extends BaseFragment implements TypeView {
     }
 
     public void getNewList() {
-        if (!isGet)
+        if (!isGet && isCreated)
             refreshNewList();
     }
 
