@@ -32,7 +32,9 @@
         <activity
             android:name=".module.ui.activity.InputActivity"
             android:theme="@style/Transparent"/>
-        <activity android:name=".module.ui.activity.NewActivity"/>
+        <activity
+            android:name=".module.ui.activity.NewActivity"
+            android:theme="@style/Transparent"/>
         <activity
             android:name=".module.ui.activity.WriteCommentActivity"
             android:theme="@style/Transparent"

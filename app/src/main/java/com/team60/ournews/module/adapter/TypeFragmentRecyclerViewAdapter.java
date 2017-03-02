@@ -64,7 +64,7 @@ public class TypeFragmentRecyclerViewAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof NormalViewHolder) {
-            NormalViewHolder viewHolder = (NormalViewHolder) holder;
+            final NormalViewHolder viewHolder = (NormalViewHolder) holder;
             final int positionTemp = position;
             final New n = news.get(positionTemp);
             viewHolder.mTitleText.setText(n.getTitle());
@@ -78,7 +78,7 @@ public class TypeFragmentRecyclerViewAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     if (onItemClickListener != null)
-                        onItemClickListener.onItemClick(v, n, positionTemp);
+                        onItemClickListener.onItemClick(viewHolder.mCoverImg, n, positionTemp);
                 }
             });
         } else if (holder instanceof FooterViewHolder) {

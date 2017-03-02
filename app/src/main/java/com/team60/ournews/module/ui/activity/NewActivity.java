@@ -1,8 +1,11 @@
 package com.team60.ournews.module.ui.activity;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -13,17 +16,21 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
+import com.mistesu.frescoloader.OnDownloadListener;
 import com.team60.ournews.R;
 import com.team60.ournews.module.model.New;
 import com.team60.ournews.module.model.User;
@@ -31,7 +38,9 @@ import com.team60.ournews.module.presenter.NewPresenter;
 import com.team60.ournews.module.presenter.impl.NewPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.NewView;
+import com.team60.ournews.util.BesselEvaluator;
 import com.team60.ournews.util.MyUtil;
+import com.team60.ournews.util.SizeEvaluator;
 import com.team60.ournews.util.SkipUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
@@ -78,6 +87,12 @@ public class NewActivity extends BaseActivity implements NewView {
     LinearLayout mCommentLayout;
     @BindView(R.id.activity_new_content_layout)
     LinearLayout mContentLayout;
+    @BindView(R.id.activity_new_anim_layout)
+    FrameLayout mAnimLayout;
+    @BindView(R.id.activity_new_anim_img)
+    SimpleDraweeView mAnimImg;
+    @BindView(R.id.activity_new_new_layout)
+    RelativeLayout mNewLayout;
 
     private New n;
     private NewPresenter mPresenter;
@@ -96,6 +111,7 @@ public class NewActivity extends BaseActivity implements NewView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(R.color.all_transparent);
         setContentView(R.layout.activity_new);
         ButterKnife.bind(this);
         n = getIntent().getParcelableExtra(New.class.getName());
@@ -276,11 +292,95 @@ public class NewActivity extends BaseActivity implements NewView {
     }
 
     private void showNewInfo() {
-        FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover()))
-                .into(mBackgroundImg);
         mCollapsingToolBarLayout.setTitle(n.getTitle());
         mTitleText.setText(n.getTitle());
         mCreateTimeText.setText(n.getCreateTime());
+        FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover()))
+                .into(mBackgroundImg);
+
+        FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover()))
+                .setOnDownloadListener(new OnDownloadListener() {
+                    @Override
+                    public void onDownloadSuccess() {
+                        mAnimLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                            @Override
+                            public boolean onPreDraw() {
+                                mAnimLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                                int endWidth = mAnimLayout.getWidth();
+                                int endHeight = mAnimLayout.getHeight();
+                                Bundle mStartValues = NewActivity.this.getIntent().getBundleExtra(SkipUtil.VIEW_INFO);
+                                float deltaX = mStartValues.getInt(SkipUtil.VIEW_X);
+                                float deltaY = mStartValues.getInt(SkipUtil.VIEW_Y);
+
+                                ValueAnimator translationAnimator = ValueAnimator.ofObject(
+                                        new BesselEvaluator(new PointF(deltaX / 4 * 3, deltaY), new PointF(0, deltaY / 4)),
+                                        new PointF(deltaX, deltaY), new PointF(0, 0));
+
+                                translationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                    @Override
+                                    public void onAnimationUpdate(ValueAnimator animation) {
+                                        PointF pointF = (PointF) animation.getAnimatedValue();
+                                        mAnimLayout.setTranslationX(pointF.x);
+                                        mAnimLayout.setTranslationY(pointF.y);
+                                    }
+                                });
+
+                                Integer[] startSize
+                                        = {mStartValues.getInt(SkipUtil.VIEW_WIDTH), mStartValues.getInt(SkipUtil.VIEW_HEIGHT)};
+                                Integer[] endSize = {endWidth, endHeight};
+
+                                ValueAnimator widthAnimator
+                                        = ValueAnimator.ofObject(new SizeEvaluator(), startSize, endSize);
+
+                                widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                    @Override
+                                    public void onAnimationUpdate(ValueAnimator animation) {
+                                        Integer[] size = (Integer[]) animation.getAnimatedValue();
+                                        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAnimLayout.getLayoutParams();
+                                        layoutParams.width = size[0];
+                                        layoutParams.height = size[1];
+                                        mAnimLayout.setLayoutParams(layoutParams);
+                                    }
+                                });
+
+                                widthAnimator.addListener(new Animator.AnimatorListener() {
+                                    @Override
+                                    public void onAnimationStart(Animator animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        mCoordinatorLayout.removeView(mAnimLayout);
+                                        mAppBarLayout.setVisibility(View.VISIBLE);
+                                        mNewLayout.setVisibility(View.VISIBLE);
+                                        mBottomLayout.setVisibility(View.VISIBLE);
+                                    }
+
+                                    @Override
+                                    public void onAnimationCancel(Animator animation) {
+
+                                    }
+
+                                    @Override
+                                    public void onAnimationRepeat(Animator animation) {
+
+                                    }
+                                });
+
+                                widthAnimator.setDuration(600).start();
+                                translationAnimator.setDuration(600).start();
+                                return true;
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onDownloadFail() {
+
+                    }
+                })
+                .into(mAnimImg);
     }
 
     private void getNewContent() {

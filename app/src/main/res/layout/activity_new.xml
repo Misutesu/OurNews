@@ -11,13 +11,16 @@
         android:id="@+id/activity_new_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipChildren="false"
         android:fitsSystemWindows="true"
+        android:visibility="gone"
         app:elevation="0dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/activity_new_collapsing_tool_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipChildren="false"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|snap">
@@ -47,14 +50,18 @@
     </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
+        android:id="@+id/activity_new_new_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?attr/windowsBackgroundColor"
+        android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/activity_new_nested_scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="?attr/windowsBackgroundColor">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -138,7 +145,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <View
             android:layout_width="match_parent"
@@ -206,4 +214,16 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/activity_new_anim_layout"
+        android:layout_width="match_parent"
+        android:layout_height="320dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/activity_new_anim_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"/>
+    </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

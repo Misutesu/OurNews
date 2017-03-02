@@ -144,7 +144,7 @@
         <item name="colorPrimary">@color/night_windows_background</item>
         <item name="colorPrimaryDark">@color/night_windows_background</item>
         <!--<item name="colorAccent">@color/night_button_background</item>-->
-        <item name="colorAccent">@color/gray_1</item>
+        <item name="colorAccent">@color/night_item_background</item>
         <item name="android:windowBackground">@color/night_windows_background</item>
         <item name="windowsBackgroundColor">@color/night_windows_background</item>
         <item name="itemBackgroundColor">@color/night_item_background</item>
