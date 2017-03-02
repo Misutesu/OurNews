@@ -7,13 +7,24 @@
                                                  android:layout_height="match_parent"
                                                  tools:context="com.team60.ournews.module.ui.activity.NewActivity">
 
+    <FrameLayout
+        android:id="@+id/activity_new_anim_layout"
+        android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
+        android:layout_height="320dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/activity_new_anim_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/activity_new_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipChildren="false"
+        android:alpha="0"
         android:fitsSystemWindows="true"
-        android:visibility="gone"
         app:elevation="0dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -53,8 +64,8 @@
         android:id="@+id/activity_new_new_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="0"
         android:background="?attr/windowsBackgroundColor"
-        android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v4.widget.NestedScrollView
@@ -146,7 +157,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:translationY="51dp">
 
         <View
             android:layout_width="match_parent"
@@ -214,16 +225,4 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/activity_new_anim_layout"
-        android:layout_width="match_parent"
-        android:layout_height="320dp">
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/activity_new_anim_img"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"/>
-    </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

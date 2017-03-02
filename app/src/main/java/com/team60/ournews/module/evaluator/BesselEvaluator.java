@@ -1,4 +1,4 @@
-package com.team60.ournews.util;
+package com.team60.ournews.module.evaluator;
 
 import android.animation.TypeEvaluator;
 import android.graphics.PointF;
@@ -12,8 +12,6 @@ public class BesselEvaluator implements TypeEvaluator<PointF> {
     private PointF point1;
     private PointF point2;
 
-    private PointF pointF;
-
     public BesselEvaluator(PointF point1, PointF point2) {
         this.point1 = point1;
         this.point2 = point2;
@@ -22,7 +20,7 @@ public class BesselEvaluator implements TypeEvaluator<PointF> {
     @Override
     public PointF evaluate(float time, PointF start, PointF end) {
         float timeLeft = 1.0f - time;
-        pointF = new PointF();
+        PointF pointF = new PointF();
 
         pointF.x = timeLeft * timeLeft * timeLeft * (start.x)
                 + 3 * timeLeft * timeLeft * time * (point1.x)

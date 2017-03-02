@@ -1,11 +1,14 @@
 package com.team60.ournews.module.ui.activity;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -32,15 +35,15 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
 import com.mistesu.frescoloader.OnDownloadListener;
 import com.team60.ournews.R;
+import com.team60.ournews.module.evaluator.BesselEvaluator;
+import com.team60.ournews.module.evaluator.SizeEvaluator;
 import com.team60.ournews.module.model.New;
 import com.team60.ournews.module.model.User;
 import com.team60.ournews.module.presenter.NewPresenter;
 import com.team60.ournews.module.presenter.impl.NewPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.NewView;
-import com.team60.ournews.util.BesselEvaluator;
 import com.team60.ournews.util.MyUtil;
-import com.team60.ournews.util.SizeEvaluator;
 import com.team60.ournews.util.SkipUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
@@ -95,6 +98,8 @@ public class NewActivity extends BaseActivity implements NewView {
     RelativeLayout mNewLayout;
 
     private New n;
+    private Bundle mStartValues;
+
     private NewPresenter mPresenter;
 
     private AlphaAnimation inAnimation = new AlphaAnimation(0, 1);
@@ -114,7 +119,10 @@ public class NewActivity extends BaseActivity implements NewView {
         getWindow().setBackgroundDrawableResource(R.color.all_transparent);
         setContentView(R.layout.activity_new);
         ButterKnife.bind(this);
-        n = getIntent().getParcelableExtra(New.class.getName());
+
+        Intent intent = getIntent();
+        n = intent.getParcelableExtra(New.class.getName());
+        mStartValues = intent.getBundleExtra(SkipUtil.VIEW_INFO);
 
         if (n == null) {
             showToast(getString(R.string.open_new_error));
@@ -125,6 +133,12 @@ public class NewActivity extends BaseActivity implements NewView {
             showNewInfo();
             getNewContent();
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        showFinishAnim();
     }
 
     @Override
@@ -306,70 +320,7 @@ public class NewActivity extends BaseActivity implements NewView {
                             @Override
                             public boolean onPreDraw() {
                                 mAnimLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                                int endWidth = mAnimLayout.getWidth();
-                                int endHeight = mAnimLayout.getHeight();
-                                Bundle mStartValues = NewActivity.this.getIntent().getBundleExtra(SkipUtil.VIEW_INFO);
-                                float deltaX = mStartValues.getInt(SkipUtil.VIEW_X);
-                                float deltaY = mStartValues.getInt(SkipUtil.VIEW_Y);
-
-                                ValueAnimator translationAnimator = ValueAnimator.ofObject(
-                                        new BesselEvaluator(new PointF(deltaX / 4 * 3, deltaY), new PointF(0, deltaY / 4)),
-                                        new PointF(deltaX, deltaY), new PointF(0, 0));
-
-                                translationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                    @Override
-                                    public void onAnimationUpdate(ValueAnimator animation) {
-                                        PointF pointF = (PointF) animation.getAnimatedValue();
-                                        mAnimLayout.setTranslationX(pointF.x);
-                                        mAnimLayout.setTranslationY(pointF.y);
-                                    }
-                                });
-
-                                Integer[] startSize
-                                        = {mStartValues.getInt(SkipUtil.VIEW_WIDTH), mStartValues.getInt(SkipUtil.VIEW_HEIGHT)};
-                                Integer[] endSize = {endWidth, endHeight};
-
-                                ValueAnimator widthAnimator
-                                        = ValueAnimator.ofObject(new SizeEvaluator(), startSize, endSize);
-
-                                widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                    @Override
-                                    public void onAnimationUpdate(ValueAnimator animation) {
-                                        Integer[] size = (Integer[]) animation.getAnimatedValue();
-                                        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAnimLayout.getLayoutParams();
-                                        layoutParams.width = size[0];
-                                        layoutParams.height = size[1];
-                                        mAnimLayout.setLayoutParams(layoutParams);
-                                    }
-                                });
-
-                                widthAnimator.addListener(new Animator.AnimatorListener() {
-                                    @Override
-                                    public void onAnimationStart(Animator animation) {
-
-                                    }
-
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        mCoordinatorLayout.removeView(mAnimLayout);
-                                        mAppBarLayout.setVisibility(View.VISIBLE);
-                                        mNewLayout.setVisibility(View.VISIBLE);
-                                        mBottomLayout.setVisibility(View.VISIBLE);
-                                    }
-
-                                    @Override
-                                    public void onAnimationCancel(Animator animation) {
-
-                                    }
-
-                                    @Override
-                                    public void onAnimationRepeat(Animator animation) {
-
-                                    }
-                                });
-
-                                widthAnimator.setDuration(600).start();
-                                translationAnimator.setDuration(600).start();
+                                showStartAnim();
                                 return true;
                             }
                         });
@@ -377,10 +328,175 @@ public class NewActivity extends BaseActivity implements NewView {
 
                     @Override
                     public void onDownloadFail() {
-
+                        getShowOrHideAnimSet(true).start();
                     }
                 })
                 .into(mAnimImg);
+    }
+
+    private void showStartAnim() {
+        if (mStartValues != null) {
+            int endWidth = mAnimLayout.getWidth();
+            int endHeight = mAnimLayout.getHeight();
+
+            float deltaX = mStartValues.getInt(SkipUtil.VIEW_X);
+            float deltaY = mStartValues.getInt(SkipUtil.VIEW_Y);
+
+            PointF pointFEnd;
+
+            Integer[] startSize
+                    = {mStartValues.getInt(SkipUtil.VIEW_WIDTH), mStartValues.getInt(SkipUtil.VIEW_HEIGHT)};
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                endHeight += UiUtil.getStatusBarHeight();
+                startSize[1] += UiUtil.getStatusBarHeight();
+                deltaY -= UiUtil.getStatusBarHeight();
+                pointFEnd = new PointF(0, -UiUtil.getStatusBarHeight());
+            } else {
+                pointFEnd = new PointF(0, 0);
+            }
+
+            Integer[] endSize = {endWidth, endHeight};
+
+            ValueAnimator translationAnimator = ValueAnimator.ofObject(
+                    new BesselEvaluator(new PointF(deltaX / 4 * 3, deltaY), new PointF(0, deltaY / 4)),
+                    new PointF(deltaX, deltaY), pointFEnd);
+
+            translationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    PointF pointF = (PointF) animation.getAnimatedValue();
+                    mAnimLayout.setTranslationX(pointF.x);
+                    mAnimLayout.setTranslationY(pointF.y);
+                }
+            });
+
+            ValueAnimator widthAnimator
+                    = ValueAnimator.ofObject(new SizeEvaluator(), startSize, endSize);
+
+            widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Integer[] size = (Integer[]) animation.getAnimatedValue();
+                    CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAnimLayout.getLayoutParams();
+                    layoutParams.width = size[0];
+                    layoutParams.height = size[1];
+                    mAnimLayout.setLayoutParams(layoutParams);
+                }
+            });
+
+            AnimatorSet imgSet = new AnimatorSet();
+            imgSet.playTogether(widthAnimator, translationAnimator);
+            imgSet.setDuration(600);
+
+            AnimatorSet set = new AnimatorSet();
+            set.play(getShowOrHideAnimSet(true)).after(imgSet);
+            set.start();
+        } else {
+            getShowOrHideAnimSet(true).start();
+        }
+    }
+
+    private void showFinishAnim() {
+        if (mStartValues != null) {
+            int startWidth = mAnimLayout.getWidth();
+            int startHeight = mAnimLayout.getHeight();
+
+            float deltaX = mStartValues.getInt(SkipUtil.VIEW_X);
+            float deltaY = mStartValues.getInt(SkipUtil.VIEW_Y);
+
+            PointF pointFEnd;
+
+            Integer[] startSize = {startWidth, startHeight};
+            Integer[] endSize = {mStartValues.getInt(SkipUtil.VIEW_WIDTH), mStartValues.getInt(SkipUtil.VIEW_HEIGHT)};
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                pointFEnd = new PointF(0, -UiUtil.getStatusBarHeight());
+                deltaY -= UiUtil.getStatusBarHeight();
+                endSize[1] += UiUtil.getStatusBarHeight();
+            } else {
+                pointFEnd = new PointF(0, 0);
+            }
+
+            ValueAnimator translationAnimator = ValueAnimator.ofObject(
+                    new BesselEvaluator(new PointF(0, deltaY / 4), new PointF(deltaX / 4 * 3, deltaY)),
+                    pointFEnd, new PointF(deltaX, deltaY));
+
+            translationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    PointF pointF = (PointF) animation.getAnimatedValue();
+                    mAnimLayout.setTranslationX(pointF.x);
+                    mAnimLayout.setTranslationY(pointF.y);
+                }
+            });
+
+            ValueAnimator widthAnimator
+                    = ValueAnimator.ofObject(new SizeEvaluator(), startSize, endSize);
+
+            widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Integer[] size = (Integer[]) animation.getAnimatedValue();
+                    CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mAnimLayout.getLayoutParams();
+                    layoutParams.width = size[0];
+                    layoutParams.height = size[1];
+                    mAnimLayout.setLayoutParams(layoutParams);
+                }
+            });
+
+            AnimatorSet imgSet = new AnimatorSet();
+            imgSet.playTogether(widthAnimator, translationAnimator);
+            imgSet.setDuration(600);
+
+            AnimatorSet set = new AnimatorSet();
+            set.play(getShowOrHideAnimSet(false)).with(imgSet);
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    finish();
+                    NewActivity.this.overridePendingTransition(0, 0);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            set.start();
+        } else {
+            getShowOrHideAnimSet(false).start();
+        }
+    }
+
+    private AnimatorSet getShowOrHideAnimSet(final boolean isShow) {
+        final AnimatorSet showSet = new AnimatorSet();
+        if (isShow) {
+            showSet.playTogether(ObjectAnimator.ofFloat(mNewLayout, "alpha", 0f, 1f)
+                    , ObjectAnimator.ofFloat(mAppBarLayout, "alpha", 0f, 1f)
+                    , ObjectAnimator.ofFloat(mNewLayout, "alpha", 0f, 1f)
+                    , ObjectAnimator.ofFloat(mBottomLayout, "translationY", mBottomLayout.getHeight(), 0f));
+        } else {
+            mAppBarLayout.setAlpha(0f);
+            if (mBottomLayout.getHeight() != 0) {
+                showSet.playTogether(ObjectAnimator.ofFloat(mNewLayout, "alpha", 1f, 0f)
+                        , ObjectAnimator.ofFloat(mBottomLayout, "translationY", 0f, mBottomLayout.getHeight()));
+            } else {
+                showSet.play(ObjectAnimator.ofFloat(mNewLayout, "alpha", 1f, 0f));
+            }
+        }
+        showSet.setDuration(300);
+        return showSet;
     }
 
     private void getNewContent() {
