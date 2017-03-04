@@ -2,10 +2,12 @@ package com.team60.ournews.module.presenter.impl;
 
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
+import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.connection.RetrofitUtil;
 import com.team60.ournews.module.model.User;
 import com.team60.ournews.module.presenter.LoginPresenter;
 import com.team60.ournews.module.view.LoginView;
+import com.team60.ournews.util.MD5Util;
 
 import org.json.JSONException;
 
@@ -34,13 +36,16 @@ public class LoginPresenterImpl implements LoginPresenter {
             @Override
             public void call(Subscriber<? super Integer> subscriber) {
                 try {
-                    int result = User.getUserInfo(RetrofitUtil.newInstance().login(loginName, password).execute().body().string());
+                    long time = System.currentTimeMillis();
+                    String md5 = MD5Util.getMD5(Constants.KEY + password + time);
+                    int result = User.getUserInfo(RetrofitUtil.newInstance()
+                            .login(loginName, md5, time).execute().body().string());
                     if (result == 0) {
                         subscriber.onNext(0);
                     } else if (result == 1) {
                         subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.no_login_name_or_password_error)));
                     } else if (result == 2) {
-                        subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.server_error)));
+                        subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.connect_time_out)));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

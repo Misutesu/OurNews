@@ -22,7 +22,9 @@ public interface ApiStore {
     Call<ResponseBody> register(@Query("loginname") String loginName, @Query("password") String password);
 
     @POST("login")
-    Call<ResponseBody> login(@Query("loginname") String loginName, @Query("password") String password);
+    Call<ResponseBody> login(@Query("loginname") String loginName
+            , @Query("password") String password
+            , @Query("time") long time);
 
     @POST("changeInfo")
     Call<ResponseBody> changeNickName(@Query("id") long id, @Query("nickname") String nickName);

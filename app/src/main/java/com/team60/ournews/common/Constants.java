@@ -6,6 +6,8 @@ package com.team60.ournews.common;
 
 public class Constants {
 
+    public static final String KEY = "a0f33a00f12b4a8eb6f626f03a1f140a";
+
     public static final int New_EVERY_PAGE_SIZE = 10;
 
     public static final int COMMENT_EVERY_PAGE_SIZE = 6;

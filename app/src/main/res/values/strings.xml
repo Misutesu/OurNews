@@ -10,6 +10,7 @@
 
     <string name="internet_error">网络错误</string>
     <string name="server_error">返回参数错误</string>
+    <string name="connect_time_out">连接超时</string>
     <string name="no_login_name_or_password_error">用户名或密码错误</string>
     <string name="login_name_or_password_error">用户名或密码不规范</string>
     <string name="login_name_is_same">用户名已存在</string>

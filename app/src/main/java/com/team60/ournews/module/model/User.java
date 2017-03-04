@@ -55,9 +55,11 @@ public class User {
             user.setPhoto(userJSON.getString("photo"));
             return 0;
         } else {
-            if (jsonObject.getInt("error_code") == Constants.LOGINNAME_NO_EXISTS_OR_PASSWORD_ERROR)
+            if (jsonObject.getInt("error_code") == Constants.LOGINNAME_NO_EXISTS_OR_PASSWORD_ERROR) {
                 return 1;
-            else return 2;
+            } else {
+                return 2;
+            }
         }
     }
 
