@@ -225,8 +225,8 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
                     if (sex == user.getSex())
                         sex = -1;
                     if (nickName.equals(user.getNickName()))
-                        nickName = null;
-                    String path = null;
+                        nickName = "";
+                    String path = "";
                     if (isSelectPhoto) {
                         StringBuffer temp = new StringBuffer();
                         temp.append(getCacheDir()).append(File.separator)
@@ -235,7 +235,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
                         path = temp.toString();
                     }
 
-                    mPresenter.saveInfo(nickName, sex, path);
+                    mPresenter.saveInfo(user.getId(), user.getToken(), nickName, sex, path);
                     mProgressDialog.show();
                 }
             }

@@ -15,9 +15,9 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.R;
-import com.team60.ournews.module.model.Comment;
-import com.team60.ournews.module.model.New;
-import com.team60.ournews.module.model.OtherUser;
+import com.team60.ournews.module.bean.Comment;
+import com.team60.ournews.module.bean.New;
+import com.team60.ournews.module.bean.OtherUser;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.UiUtil;
 

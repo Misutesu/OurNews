@@ -2,15 +2,14 @@ package com.team60.ournews.module.presenter.impl;
 
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
+import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.connection.RetrofitUtil;
-import com.team60.ournews.module.model.New;
+import com.team60.ournews.module.model.ContentResult;
 import com.team60.ournews.module.presenter.NewPresenter;
 import com.team60.ournews.module.view.NewView;
+import com.team60.ournews.util.ErrorUtil;
 
 import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -31,36 +30,14 @@ public class NewPresenterImpl implements NewPresenter {
 
     @Override
     public void getNewContent(final long id, final long uid) {
-        mView.addSubscription(Observable.create(new Observable.OnSubscribe<New>() {
-            @Override
-            public void call(Subscriber<? super New> subscriber) {
-                try {
-                    JSONObject jsonObject;
-                    if (uid == -1) {
-                        jsonObject = new JSONObject(RetrofitUtil.newInstance().getNewContentUseId(id).execute().body().string());
-                    } else {
-                        jsonObject = new JSONObject(RetrofitUtil.newInstance().getNewContentUseId(id, uid).execute().body().string());
-                    }
-                    if (jsonObject.getString("result").equals("success")) {
-                        New n = new New();
-                        n.setContent(jsonObject.getJSONObject("new").getString("content"));
-                        n.setCommentNum(jsonObject.getJSONObject("new").getInt("comment_num"));
-                        subscriber.onNext(n);
-                    } else {
-                        subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.server_error)));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.server_error)));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.internet_error)));
-                } finally {
-                    subscriber.onCompleted();
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<New>() {
+        Observable<ContentResult> observable;
+        if (uid == -1) {
+            observable = RetrofitUtil.newInstance().getNewContentUseId(id);
+        } else {
+            observable = RetrofitUtil.newInstance().getNewContentUseId(id, uid);
+        }
+        mView.addSubscription(observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ContentResult>() {
                     @Override
                     public void onCompleted() {
                         mView.getNewContentEnd();
@@ -70,15 +47,25 @@ public class NewPresenterImpl implements NewPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onCompleted();
+                        mView.getNewContentError(MyApplication.getContext().getString(R.string.internet_error));
                     }
 
                     @Override
-                    public void onNext(New n) {
-                        try {
-                            mView.getNewContentSuccess(n);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            onError(new Exception(MyApplication.getContext().getString(R.string.load_new_image_error)));
+                    public void onNext(ContentResult result) {
+                        if (result.getResult().equals("success")) {
+                            New n = new New();
+                            n.setContent(result.getData().getContent());
+                            n.setCommentNum(result.getData().getCommentNum());
+                            n.setHistoryNum(result.getData().getHistoryNum());
+                            n.setCollectionNum(result.getData().getCollectionNum());
+                            try {
+                                mView.getNewContentSuccess(n);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                mView.getNewContentError(MyApplication.getContext().getString(R.string.load_new_image_error));
+                            }
+                        } else {
+                            mView.getNewContentError(ErrorUtil.getErrorMessage(result.getErrorCode()));
                         }
                     }
                 }));

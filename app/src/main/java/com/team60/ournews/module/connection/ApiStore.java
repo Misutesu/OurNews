@@ -1,16 +1,23 @@
 package com.team60.ournews.module.connection;
 
+import com.team60.ournews.module.model.CommentResult;
+import com.team60.ournews.module.model.ContentResult;
+import com.team60.ournews.module.model.HomeNewResult;
+import com.team60.ournews.module.model.ListNewResult;
+import com.team60.ournews.module.model.LoginResult;
+import com.team60.ournews.module.model.NoDataResult;
+import com.team60.ournews.module.model.UploadResult;
+
 import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Query;
+import rx.Observable;
 
 /**
  * Created by Misutesu on 2016/12/26 0026.
@@ -19,63 +26,65 @@ import retrofit2.http.Query;
 public interface ApiStore {
 
     @POST("register")
-    Call<ResponseBody> register(@Query("loginname") String loginName, @Query("password") String password);
+    Observable<NoDataResult> register(@Query("login_name") String loginName,
+                                      @Query("password") String password,
+                                      @Query("time") long time,
+                                      @Query("key") String key);
 
     @POST("login")
-    Call<ResponseBody> login(@Query("loginname") String loginName
+    Observable<LoginResult> login(@Query("login_name") String loginName
             , @Query("password") String password
             , @Query("time") long time);
 
     @POST("changeInfo")
-    Call<ResponseBody> changeNickName(@Query("id") long id, @Query("nickname") String nickName);
-
-    @POST("changeInfo")
-    Call<ResponseBody> changePhoto(@Query("id") long id, @Query("photo") String photo);
-
-    @POST("changeInfo")
-    Call<ResponseBody> changeSex(@Query("id") long id, @Query("sex") int sex);
-
-    @POST("changeInfo")
-    Call<ResponseBody> changeSexAndNickName(@Query("id") long id, @Query("sex") int sex, @Query("nickname") String nickName);
-
-    @POST("changeInfo")
-    Call<ResponseBody> changePhotoAndNickName(@Query("id") long id, @Query("photo") String photo, @Query("nickname") String nickName);
-
-    @POST("changeInfo")
-    Call<ResponseBody> changePhotoAndSex(@Query("id") long id, @Query("photo") String photo, @Query("sex") int sex);
-
-    @POST("changeInfo")
-    Call<ResponseBody> changePhotoAndSexAndNickName(@Query("id") long id, @Query("photo") String photo, @Query("sex") int sex, @Query("nickname") String nickName);
+    Observable<NoDataResult> changeInfo(@Query("id") long id,
+                                        @Query("token") String token,
+                                        @Query("nick_name") String nickName,
+                                        @Query("sex") String sex,
+                                        @Query("photo") String photo);
 
     @POST("getHomeNews")
-    Call<ResponseBody> getHomeNews();
+    Observable<HomeNewResult> getHomeNews();
 
     @POST("getHomeNews")
-    Call<ResponseBody> getHomeNewsUseType(@Query("type") int type);
+    Observable<HomeNewResult> getHomeNewsUseType(@Query("type") int type);
 
     @POST("getNewList")
-    Call<ResponseBody> getNewListUseType(@Query("type") int type, @Query("page") int page, @Query("size") int size, @Query("sort") int sort);
+    Observable<ListNewResult> getNewListUseType(@Query("type") int type,
+                                                @Query("page") int page,
+                                                @Query("size") int size,
+                                                @Query("sort") int sort);
 
     @POST("searchNew")
-    Call<ResponseBody> searchNew(@Query("name") String name, @Query("page") int page, @Query("size") int size, @Query("sort") int sort);
+    Observable<ListNewResult> searchNew(@Query("name") String name,
+                                        @Query("page") int page,
+                                        @Query("size") int size,
+                                        @Query("sort") int sort);
 
     @POST("getNewContent")
-    Call<ResponseBody> getNewContentUseId(@Query("id") long id);
+    Observable<ContentResult> getNewContentUseId(@Query("nid") long id);
 
     @POST("getNewContent")
-    Call<ResponseBody> getNewContentUseId(@Query("id") long id, @Query("uid") long uid);
+    Observable<ContentResult> getNewContentUseId(@Query("nid") long id, @Query("uid") long uid);
 
     @POST("sendComment")
-    Call<ResponseBody> sendCommentUseNewId(@Query("uid") long uid, @Query("nid") long nid, @Query("content") String content, @Query("createtime") String createTime);
+    Observable<NoDataResult> sendCommentUseNewId(@Query("uid") long uid,
+                                           @Query("nid") long nid,
+                                           @Query("content") String content,
+                                           @Query("time") long time,
+                                           @Query("key") String key);
 
     @POST("getComment")
-    Call<ResponseBody> getCommentsUseId(@Query("nid") long nid, @Query("page") int page, @Query("size") int size, @Query("sort") int sort);
+    Observable<CommentResult> getCommentsUseId(@Query("nid") long nid,
+                                               @Query("page") int page,
+                                               @Query("size") int size,
+                                               @Query("sort") int sort);
 
     @Multipart
     @POST("uploadImage")
-    Call<ResponseBody> uploadImage(@Part("description") RequestBody description, @Part MultipartBody.Part file);
+    Observable<UploadResult> uploadImage(@Part("description") RequestBody description, @Part MultipartBody.Part file);
 
     @Multipart
     @POST("uploadImage")
-    Call<ResponseBody> uploadImage(@PartMap Map<String, RequestBody> params);
+    Observable<UploadResult> uploadImage(@PartMap Map<String, RequestBody> params);
 }

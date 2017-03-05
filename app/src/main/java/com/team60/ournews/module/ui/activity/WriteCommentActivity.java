@@ -18,7 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.team60.ournews.R;
-import com.team60.ournews.module.model.New;
+import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.presenter.WriteCommentPresenter;
 import com.team60.ournews.module.presenter.impl.WriteCommentPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;

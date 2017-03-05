@@ -18,7 +18,7 @@ import com.team60.ournews.R;
 import com.team60.ournews.module.adapter.TypeFragmentRecyclerViewAdapter;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.event.ShowSnackEvent;
-import com.team60.ournews.module.model.New;
+import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.presenter.TypePresenter;
 import com.team60.ournews.module.presenter.impl.TypePresenterImpl;
 import com.team60.ournews.module.ui.fragment.base.BaseFragment;

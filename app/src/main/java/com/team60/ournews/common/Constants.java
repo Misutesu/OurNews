@@ -24,11 +24,11 @@ public class Constants {
 
     public static final String SHARED_PREFERENCES_CODE = "code_shared_preferences";
 
-    public static final int LOGINNAME_OR_PASSWORD_ERROR = 1001;
+    public static final int LOGIN_NAME_OR_PASSWORD_ERROR = 1001;
 
-    public static final int LOGINNAME_EXISTS = 1002;
+    public static final int LOGIN_NAME_EXISTS = 1002;
 
-    public static final int LOGINNAME_NO_EXISTS_OR_PASSWORD_ERROR = 2001;
+    public static final int LOGIN_NAME_NO_EXISTS_OR_PASSWORD_ERROR = 2001;
 
     public static final int CHANGE_INFO_ERROR = 3001;
 

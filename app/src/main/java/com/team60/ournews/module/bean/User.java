@@ -1,13 +1,10 @@
-package com.team60.ournews.module.model;
+package com.team60.ournews.module.bean;
 
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.util.MyUtil;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by Misutesu on 2016/12/26 0026.
@@ -20,6 +17,7 @@ public class User {
     private String nickName;
     private int sex;
     private String photo;
+    private String token;
 
     private static User user = new User();
     private static SharedPreferences sharedPreferences;
@@ -39,28 +37,9 @@ public class User {
 
     public static boolean isLogin() {
         if (user.getId() != 0 && !TextUtils.isEmpty(user.getLoginName()) && !TextUtils.isEmpty(user.getNickName())
-                && !TextUtils.isEmpty(user.getPhoto()))
+                && !TextUtils.isEmpty(user.getPhoto()) && !TextUtils.isEmpty(user.getToken()))
             return true;
         return false;
-    }
-
-    public static int getUserInfo(String str) throws JSONException {
-        JSONObject jsonObject = new JSONObject(str);
-        if (jsonObject.getString("result").equals("success")) {
-            JSONObject userJSON = jsonObject.getJSONObject("user");
-            user.setId(userJSON.getLong("id"));
-            user.setLoginName(userJSON.getString("loginname"));
-            user.setNickName(userJSON.getString("nickname"));
-            user.setSex(userJSON.getInt("sex"));
-            user.setPhoto(userJSON.getString("photo"));
-            return 0;
-        } else {
-            if (jsonObject.getInt("error_code") == Constants.LOGINNAME_NO_EXISTS_OR_PASSWORD_ERROR) {
-                return 1;
-            } else {
-                return 2;
-            }
-        }
     }
 
     public long getId() {
@@ -116,5 +95,16 @@ public class User {
     public void setPhoto(String photo) {
         if (sharedPreferences.edit().putString("photo", photo).commit())
             this.photo = photo;
+    }
+
+    public String getToken() {
+        if (TextUtils.isEmpty(token))
+            token = sharedPreferences.getString("token", "");
+        return token;
+    }
+
+    public void setToken(String token) {
+        if (sharedPreferences.edit().putString("token", token).commit())
+            this.token = token;
     }
 }

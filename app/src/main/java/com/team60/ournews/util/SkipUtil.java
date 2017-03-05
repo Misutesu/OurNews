@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.team60.ournews.module.model.New;
+import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.ui.activity.NewActivity;
 import com.team60.ournews.module.ui.activity.PhotoActivity;
 

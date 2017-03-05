@@ -11,7 +11,7 @@
 //import android.widget.TextView;
 //
 //import com.team60.ournews.R;
-//import com.team60.ournews.module.model.New;
+//import com.team60.ournews.module.bean.New;
 //import com.team60.ournews.util.ThemeUtil;
 //import com.team60.ournews.util.UiUtil;
 //

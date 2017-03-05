@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.R;
-import com.team60.ournews.module.model.New;
+import com.team60.ournews.module.bean.New;
 import com.team60.ournews.util.MyUtil;
 
 import java.util.List;

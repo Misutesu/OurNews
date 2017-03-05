@@ -3,17 +3,14 @@ package com.team60.ournews.module.presenter.impl;
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
+import com.team60.ournews.module.bean.User;
 import com.team60.ournews.module.connection.RetrofitUtil;
-import com.team60.ournews.module.model.User;
+import com.team60.ournews.module.model.LoginResult;
 import com.team60.ournews.module.presenter.LoginPresenter;
 import com.team60.ournews.module.view.LoginView;
+import com.team60.ournews.util.ErrorUtil;
 import com.team60.ournews.util.MD5Util;
 
-import org.json.JSONException;
-
-import java.io.IOException;
-
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -32,33 +29,11 @@ public class LoginPresenterImpl implements LoginPresenter {
 
     @Override
     public void login(final String loginName, final String password) {
-        mView.addSubscription(Observable.create(new Observable.OnSubscribe<Integer>() {
-            @Override
-            public void call(Subscriber<? super Integer> subscriber) {
-                try {
-                    long time = System.currentTimeMillis();
-                    String md5 = MD5Util.getMD5(Constants.KEY + password + time);
-                    int result = User.getUserInfo(RetrofitUtil.newInstance()
-                            .login(loginName, md5, time).execute().body().string());
-                    if (result == 0) {
-                        subscriber.onNext(0);
-                    } else if (result == 1) {
-                        subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.no_login_name_or_password_error)));
-                    } else if (result == 2) {
-                        subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.connect_time_out)));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.server_error)));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.internet_error)));
-                } finally {
-                    subscriber.onCompleted();
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Integer>() {
+        long time = System.currentTimeMillis();
+        mView.addSubscription(RetrofitUtil.newInstance()
+                .login(loginName, MD5Util.getMD5(Constants.KEY + password + time), time)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<LoginResult>() {
                     @Override
                     public void onCompleted() {
                         mView.loginEnd();
@@ -67,13 +42,24 @@ public class LoginPresenterImpl implements LoginPresenter {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        mView.loginError(e.getMessage());
                         onCompleted();
+                        mView.loginError(MyApplication.getContext().getString(R.string.internet_error));
                     }
 
                     @Override
-                    public void onNext(Integer errorCode) {
-                        mView.loginSuccess();
+                    public void onNext(LoginResult result) {
+                        if (result.getResult().equals("success")) {
+                            User user = User.newInstance();
+                            user.setId(result.getData().getId());
+                            user.setLoginName(result.getData().getLoginName());
+                            user.setNickName(result.getData().getNickName());
+                            user.setSex(result.getData().getSex());
+                            user.setPhoto(result.getData().getPhoto());
+                            user.setToken(result.getData().getToken());
+                            mView.loginSuccess();
+                        } else {
+                            mView.loginError(ErrorUtil.getErrorMessage(result.getErrorCode()));
+                        }
                     }
                 }));
     }

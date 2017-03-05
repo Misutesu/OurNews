@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.team60.ournews.R;
-import com.team60.ournews.module.model.Theme;
+import com.team60.ournews.module.bean.Theme;
 
 import java.util.ArrayList;
 import java.util.List;

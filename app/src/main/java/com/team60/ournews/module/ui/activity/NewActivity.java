@@ -37,8 +37,8 @@ import com.mistesu.frescoloader.OnDownloadListener;
 import com.team60.ournews.R;
 import com.team60.ournews.module.evaluator.BesselEvaluator;
 import com.team60.ournews.module.evaluator.SizeEvaluator;
-import com.team60.ournews.module.model.New;
-import com.team60.ournews.module.model.User;
+import com.team60.ournews.module.bean.New;
+import com.team60.ournews.module.bean.User;
 import com.team60.ournews.module.presenter.NewPresenter;
 import com.team60.ournews.module.presenter.impl.NewPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
@@ -449,9 +449,14 @@ public class NewActivity extends BaseActivity implements NewView {
             imgSet.playTogether(widthAnimator, translationAnimator);
             imgSet.setDuration(600);
 
-            AnimatorSet set = new AnimatorSet();
-            set.play(getShowOrHideAnimSet(false)).with(imgSet);
-            set.addListener(new Animator.AnimatorListener() {
+            AnimatorSet set1 = new AnimatorSet();
+            set1.play(getShowOrHideAnimSet(false)).with(imgSet);
+
+            AnimatorSet set2 = new AnimatorSet();
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAnimLayout, "alpha", 1f, 0f);
+            objectAnimator.setDuration(200);
+            set2.play(objectAnimator).after(set1);
+            set2.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
 
@@ -473,7 +478,7 @@ public class NewActivity extends BaseActivity implements NewView {
 
                 }
             });
-            set.start();
+            set2.start();
         } else {
             getShowOrHideAnimSet(false).start();
         }

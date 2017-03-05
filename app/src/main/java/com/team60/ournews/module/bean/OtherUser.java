@@ -1,4 +1,4 @@
-package com.team60.ournews.module.model;
+package com.team60.ournews.module.bean;
 
 /**
  * Created by Misutesu on 2016/12/29 0029.

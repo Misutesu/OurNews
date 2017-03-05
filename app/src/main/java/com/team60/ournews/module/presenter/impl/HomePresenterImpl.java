@@ -4,14 +4,14 @@ import android.util.SparseArray;
 
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
+import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.connection.RetrofitUtil;
-import com.team60.ournews.module.model.New;
+import com.team60.ournews.module.model.HomeNewResult;
 import com.team60.ournews.module.presenter.HomePresenter;
 import com.team60.ournews.module.view.HomeView;
+import com.team60.ournews.util.ErrorUtil;
 
-import org.json.JSONException;
-
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -33,35 +33,15 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void getHomeNews(final int type) {
-        mView.addSubscription(Observable.create(new Observable.OnSubscribe<SparseArray<List<New>>>() {
-            @Override
-            public void call(Subscriber<? super SparseArray<List<New>>> subscriber) {
-                try {
-                    SparseArray<List<New>> news;
-                    if (type == -1) {
-                        news = New.getHomeNews(RetrofitUtil.newInstance().getHomeNews()
-                                .execute().body().string());
-                    } else {
-                        news = New.getHomeNewsUseType(RetrofitUtil.newInstance().getHomeNewsUseType(type)
-                                .execute().body().string(), type);
-                    }
-                    if (news == null) {
-                        subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.server_error)));
-                    } else {
-                        subscriber.onNext(news);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.server_error)));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.internet_error)));
-                } finally {
-                    subscriber.onCompleted();
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<SparseArray<List<New>>>() {
+        Observable<HomeNewResult> observable;
+        if (type == -1) {
+            observable = RetrofitUtil.newInstance().getHomeNews();
+        } else {
+            observable = RetrofitUtil.newInstance().getHomeNewsUseType(type);
+        }
+        mView.addSubscription(observable
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<HomeNewResult>() {
                     @Override
                     public void onCompleted() {
                         mView.getNewsEnd();
@@ -71,12 +51,33 @@ public class HomePresenterImpl implements HomePresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onCompleted();
-                        mView.getNewsError(e.getMessage());
+                        mView.getNewsError(MyApplication.getContext().getString(R.string.server_error));
                     }
 
                     @Override
-                    public void onNext(SparseArray<List<New>> news) {
-                        mView.getNewsSuccess(news, type);
+                    public void onNext(HomeNewResult result) {
+                        if (result.getResult().equals("success")) {
+                            SparseArray<List<New>> news = new SparseArray<>();
+                            List<HomeNewResult.DataBean> beanList = result.getData();
+                            for (int i = 0; i < beanList.size(); i++) {
+                                List<HomeNewResult.DataBean.ListBean> list = beanList.get(i).getList();
+                                List<New> newList = new ArrayList<>();
+                                for (int j = 0; j < list.size(); j++) {
+                                    HomeNewResult.DataBean.ListBean bean = list.get(j);
+                                    New n = new New();
+                                    n.setId(bean.getId());
+                                    n.setTitle(bean.getTitle());
+                                    n.setCover(bean.getCover());
+                                    n.setAbstractContent(bean.getAbstractContent());
+                                    n.setCreateTime(bean.getCreateTime());
+                                    newList.add(n);
+                                }
+                                news.append(Integer.valueOf(beanList.get(i).getType()), newList);
+                            }
+                            mView.getNewsSuccess(news, type);
+                        } else {
+                            mView.getNewsError(ErrorUtil.getErrorMessage(result.getErrorCode()));
+                        }
                     }
                 }));
     }

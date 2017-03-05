@@ -4,16 +4,12 @@ import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.connection.RetrofitUtil;
+import com.team60.ournews.module.model.NoDataResult;
 import com.team60.ournews.module.presenter.WriteCommentPresenter;
 import com.team60.ournews.module.view.WriteCommentView;
-import com.team60.ournews.util.DateUtil;
+import com.team60.ournews.util.ErrorUtil;
+import com.team60.ournews.util.MD5Util;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -32,32 +28,11 @@ public class WriteCommentPresenterImpl implements WriteCommentPresenter {
 
     @Override
     public void sendComment(final long uid, final long nid, final String content) {
-        mView.addSubscription(Observable.create(new Observable.OnSubscribe<Object>() {
-            @Override
-            public void call(Subscriber<? super Object> subscriber) {
-                try {
-                    JSONObject jsonObject = new JSONObject(RetrofitUtil.newInstance().sendCommentUseNewId(uid, nid, content, DateUtil.getNowTime()).execute().body().string());
-                    if (jsonObject.getString("result").equals("success")) {
-                        subscriber.onNext(null);
-                    } else {
-                        if (jsonObject.getInt("error_code") == Constants.USER_OR_NEW_NO_HAVE) {
-                            subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.id_error)));
-                        } else {
-                            subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.server_error)));
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.server_error)));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.internet_error)));
-                } finally {
-                    subscriber.onCompleted();
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Object>() {
+        long time = System.currentTimeMillis();
+        mView.addSubscription(RetrofitUtil.newInstance()
+                .sendCommentUseNewId(uid, nid, content, time, MD5Util.getMD5(Constants.KEY + time))
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<NoDataResult>() {
                     @Override
                     public void onCompleted() {
                         mView.sendCommentEnd();
@@ -66,13 +41,17 @@ public class WriteCommentPresenterImpl implements WriteCommentPresenter {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        mView.sendCommentError(e.getMessage());
                         onCompleted();
+                        mView.sendCommentError(MyApplication.getContext().getString(R.string.internet_error));
                     }
 
                     @Override
-                    public void onNext(Object o) {
-                        mView.sendCommentSuccess();
+                    public void onNext(NoDataResult result) {
+                        if (result.getResult().equals("success")) {
+                            mView.sendCommentSuccess();
+                        } else {
+                            mView.sendCommentError(ErrorUtil.getErrorMessage(result.getErrorCode()));
+                        }
                     }
                 }));
     }

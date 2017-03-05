@@ -46,8 +46,8 @@
 
     <string name="edit_info">编辑信息</string>
     <string name="get_photo_error">选择图片失败</string>
-    <string name="login_name">用户名</string>
-    <string name="nick_name">昵称</string>
+    <string name="loginName">用户名</string>
+    <string name="nickName">昵称</string>
     <string name="sex">性别</string>
     <string name="save">保存</string>
     <string name="select_sex">选择性别</string>

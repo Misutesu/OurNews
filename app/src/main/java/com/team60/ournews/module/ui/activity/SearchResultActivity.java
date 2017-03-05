@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.team60.ournews.R;
 import com.team60.ournews.module.adapter.TypeFragmentRecyclerViewAdapter;
 import com.team60.ournews.common.Constants;
-import com.team60.ournews.module.model.New;
+import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.presenter.SearchResultPresenter;
 import com.team60.ournews.module.presenter.impl.SearchResultPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;

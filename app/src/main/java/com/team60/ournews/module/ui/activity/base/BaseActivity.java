@@ -12,7 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.team60.ournews.R;
-import com.team60.ournews.module.model.User;
+import com.team60.ournews.module.bean.User;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
 

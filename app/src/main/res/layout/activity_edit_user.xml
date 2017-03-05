@@ -79,7 +79,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
-                    android:text="@string/login_name"
+                    android:text="@string/loginName"
                     android:textColor="?attr/textColor1"
                     android:textSize="18sp" />
 
@@ -118,7 +118,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
-                    android:text="@string/nick_name"
+                    android:text="@string/nickName"
                     android:textColor="?attr/textColor1"
                     android:textSize="18sp" />
 

@@ -14,7 +14,7 @@ import android.widget.Button;
 import com.team60.ournews.R;
 import com.team60.ournews.event.ChangeViewPagerPageEvent;
 import com.team60.ournews.event.ShowSnackEvent;
-import com.team60.ournews.module.model.New;
+import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.presenter.HomePresenter;
 import com.team60.ournews.module.presenter.impl.HomePresenterImpl;
 import com.team60.ournews.module.ui.fragment.base.BaseFragment;

@@ -23,9 +23,9 @@ import android.widget.TextView;
 import com.team60.ournews.R;
 import com.team60.ournews.module.adapter.CommentActivityRecyclerViewAdapter;
 import com.team60.ournews.common.Constants;
-import com.team60.ournews.module.model.Comment;
-import com.team60.ournews.module.model.New;
-import com.team60.ournews.module.model.User;
+import com.team60.ournews.module.bean.Comment;
+import com.team60.ournews.module.bean.New;
+import com.team60.ournews.module.bean.User;
 import com.team60.ournews.module.presenter.CommentPresenter;
 import com.team60.ournews.module.presenter.impl.CommentPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
@@ -314,6 +314,7 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == WriteCommentActivity.CODE_SEND)
             if (resultCode == WriteCommentActivity.CODE_SEND) {
+                showSnackBar(getString(R.string.send_success));
                 startGetComments();
             }
     }

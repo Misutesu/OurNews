@@ -4,15 +4,12 @@ import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.connection.RetrofitUtil;
+import com.team60.ournews.module.model.NoDataResult;
 import com.team60.ournews.module.presenter.RegisterPresenter;
 import com.team60.ournews.module.view.RegisterView;
+import com.team60.ournews.util.ErrorUtil;
+import com.team60.ournews.util.MD5Util;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -31,33 +28,11 @@ public class RegisterPresenterImpl implements RegisterPresenter {
 
     @Override
     public void register(final String loginName, final String password) {
-        mView.addSubscription(Observable.create(new Observable.OnSubscribe<Integer>() {
-            @Override
-            public void call(Subscriber<? super Integer> subscriber) {
-                try {
-                    JSONObject jsonObject = new JSONObject(RetrofitUtil.newInstance().register(loginName, password).execute().body().string());
-                    if (jsonObject.getString("result").equals("success")) {
-                        subscriber.onNext(0);
-                    } else {
-                        int errorCode = jsonObject.getInt("error_code");
-                        if (errorCode == Constants.LOGINNAME_OR_PASSWORD_ERROR) {
-                            subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.login_name_or_password_error)));
-                        } else if (errorCode == Constants.LOGINNAME_EXISTS) {
-                            subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.login_name_is_same)));
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.server_error)));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    subscriber.onError(new Exception(MyApplication.getContext().getString(R.string.internet_error)));
-                } finally {
-                    subscriber.onCompleted();
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Integer>() {
+        long time = System.currentTimeMillis();
+        mView.addSubscription(RetrofitUtil.newInstance()
+                .register(loginName, password, time, MD5Util.getMD5(Constants.KEY + time))
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<NoDataResult>() {
                     @Override
                     public void onCompleted() {
                         mView.registerEnd();
@@ -67,12 +42,16 @@ public class RegisterPresenterImpl implements RegisterPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onCompleted();
-                        mView.registerError(e.getMessage());
+                        mView.registerError(MyApplication.getContext().getString(R.string.internet_error));
                     }
 
                     @Override
-                    public void onNext(Integer integer) {
-                        mView.registerSuccess();
+                    public void onNext(NoDataResult result) {
+                        if (result.getResult().equals("success")) {
+                            mView.registerSuccess();
+                        } else {
+                            mView.registerError(ErrorUtil.getErrorMessage(result.getErrorCode()));
+                        }
                     }
                 }));
     }

@@ -1,4 +1,4 @@
-package com.team60.ournews.module.model;
+package com.team60.ournews.module.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;

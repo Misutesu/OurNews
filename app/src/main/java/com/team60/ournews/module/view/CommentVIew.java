@@ -1,6 +1,6 @@
 package com.team60.ournews.module.view;
 
-import com.team60.ournews.module.model.Comment;
+import com.team60.ournews.module.bean.Comment;
 import com.team60.ournews.module.view.base.BaseView;
 
 import java.util.List;

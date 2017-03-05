@@ -33,7 +33,7 @@
                     android:id="@+id/activity_login_login_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/login_name"
+                    android:hint="@string/loginName"
                     android:imeOptions="actionNext"
                     android:inputType="number"
                     android:maxLength="11"
