@@ -492,6 +492,7 @@ public class NewActivity extends BaseActivity implements NewView {
                     @Override
                     public void onAnimationStart(Animator animation) {
 
+
                     }
 
                     @Override
