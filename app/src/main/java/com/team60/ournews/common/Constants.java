@@ -23,18 +23,4 @@ public class Constants {
     public static final String SHARED_PREFERENCES_HISTORY = "history_shared_preferences";
 
     public static final String SHARED_PREFERENCES_CODE = "code_shared_preferences";
-
-    public static final int LOGIN_NAME_OR_PASSWORD_ERROR = 1001;
-
-    public static final int LOGIN_NAME_EXISTS = 1002;
-
-    public static final int LOGIN_NAME_NO_EXISTS_OR_PASSWORD_ERROR = 2001;
-
-    public static final int CHANGE_INFO_ERROR = 3001;
-
-    public static final int USER_OR_NEW_NO_HAVE = 6001;
-
-    public static final int FILE_IS_NOT_PHOTO = 100001;
-
-    public static final int PHOTO_TOO_BIG = 100002;
 }

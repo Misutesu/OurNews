@@ -100,7 +100,7 @@ public class CommentResult {
              */
 
             private long id;
-            @SerializedName("create_time")
+            @SerializedName("nick_name")
             private String nickName;
             private int sex;
             private String photo;

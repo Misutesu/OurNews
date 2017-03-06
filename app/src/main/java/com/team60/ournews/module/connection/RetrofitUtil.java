@@ -13,8 +13,8 @@ public class RetrofitUtil {
      * http://192.168.0.104:8080/
      * http://112.74.52.72:8080/OurNews/
      */
-    public static final String BASE_URL = "http://192.168.31.57:8080/";
-//    public static final String BASE_URL = "http://112.74.52.72:8080/OurNews/";
+//    public static final String BASE_URL = "http://192.168.31.57:8080/";
+    public static final String BASE_URL = "http://112.74.52.72:8080/OurNews/";
 
     private static ApiStore apiStore;
 

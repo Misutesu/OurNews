@@ -23,7 +23,7 @@ public class ErrorUtil {
     // 密码长度不正确
     private static final int PASSWORD_LENGTH_ERROR = 1002;
     // 用户名已存在
-    private static final int LOGIN_NAME_IS_EXIST = 1002;
+    private static final int LOGIN_NAME_IS_EXIST = 1003;
     // 用户名不存在
     private static final int LOGIN_NAME_NO_EXIST = 2001;
     // 密码错误

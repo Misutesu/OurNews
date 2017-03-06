@@ -10,8 +10,8 @@
     <FrameLayout
         android:id="@+id/activity_new_anim_layout"
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
-        android:layout_height="320dp">
+        android:layout_height="320dp"
+        android:fitsSystemWindows="true">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/activity_new_anim_img"
@@ -157,7 +157,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:orientation="vertical"
-        android:translationY="51dp">
+        android:translationY="48dp">
 
         <View
             android:layout_width="match_parent"

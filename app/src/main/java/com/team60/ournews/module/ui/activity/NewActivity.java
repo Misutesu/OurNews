@@ -20,9 +20,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -35,10 +32,10 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
 import com.mistesu.frescoloader.OnDownloadListener;
 import com.team60.ournews.R;
-import com.team60.ournews.module.evaluator.BesselEvaluator;
-import com.team60.ournews.module.evaluator.SizeEvaluator;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.bean.User;
+import com.team60.ournews.module.evaluator.BesselEvaluator;
+import com.team60.ournews.module.evaluator.SizeEvaluator;
 import com.team60.ournews.module.presenter.NewPresenter;
 import com.team60.ournews.module.presenter.impl.NewPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
@@ -102,16 +99,9 @@ public class NewActivity extends BaseActivity implements NewView {
 
     private NewPresenter mPresenter;
 
-    private AlphaAnimation inAnimation = new AlphaAnimation(0, 1);
-    private AlphaAnimation outAnimation = new AlphaAnimation(1, 0);
-
-    private TranslateAnimation showAnimation;
-    private TranslateAnimation hideAnimation;
-
-    private boolean isHide = false;
-    private boolean isShow = false;
-
     private AlertDialog mLoginDialog;
+
+    private boolean isShow = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,50 +135,6 @@ public class NewActivity extends BaseActivity implements NewView {
     public void init(Bundle savedInstanceState) {
         mPresenter = new NewPresenterImpl(this);
 
-        inAnimation.setDuration(200);
-        outAnimation.setDuration(200);
-        showAnimation = new TranslateAnimation(0, 0, UiUtil.dip2px(48), 0);
-        showAnimation.setDuration(300);
-        showAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                isShow = true;
-                mBottomActionLayout.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                isShow = false;
-                isHide = false;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
-        hideAnimation = new TranslateAnimation(0, 0, 0, UiUtil.dip2px(48));
-        hideAnimation.setDuration(300);
-        hideAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                isHide = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                isHide = false;
-                isShow = false;
-                mBottomActionLayout.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
         mToolBar.setTitle("");
         setSupportActionBar(mToolBar);
         mCollapsingToolBarLayout.setExpandedTitleColor(Color.WHITE);
@@ -212,15 +158,9 @@ public class NewActivity extends BaseActivity implements NewView {
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 int maxSize = UiUtil.dip2px(320) - mToolBar.getHeight();
                 if (verticalOffset <= -maxSize / 3 * 2) {
-                    if (mTitleText.getVisibility() == View.GONE) {
-                        mTitleText.setVisibility(View.VISIBLE);
-                        mTitleText.startAnimation(inAnimation);
-                    }
+                    ObjectAnimator.ofFloat(mTitleText, "alpha", 0f, 1f).setDuration(300).start();
                 } else {
-                    if (mTitleText.getVisibility() == View.VISIBLE) {
-                        mTitleText.startAnimation(outAnimation);
-                        mTitleText.setVisibility(View.GONE);
-                    }
+                    ObjectAnimator.ofFloat(mTitleText, "alpha", 1f, 0f).setDuration(300).start();
                 }
             }
         });
@@ -251,13 +191,9 @@ public class NewActivity extends BaseActivity implements NewView {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (scrollY > oldScrollY) {
-                    if (mBottomActionLayout.getVisibility() == View.VISIBLE && !isHide) {
-                        mBottomLayout.startAnimation(hideAnimation);
-                    }
+                    showOrHideBottomLayout(false);
                 } else {
-                    if (mBottomActionLayout.getVisibility() == View.GONE && !isShow) {
-                        mBottomLayout.startAnimation(showAnimation);
-                    }
+                    showOrHideBottomLayout(true);
                 }
             }
         });
@@ -516,26 +452,86 @@ public class NewActivity extends BaseActivity implements NewView {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    private void showOrHideBottomLayout(boolean showOrHide) {
+        if (showOrHide) {
+            if (!isShow) {
+                float distance;
+                if (mBottomLayout.getTranslationY() == 0) {
+                    distance = UiUtil.dip2px(48);
+                } else {
+                    distance = mBottomLayout.getTranslationY();
+                }
+                ObjectAnimator animator = ObjectAnimator.ofFloat(mBottomLayout, "translationY", distance, 0);
+                animator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        isShow = true;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                animator.setDuration(300).start();
+            }
+        } else {
+            if (isShow) {
+                ObjectAnimator animator = ObjectAnimator.ofFloat(mBottomLayout, "translationY", 0, mBottomLayout.getTranslationY());
+                animator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        isShow = false;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                animator.setDuration(300).start();
+            }
+        }
+    }
+
     @Override
     public void getNewContentEnd() {
-        mProgressBar.startAnimation(outAnimation);
         mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void getNewContentSuccess(New n) throws JSONException {
-        mContentView.setContent(n.getContent());
-        mCommentNumberText.setText(String.valueOf(n.getCommentNum()));
-        mCommentNumberText.startAnimation(inAnimation);
         this.n.setContent(n.getContent());
         this.n.setCommentNum(n.getCommentNum());
+        mContentView.setContent(n.getContent());
+        mCommentNumberText.setText(String.valueOf(n.getCommentNum()));
+        ObjectAnimator.ofFloat(mCommentNumberText, "alpha", 0f, 1f).setDuration(300).start();
     }
 
     @Override
     public void getNewContentError(String message) {
         showSnackBar(message);
         mRetryBtn.setVisibility(View.VISIBLE);
-        mRetryBtn.startAnimation(inAnimation);
     }
 
     @Override
