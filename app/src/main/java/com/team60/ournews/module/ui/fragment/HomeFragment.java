@@ -2,6 +2,7 @@ package com.team60.ournews.module.ui.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -61,6 +62,9 @@ public class HomeFragment extends BaseFragment implements HomeView {
     private List<BrowseView> mBrowseViews;
     private SparseArray<List<New>> news;
 
+    private boolean isViewCreated;
+    private boolean isUIVisible;
+
     public HomeFragment() {
     }
 
@@ -69,17 +73,28 @@ public class HomeFragment extends BaseFragment implements HomeView {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         init();
         setListener();
-        mSwipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(true);
-                getHomeNews(-1);
-            }
-        });
 
-        return view;
+        isViewCreated = true;
+        getData();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            isUIVisible = true;
+            getData();
+        } else {
+            isUIVisible = false;
+        }
     }
 
     @Override
@@ -99,6 +114,9 @@ public class HomeFragment extends BaseFragment implements HomeView {
         mPresenter = new HomePresenterImpl(this);
 
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtil.getColor(getActivity().getTheme(), R.attr.textColor));
+
+        if (news == null)
+            news = new SparseArray<>();
 
         mBrowseViews = new ArrayList<>();
         mBrowseViews.add(mComicBrowseView);
@@ -181,9 +199,14 @@ public class HomeFragment extends BaseFragment implements HomeView {
         }
     }
 
+    private void getData() {
+        if (isUIVisible && isViewCreated && news.size() == 0) {
+            mSwipeRefreshLayout.setRefreshing(true);
+            getHomeNews(-1);
+        }
+    }
+
     private void getHomeNews(int type) {
-        if (news == null)
-            news = new SparseArray<>();
         if (type == -1) {
             mAdvertisementView.startRefresh();
             for (BrowseView browseView : mBrowseViews) {
@@ -207,6 +230,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void getNewsSuccess(SparseArray<List<New>> news, int type) {
+        this.news = news;
         if (type == -1) {
             for (int i = 0; i < 5; i++) {
                 mBrowseViews.get(i).setData(news.get(i + 1));

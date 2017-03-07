@@ -61,7 +61,7 @@ dependencies {
     compile 'com.jph.takephoto:takephoto_library:4.0.3'
     compile 'com.github.florent37:materialtextfield:1.0.5'
 
-    compile 'com.github.Misutesu:FrescoLoader:1.0.1'
+    compile 'com.github.Misutesu:FrescoLoader:1.0.2'
 
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.5.1'

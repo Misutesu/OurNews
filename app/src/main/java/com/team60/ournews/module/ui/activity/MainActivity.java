@@ -234,26 +234,6 @@ public class MainActivity extends BaseActivity implements MainView {
                 mLogoutDialog.show();
             }
         });
-
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position != 0) {
-                    TypeFragment typeFragment = (TypeFragment) fragments.get(position);
-                    typeFragment.getNewList();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
     }
 
     private void initViewPager() {
@@ -266,7 +246,7 @@ public class MainActivity extends BaseActivity implements MainView {
             fragments.add(TypeFragment.newInstance(i));
         }
 
-        mViewPager.setOffscreenPageLimit(fragments.size());
+//        mViewPager.setOffscreenPageLimit(fragments.size());
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {

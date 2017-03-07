@@ -21,15 +21,6 @@ public class ListNewResult {
     private int errorCode;
     private List<DataBean> data;
 
-    @Override
-    public String toString() {
-        return "ListNewResult{" +
-                "result='" + result + '\'' +
-                ", errorCode=" + errorCode +
-                ", data=" + data +
-                '}';
-    }
-
     public String getResult() {
         return result;
     }
@@ -72,18 +63,6 @@ public class ListNewResult {
         @SerializedName("create_time")
         private String createTime;
         private int type;
-
-        @Override
-        public String toString() {
-            return "DataBean{" +
-                    "id=" + id +
-                    ", title='" + title + '\'' +
-                    ", cover='" + cover + '\'' +
-                    ", abstractContent='" + abstractContent + '\'' +
-                    ", createTime='" + createTime + '\'' +
-                    ", type=" + type +
-                    '}';
-        }
 
         public long getId() {
             return id;

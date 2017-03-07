@@ -71,8 +71,7 @@ public class MyUtil {
     }
 
     public static String getPhotoUrl(@NonNull String photoName) {
-        return new StringBuilder().append(RetrofitUtil.BASE_URL)
-                .append("downloadImage?name=").append(photoName).toString();
+        return RetrofitUtil.BASE_URL + "downloadImage?name=" + photoName;
     }
 
     public static void savePhoto(final String photoUrl, final DownListener downListener) {
@@ -107,13 +106,13 @@ public class MyUtil {
                         e.printStackTrace();
                         subscriber.onError(e);
                     } finally {
-                        if(inputStream!=null)
+                        if (inputStream != null)
                             try {
                                 inputStream.close();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                        if(fileOutputStream!=null)
+                        if (fileOutputStream != null)
                             try {
                                 fileOutputStream.close();
                             } catch (IOException e) {

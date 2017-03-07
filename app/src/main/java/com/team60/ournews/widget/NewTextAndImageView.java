@@ -115,21 +115,19 @@ public class NewTextAndImageView extends LinearLayout {
                             .resize(imgWidth, imgHeight)
                             .setOnDownloadListener(new OnDownloadListener() {
                                 @Override
-                                public void onDownloadSuccess() {
-                                    simpleDraweeView.setOnClickListener(new OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            if (onActionListener != null)
-                                                onActionListener.onPhotoLoadEnd(simpleDraweeView, name);
-                                        }
-                                    });
+                                public void onDownloadEnd(boolean success) {
+                                    if (success) {
+                                        simpleDraweeView.setOnClickListener(new OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if (onActionListener != null)
+                                                    onActionListener.onPhotoLoadEnd(simpleDraweeView, name);
+                                            }
+                                        });
+                                    }
                                 }
-
-                                @Override
-                                public void onDownloadFail() {
-
-                                }
-                            }).into(simpleDraweeView);
+                            })
+                            .into(simpleDraweeView);
                 }
             } else {
                 TextView textView = new TextView(context);

@@ -15,9 +15,9 @@ import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 
 import com.team60.ournews.R;
-import com.team60.ournews.module.adapter.TypeFragmentRecyclerViewAdapter;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.event.ShowSnackEvent;
+import com.team60.ournews.module.adapter.TypeFragmentRecyclerViewAdapter;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.presenter.TypePresenter;
 import com.team60.ournews.module.presenter.impl.TypePresenterImpl;
@@ -51,10 +51,11 @@ public class TypeFragment extends BaseFragment implements TypeView {
     private TypeFragmentRecyclerViewAdapter mAdapter;
     private List<New> news;
 
-    private boolean isCreated = false;
-    private boolean isGet = false;
     private boolean isLoad = false;
     private boolean hasMore = true;
+
+    private boolean isViewCreated;
+    private boolean isUIVisible;
 
     private int type;
     private int page = 1;
@@ -85,15 +86,29 @@ public class TypeFragment extends BaseFragment implements TypeView {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_type, container, false);
         ButterKnife.bind(this, view);
-        init();
-        setListener();
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        isCreated = true;
+        init();
+        setListener();
+
+        isViewCreated = true;
+        refreshNewList();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        isUIVisible = true;
+        if (isVisibleToUser) {
+            isUIVisible = true;
+            refreshNewList();
+        } else {
+            isUIVisible = false;
+        }
     }
 
     @Override
@@ -105,9 +120,8 @@ public class TypeFragment extends BaseFragment implements TypeView {
 
         mPresenter = new TypePresenterImpl(this);
 
-        if (news == null) news = new ArrayList<>();
-        else news.clear();
-
+        if (news == null)
+            news = new ArrayList<>();
         mAdapter = new TypeFragmentRecyclerViewAdapter(getContext(), news);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -149,11 +163,6 @@ public class TypeFragment extends BaseFragment implements TypeView {
         });
     }
 
-    public void getNewList() {
-        if (!isGet && isCreated)
-            refreshNewList();
-    }
-
     private void startLoadMore() {
         isLoad = true;
         mAdapter.setLoadMore(true);
@@ -161,15 +170,16 @@ public class TypeFragment extends BaseFragment implements TypeView {
     }
 
     private void refreshNewList() {
-        isLoad = true;
-        mSwipeRefresh.setRefreshing(true);
-        mPresenter.getNewList(type, page, sort);
+        if (isViewCreated && isUIVisible && news.size() == 0) {
+            isLoad = true;
+            mSwipeRefresh.setRefreshing(true);
+            mPresenter.getNewList(type, page, sort);
+        }
     }
 
     @Override
     public void getNewListEnd() {
         isLoad = false;
-        if (!isGet) isGet = true;
         if (mSwipeRefresh.isRefreshing())
             mSwipeRefresh.setRefreshing(false);
         mAdapter.setLoadMore(false);

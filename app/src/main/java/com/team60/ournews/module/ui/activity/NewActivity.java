@@ -18,6 +18,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -103,6 +104,8 @@ public class NewActivity extends BaseActivity implements NewView {
 
     private boolean isShow = true;
 
+    private boolean isAnimEnd = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +131,13 @@ public class NewActivity extends BaseActivity implements NewView {
 
     @Override
     public void onBackPressed() {
-        showFinishAnim();
+        if (isAnimEnd)
+            showFinishAnim();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return !isAnimEnd||super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -251,20 +260,19 @@ public class NewActivity extends BaseActivity implements NewView {
         FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover()))
                 .setOnDownloadListener(new OnDownloadListener() {
                     @Override
-                    public void onDownloadSuccess() {
-                        mAnimLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                            @Override
-                            public boolean onPreDraw() {
-                                mAnimLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                                showStartAnim();
-                                return true;
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onDownloadFail() {
-                        getShowOrHideAnimSet(true).start();
+                    public void onDownloadEnd(boolean success) {
+                        if (success) {
+                            mAnimLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                                @Override
+                                public boolean onPreDraw() {
+                                    mAnimLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                                    showStartAnim();
+                                    return true;
+                                }
+                            });
+                        } else {
+                            getShowOrHideAnimSet(true).start();
+                        }
                     }
                 })
                 .into(mAnimImg);
@@ -334,6 +342,7 @@ public class NewActivity extends BaseActivity implements NewView {
     }
 
     private void showFinishAnim() {
+        isAnimEnd = false;
         if (mStartValues != null) {
             int startWidth = mAnimLayout.getWidth();
             int startHeight = mAnimLayout.getHeight();
@@ -436,6 +445,27 @@ public class NewActivity extends BaseActivity implements NewView {
                 showSet.play(ObjectAnimator.ofFloat(mNewLayout, "alpha", 1f, 0f));
             }
         }
+        showSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isAnimEnd = true;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
         showSet.setDuration(300);
         return showSet;
     }
@@ -455,6 +485,7 @@ public class NewActivity extends BaseActivity implements NewView {
     private void showOrHideBottomLayout(boolean showOrHide) {
         if (showOrHide) {
             if (!isShow) {
+                isShow = true;
                 float distance;
                 if (mBottomLayout.getTranslationY() == 0) {
                     distance = UiUtil.dip2px(48);
@@ -462,54 +493,12 @@ public class NewActivity extends BaseActivity implements NewView {
                     distance = mBottomLayout.getTranslationY();
                 }
                 ObjectAnimator animator = ObjectAnimator.ofFloat(mBottomLayout, "translationY", distance, 0);
-                animator.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        isShow = true;
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
                 animator.setDuration(300).start();
             }
         } else {
             if (isShow) {
-                ObjectAnimator animator = ObjectAnimator.ofFloat(mBottomLayout, "translationY", 0, mBottomLayout.getTranslationY());
-                animator.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        isShow = false;
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
+                isShow = true;
+                ObjectAnimator animator = ObjectAnimator.ofFloat(mBottomLayout, "translationY", 0, UiUtil.dip2px(48));
                 animator.setDuration(300).start();
             }
         }

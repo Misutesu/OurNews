@@ -1,7 +1,5 @@
 package com.team60.ournews.module.presenter.impl;
 
-import android.util.Log;
-
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
@@ -52,7 +50,6 @@ public class TypePresenterImpl implements TypePresenter {
                     @Override
                     public void onNext(ListNewResult result) {
                         if (result.getResult().equals("success")) {
-                            Log.d("TAG", result.toString());
                             List<New> news = new ArrayList<>();
                             for (int i = 0; i < result.getData().size(); i++) {
                                 ListNewResult.DataBean bean = result.getData().get(i);
