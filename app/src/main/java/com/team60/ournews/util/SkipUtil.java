@@ -36,8 +36,10 @@ public class SkipUtil {
         if (title != null)
             intent.putExtra(PhotoActivity.TITLE_VALUE, title);
         intent.putExtra(PhotoActivity.PHOTO_NAME_VALUE, photoName);
+        intent.putExtra(VIEW_INFO, captureValues(view));
 
         activity.startActivity(intent);
+        activity.overridePendingTransition(0, 0);
     }
 
     public static void startNewActivity(Activity activity, New n, View view) {

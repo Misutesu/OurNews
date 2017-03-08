@@ -1,5 +1,6 @@
 package com.team60.ournews.module.ui.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.transition.Transition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -71,7 +74,42 @@ public class SearchResultActivity extends BaseActivity implements SearchResultVi
         ButterKnife.bind(this);
         init(savedInstanceState);
         setListener();
-        mPresenter.searchNews(searchStr, page, sort);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Explode explodeIn = new Explode();
+            explodeIn.setDuration(400);
+            explodeIn.addListener(new Transition.TransitionListener() {
+                @Override
+                public void onTransitionStart(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    mPresenter.searchNews(searchStr, page, sort);
+                }
+
+                @Override
+                public void onTransitionCancel(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionPause(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionResume(Transition transition) {
+
+                }
+            });
+            getWindow().setEnterTransition(explodeIn);
+
+            Explode explodeOut = new Explode();
+            explodeOut.setDuration(400);
+            getWindow().setExitTransition(explodeOut);
+        }
     }
 
     @Override
@@ -159,6 +197,7 @@ public class SearchResultActivity extends BaseActivity implements SearchResultVi
                 this.news.addAll(news);
 //                mAdapter.notifyItemRangeInserted(0, this.news.size());
                 mAdapter.notifyDataSetChanged();
+                ObjectAnimator.ofFloat(mRecyclerView, "alpha", 0f, 1f).setDuration(250).start();
             }
         } else {
             if (news.size() == 0) {

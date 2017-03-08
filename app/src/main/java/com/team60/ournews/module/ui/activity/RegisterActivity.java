@@ -68,7 +68,7 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
     public void init(Bundle savedInstanceState) {
         mPresenter = new RegisterPresenterImpl(this);
 
-        mToolBar.setTitle(getString(R.string.login));
+        mToolBar.setTitle(getString(R.string.register));
         setSupportActionBar(mToolBar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -81,6 +81,14 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
 
     @Override
     public void setListener() {
+        mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyUtil.closeKeyBord(mLoginNameText);
+                finish();
+            }
+        });
+
         mPasswordText2.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {

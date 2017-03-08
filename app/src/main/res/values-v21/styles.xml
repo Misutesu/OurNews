@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<style name="BlueTheme" parent="Theme.AppCompat.DayNight.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/colorPrimaryBlue</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryBlue</item>-->
+        <!--<item name="colorAccent">@color/colorPrimaryBlue</item>-->
+        <!--<item name="android:windowBackground">@color/day_windows_background</item>-->
+        <!--<item name="windowsBackgroundColor">@color/day_windows_background</item>-->
+        <!--<item name="itemBackgroundColor">@color/white</item>-->
+        <!--<item name="iconColor">@color/colorPrimaryBlue</item>-->
+        <!--<item name="textColor">@color/colorPrimaryBlue</item>-->
+        <!--<item name="textColor1">@color/black_1</item>-->
+        <!--<item name="textColor2">@color/black_2</item>-->
+        <!--<item name="textColor3">@color/gray_2</item>-->
+        <!--<item name="viewColor">@color/gray_1</item>-->
+        <!--&lt;!&ndash;<item name="android:windowContentTransitions">true</item>&ndash;&gt;-->
+    <!--</style>-->
+
+    <!--<style name="BlueBlackTheme" parent="Theme.AppCompat.DayNight.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/colorPrimaryBlueBlack</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryBlueBlack</item>-->
+        <!--<item name="colorAccent">@color/colorPrimaryBlueBlack</item>-->
+        <!--<item name="android:windowBackground">@color/day_windows_background</item>-->
+        <!--<item name="windowsBackgroundColor">@color/day_windows_background</item>-->
+        <!--<item name="itemBackgroundColor">@color/white</item>-->
+        <!--<item name="iconColor">@color/colorPrimaryBlueBlack</item>-->
+        <!--<item name="textColor">@color/colorPrimaryBlueBlack</item>-->
+        <!--<item name="textColor1">@color/black</item>-->
+        <!--<item name="textColor2">@color/gray_1</item>-->
+        <!--<item name="viewColor">@color/gray</item>-->
+        <!--<item name="android:windowContentTransitions">true</item>-->
+    <!--</style>-->
+
+    <!--<style name="GreenTheme" parent="Theme.AppCompat.DayNight.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/colorPrimaryGreen</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryGreen</item>-->
+        <!--<item name="colorAccent">@color/colorPrimaryGreen</item>-->
+        <!--<item name="android:windowBackground">@color/day_windows_background</item>-->
+        <!--<item name="windowsBackgroundColor">@color/day_windows_background</item>-->
+        <!--<item name="itemBackgroundColor">@color/white</item>-->
+        <!--<item name="iconColor">@color/colorPrimaryGreen</item>-->
+        <!--<item name="textColor">@color/colorPrimaryGreen</item>-->
+        <!--<item name="textColor1">@color/black_1</item>-->
+        <!--<item name="textColor2">@color/black_2</item>-->
+        <!--<item name="textColor3">@color/gray_2</item>-->
+        <!--<item name="viewColor">@color/gray_1</item>-->
+        <!--<item name="android:windowContentTransitions">true</item>-->
+    <!--</style>-->
+
+    <!--<style name="GreenBlackTheme" parent="Theme.AppCompat.DayNight.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/colorPrimaryGreenBlack</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryGreenBlack</item>-->
+        <!--<item name="colorAccent">@color/colorPrimaryGreenBlack</item>-->
+        <!--<item name="android:windowBackground">@color/day_windows_background</item>-->
+        <!--<item name="windowsBackgroundColor">@color/day_windows_background</item>-->
+        <!--<item name="itemBackgroundColor">@color/white</item>-->
+        <!--<item name="iconColor">@color/colorPrimaryGreenBlack</item>-->
+        <!--<item name="textColor">@color/colorPrimaryGreenBlack</item>-->
+        <!--<item name="textColor1">@color/black_1</item>-->
+        <!--<item name="textColor2">@color/black_2</item>-->
+        <!--<item name="textColor3">@color/gray_2</item>-->
+        <!--<item name="viewColor">@color/gray_1</item>-->
+        <!--<item name="android:windowContentTransitions">true</item>-->
+    <!--</style>-->
+
+    <!--<style name="YellowTheme" parent="Theme.AppCompat.DayNight.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/colorPrimaryYellow</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryYellow</item>-->
+        <!--<item name="colorAccent">@color/colorPrimaryYellow</item>-->
+        <!--<item name="android:windowBackground">@color/day_windows_background</item>-->
+        <!--<item name="windowsBackgroundColor">@color/day_windows_background</item>-->
+        <!--<item name="itemBackgroundColor">@color/white</item>-->
+        <!--<item name="iconColor">@color/colorPrimaryYellow</item>-->
+        <!--<item name="textColor">@color/colorPrimaryBlue</item>-->
+        <!--<item name="textColor1">@color/black_1</item>-->
+        <!--<item name="textColor2">@color/black_2</item>-->
+        <!--<item name="textColor3">@color/gray_2</item>-->
+        <!--<item name="viewColor">@color/gray_1</item>-->
+        <!--<item name="android:windowContentTransitions">true</item>-->
+    <!--</style>-->
+
+    <!--<style name="RedTheme" parent="Theme.AppCompat.DayNight.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/colorPrimaryRed</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryRed</item>-->
+        <!--<item name="colorAccent">@color/colorPrimaryRed</item>-->
+        <!--<item name="android:windowBackground">@color/day_windows_background</item>-->
+        <!--<item name="windowsBackgroundColor">@color/day_windows_background</item>-->
+        <!--<item name="itemBackgroundColor">@color/white</item>-->
+        <!--<item name="iconColor">@color/colorPrimaryRed</item>-->
+        <!--<item name="textColor">@color/colorPrimaryRed</item>-->
+        <!--<item name="textColor1">@color/black_1</item>-->
+        <!--<item name="textColor2">@color/black_2</item>-->
+        <!--<item name="textColor3">@color/gray_2</item>-->
+        <!--<item name="viewColor">@color/gray_1</item>-->
+        <!--<item name="android:windowContentTransitions">true</item>-->
+    <!--</style>-->
+
+    <!--<style name="PinkTheme" parent="Theme.AppCompat.DayNight.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/colorPrimaryPink</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryPink</item>-->
+        <!--<item name="colorAccent">@color/colorPrimaryPink</item>-->
+        <!--<item name="android:windowBackground">@color/day_windows_background</item>-->
+        <!--<item name="windowsBackgroundColor">@color/day_windows_background</item>-->
+        <!--<item name="itemBackgroundColor">@color/white</item>-->
+        <!--<item name="iconColor">@color/colorPrimaryPink</item>-->
+        <!--<item name="textColor">@color/colorPrimaryPink</item>-->
+        <!--<item name="textColor1">@color/black_1</item>-->
+        <!--<item name="textColor2">@color/gray_2</item>-->
+        <!--<item name="viewColor">@color/gray_1</item>-->
+        <!--<item name="android:windowContentTransitions">true</item>-->
+    <!--</style>-->
+
+    <!--<style name="BrownTheme" parent="Theme.AppCompat.DayNight.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/colorPrimaryBrown</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryBrown</item>-->
+        <!--<item name="colorAccent">@color/colorPrimaryBrown</item>-->
+        <!--<item name="android:windowBackground">@color/day_windows_background</item>-->
+        <!--<item name="windowsBackgroundColor">@color/day_windows_background</item>-->
+        <!--<item name="itemBackgroundColor">@color/white</item>-->
+        <!--<item name="iconColor">@color/colorPrimaryBrown</item>-->
+        <!--<item name="textColor">@color/colorPrimaryBrown</item>-->
+        <!--<item name="textColor1">@color/black_1</item>-->
+        <!--<item name="textColor2">@color/black_2</item>-->
+        <!--<item name="textColor3">@color/gray_2</item>-->
+        <!--<item name="viewColor">@color/gray_1</item>-->
+        <!--<item name="android:windowContentTransitions">true</item>-->
+    <!--</style>-->
+
+    <!--<style name="BlackTheme" parent="Theme.AppCompat.DayNight.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/black_1</item>-->
+        <!--<item name="colorPrimaryDark">@color/black_1</item>-->
+        <!--<item name="colorAccent">@color/black_1</item>-->
+        <!--<item name="android:windowBackground">@color/day_windows_background</item>-->
+        <!--<item name="windowsBackgroundColor">@color/day_windows_background</item>-->
+        <!--<item name="itemBackgroundColor">@color/white</item>-->
+        <!--<item name="iconColor">@color/black_1</item>-->
+        <!--<item name="textColor">@color/black_1</item>-->
+        <!--<item name="textColor1">@color/black_1</item>-->
+        <!--<item name="textColor2">@color/black_2</item>-->
+        <!--<item name="textColor3">@color/gray_2</item>-->
+        <!--<item name="viewColor">@color/gray_1</item>-->
+        <!--<item name="android:windowContentTransitions">true</item>-->
+    <!--</style>-->
+
+    <!--<style name="NightTheme" parent="Theme.AppCompat.DayNight.NoActionBar">-->
+        <!--<item name="colorPrimary">@color/night_windows_background</item>-->
+        <!--<item name="colorPrimaryDark">@color/night_windows_background</item>-->
+        <!--<item name="colorAccent">@color/night_item_background</item>-->
+        <!--<item name="android:windowBackground">@color/night_windows_background</item>-->
+        <!--<item name="windowsBackgroundColor">@color/night_windows_background</item>-->
+        <!--<item name="itemBackgroundColor">@color/night_item_background</item>-->
+        <!--<item name="iconColor">@color/day_windows_background</item>-->
+        <!--<item name="textColor">@color/day_windows_background</item>-->
+        <!--<item name="textColor1">@color/white</item>-->
+        <!--<item name="textColor2">@color/gray_1</item>-->
+        <!--<item name="textColor3">@color/gray_1</item>-->
+        <!--<item name="viewColor">@color/gray_4</item>-->
+        <!--<item name="android:windowContentTransitions">true</item>-->
+    <!--</style>-->
+</resources>

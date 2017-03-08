@@ -84,6 +84,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MyUtil.closeKeyBord(mLoginNameText);
                 finish();
             }
         });

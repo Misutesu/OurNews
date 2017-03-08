@@ -5,7 +5,6 @@ import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -44,8 +43,6 @@ public class BrowseView extends LinearLayout {
     private List<SimpleDraweeView> mCoverImages;
     private List<TextView> mTitleTexts;
 
-    private AlphaAnimation inAnimation = new AlphaAnimation(0, 1);
-    private AlphaAnimation outAnimation = new AlphaAnimation(1, 0);
     private RotateAnimation rotateAnimation = new RotateAnimation(0, 3600
             , Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 
@@ -121,9 +118,6 @@ public class BrowseView extends LinearLayout {
         setOrientation(VERTICAL);
 
         this.context = context;
-
-        inAnimation.setDuration(200);
-        outAnimation.setDuration(200);
         rotateAnimation.setDuration(5000);
         rotateAnimation.setRepeatMode(Animation.RESTART);
         rotateAnimation.setRepeatCount(Animation.INFINITE);
@@ -199,12 +193,6 @@ public class BrowseView extends LinearLayout {
                     }
                 }
             });
-            startAnimation(mCardViews.get(i));
         }
-    }
-
-    private void startAnimation(View view) {
-        view.startAnimation(outAnimation);
-        view.startAnimation(inAnimation);
     }
 }

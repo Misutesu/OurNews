@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -40,7 +41,7 @@ public class NewTextAndImageView extends LinearLayout {
     private OnActionListener onActionListener;
 
     public interface OnActionListener {
-        void onPhotoLoadEnd(View view, String photoName);
+        void onPhotoLoadEnd(View view, String photoName, float touchX, float touchY);
     }
 
     public NewTextAndImageView(Context context) {
@@ -117,11 +118,14 @@ public class NewTextAndImageView extends LinearLayout {
                                 @Override
                                 public void onDownloadEnd(boolean success) {
                                     if (success) {
-                                        simpleDraweeView.setOnClickListener(new OnClickListener() {
+                                        simpleDraweeView.setOnTouchListener(new OnTouchListener() {
                                             @Override
-                                            public void onClick(View v) {
-                                                if (onActionListener != null)
-                                                    onActionListener.onPhotoLoadEnd(simpleDraweeView, name);
+                                            public boolean onTouch(View v, MotionEvent event) {
+                                                if (event.getAction() == MotionEvent.ACTION_UP) {
+                                                    if (onActionListener != null)
+                                                        onActionListener.onPhotoLoadEnd(simpleDraweeView, name, event.getX(), event.getY());
+                                                }
+                                                return true;
                                             }
                                         });
                                     }

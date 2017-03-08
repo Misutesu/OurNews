@@ -1,9 +1,13 @@
 package com.team60.ournews.module.ui.activity;
 
+import android.animation.Animator;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -11,6 +15,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -19,8 +24,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.team60.ournews.R;
-import com.team60.ournews.module.adapter.SearchActivityRecyclerViewAdapter;
 import com.team60.ournews.common.Constants;
+import com.team60.ournews.module.adapter.SearchActivityRecyclerViewAdapter;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.UiUtil;
@@ -51,6 +56,8 @@ public class SearchActivity extends BaseActivity {
     RecyclerView mRecyclerView;
     @BindView(R.id.activity_search_layout)
     LinearLayout mLayout;
+    @BindView(R.id.activity_search_card_view)
+    CardView mCardView;
 
     private List<String> histories;
     private SearchActivityRecyclerViewAdapter mAdapter;
@@ -66,6 +73,13 @@ public class SearchActivity extends BaseActivity {
         ButterKnife.bind(this);
         init(savedInstanceState);
         setListener();
+        getHistories();
+        showStartOrFinishAnim(true);
+    }
+
+    @Override
+    public void onBackPressed() {
+        showStartOrFinishAnim(false);
     }
 
     @Override
@@ -77,7 +91,16 @@ public class SearchActivity extends BaseActivity {
 
         if (histories == null)
             histories = new ArrayList<>();
+        else
+            histories.clear();
 
+        mAdapter = new SearchActivityRecyclerViewAdapter(this, histories);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void getHistories() {
         String historiesStr = sharedPreferences.getString("histories", null);
         if (!TextUtils.isEmpty(historiesStr)) {
             try {
@@ -90,12 +113,8 @@ public class SearchActivity extends BaseActivity {
             }
         }
 
-        mAdapter = new SearchActivityRecyclerViewAdapter(this, histories);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setAdapter(mAdapter);
-
         if (histories.size() != 0) {
+            mAdapter.notifyDataSetChanged();
             mRecyclerView.setVisibility(View.VISIBLE);
         }
     }
@@ -105,14 +124,14 @@ public class SearchActivity extends BaseActivity {
         mLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                showStartOrFinishAnim(false);
             }
         });
 
         mBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                showStartOrFinishAnim(false);
             }
         });
 
@@ -227,10 +246,97 @@ public class SearchActivity extends BaseActivity {
                     e.printStackTrace();
                 }
             }
+
+            MyUtil.closeKeyBord(mSearchEdit);
             Intent intent = new Intent(SearchActivity.this, SearchResultActivity.class);
             intent.putExtra("searchText", searchText);
-            startActivity(intent);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(SearchActivity.this).toBundle());
+            } else {
+                startActivity(intent);
+            }
+
             finish();
+        }
+    }
+
+    private void showStartOrFinishAnim(boolean startOrFinish) {
+        if (startOrFinish) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mCardView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                        mCardView.removeOnLayoutChangeListener(this);
+                        int cx = mCardView.getRight();
+                        int cy = mCardView.getTop();
+                        int finalRadius = Math.max(mCardView.getWidth(), mCardView.getHeight());
+                        Animator anim = ViewAnimationUtils.createCircularReveal(mCardView, cx, cy, 0, finalRadius);
+                        anim.addListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                mCardView.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                MyUtil.openKeyBord(mSearchEdit);
+                                mSearchEdit.requestFocus();
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+
+                            }
+                        });
+                        anim.start();
+                    }
+                });
+            } else {
+                mCardView.setVisibility(View.VISIBLE);
+                MyUtil.openKeyBord(mSearchEdit);
+                mSearchEdit.requestFocus();
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                int cx = mCardView.getRight();
+                int cy = mCardView.getTop();
+                int finalRadius = Math.max(mCardView.getWidth(), mCardView.getHeight());
+                Animator anim = ViewAnimationUtils.createCircularReveal(mCardView, cx, cy, finalRadius, 0);
+                anim.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mCardView.setVisibility(View.INVISIBLE);
+                        MyUtil.closeKeyBord(mSearchEdit);
+                        finish();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                anim.start();
+            } else {
+                MyUtil.closeKeyBord(mSearchEdit);
+                finish();
+            }
         }
     }
 }

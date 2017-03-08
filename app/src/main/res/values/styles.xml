@@ -176,6 +176,11 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <style name="AllTransparent" parent="BlueTheme">
+        <item name="android:windowBackground">@color/all_transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="WhiteStyle">
         <item name="colorAccent">@color/white</item>
     </style>

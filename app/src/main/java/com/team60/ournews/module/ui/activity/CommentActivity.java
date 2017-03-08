@@ -1,5 +1,6 @@
 package com.team60.ournews.module.ui.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -10,19 +11,19 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.transition.Transition;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.team60.ournews.R;
-import com.team60.ournews.module.adapter.CommentActivityRecyclerViewAdapter;
 import com.team60.ournews.common.Constants;
+import com.team60.ournews.module.adapter.CommentActivityRecyclerViewAdapter;
 import com.team60.ournews.module.bean.Comment;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.bean.User;
@@ -60,24 +61,19 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     @BindView(R.id.activity_comment_top_view)
     View mTopView;
 
-
     private List<Comment> comments;
     private CommentActivityRecyclerViewAdapter mAdapter;
 
     private CommentPresenter mPresenter;
 
-    private TranslateAnimation showAnimation;
-    private TranslateAnimation hideAnimation;
-
     private New n;
     private int page = 1;
     private int sort = 1;
 
-    private boolean isHide = false;
-    private boolean isShow = false;
-
     private boolean isLoad = false;
     private boolean hasMore = true;
+
+    private boolean isShow = true;
 
     private AlertDialog mLoginDialog;
 
@@ -85,10 +81,46 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
+
         ButterKnife.bind(this);
         init(savedInstanceState);
         setListener();
-        startGetComments();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Explode explodeIn = new Explode();
+            explodeIn.setDuration(400);
+            explodeIn.addListener(new Transition.TransitionListener() {
+                @Override
+                public void onTransitionStart(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    startGetComments();
+                }
+
+                @Override
+                public void onTransitionCancel(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionPause(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionResume(Transition transition) {
+
+                }
+            });
+            getWindow().setEnterTransition(explodeIn);
+
+            Explode explodeOut = new Explode();
+            explodeOut.setDuration(400);
+            getWindow().setExitTransition(explodeOut);
+        }
     }
 
     @Override
@@ -96,48 +128,6 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         mPresenter = new CommentPresenterImpl(this);
 
         n = getIntent().getParcelableExtra(New.class.getName());
-
-        showAnimation = new TranslateAnimation(0, 0, UiUtil.dip2px(48), 0);
-        showAnimation.setDuration(300);
-        showAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                isShow = true;
-                mBottomActionLayout.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                isShow = false;
-                isHide = false;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
-        hideAnimation = new TranslateAnimation(0, 0, 0, UiUtil.dip2px(48));
-        hideAnimation.setDuration(300);
-        hideAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                isHide = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                isHide = false;
-                isShow = false;
-                mBottomActionLayout.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             mTopView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtil.getStatusBarHeight()));
@@ -230,12 +220,25 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         isLoad = true;
         mAdapter.setLoadMore(true);
         mPresenter.getComments(n.getId(), page + 1, sort);
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mPresenter.getComments(n.getId(), page + 1, 1);
-//            }
-//        }, 300);
+    }
+
+    private void showOrHideBottomLayout(boolean showOrHide) {
+        if (showOrHide) {
+            if (!isShow) {
+                isShow = true;
+                float distance = mBottomLayout.getTranslationY();
+                ObjectAnimator.ofFloat(mBottomLayout, "translationY"
+                        , distance, 0)
+                        .setDuration(200).start();
+            }
+        } else {
+            if (isShow) {
+                isShow = false;
+                ObjectAnimator.ofFloat(mBottomLayout, "translationY"
+                        , mBottomLayout.getTranslationY(), UiUtil.dip2px(48))
+                        .setDuration(200).start();
+            }
+        }
     }
 
     @Override
@@ -340,14 +343,11 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
                     && (lastItem == totalItemCount - 1) && (dx > 0 || dy > 0)) {
                 startLoadMore();
             }
+
             if (dy > 0) {
-                if (mBottomActionLayout.getVisibility() == View.VISIBLE && !isHide) {
-                    mBottomLayout.startAnimation(hideAnimation);
-                }
+                showOrHideBottomLayout(false);
             } else if (dy < 0) {
-                if (mBottomActionLayout.getVisibility() == View.GONE && !isShow) {
-                    mBottomLayout.startAnimation(showAnimation);
-                }
+                showOrHideBottomLayout(true);
             }
         }
     }

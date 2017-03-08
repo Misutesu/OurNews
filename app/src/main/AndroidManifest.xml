@@ -28,7 +28,9 @@
         <activity android:name=".module.ui.activity.RegisterActivity"/>
         <activity android:name=".module.ui.activity.UserActivity"/>
         <activity android:name=".module.ui.activity.EditUserActivity"/>
-        <activity android:name=".module.ui.activity.PhotoActivity"/>
+        <activity
+            android:name=".module.ui.activity.PhotoActivity"
+            android:theme="@style/AllTransparent"/>
         <activity
             android:name=".module.ui.activity.InputActivity"
             android:theme="@style/Transparent"/>

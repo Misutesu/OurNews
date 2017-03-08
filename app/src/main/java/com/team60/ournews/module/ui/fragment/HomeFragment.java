@@ -1,6 +1,7 @@
 package com.team60.ournews.module.ui.fragment;
 
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -234,6 +235,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
         if (type == -1) {
             for (int i = 0; i < 5; i++) {
                 mBrowseViews.get(i).setData(news.get(i + 1));
+                ObjectAnimator.ofFloat(mBrowseViews.get(i), "alpha", 1f, 0f, 1f).setDuration(400).start();
             }
             mAdvertisementView.setData(news.get(6));
             if (mScrollLayout.getVisibility() == View.GONE)
@@ -242,6 +244,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
                 mRetryBtn.setVisibility(View.GONE);
         } else {
             mBrowseViews.get(type - 1).setData(news.get(type));
+            ObjectAnimator.ofFloat(mBrowseViews.get(type - 1), "alpha", 1f, 0f, 1f).setDuration(400).start();
         }
     }
 

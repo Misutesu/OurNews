@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
@@ -20,7 +22,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -62,8 +63,6 @@ public class NewActivity extends BaseActivity implements NewView {
     AppBarLayout mAppBarLayout;
     @BindView(R.id.activity_new_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
-    @BindView(R.id.activity_new_title_text)
-    TextView mTitleText;
     @BindView(R.id.activity_new_collapsing_tool_bar_layout)
     CollapsingToolbarLayout mCollapsingToolBarLayout;
     @BindView(R.id.activity_new_create_time_text)
@@ -86,14 +85,14 @@ public class NewActivity extends BaseActivity implements NewView {
     TextView mCommentNumberText;
     @BindView(R.id.activity_new_comment_layout)
     LinearLayout mCommentLayout;
-    @BindView(R.id.activity_new_content_layout)
-    LinearLayout mContentLayout;
     @BindView(R.id.activity_new_anim_layout)
     FrameLayout mAnimLayout;
     @BindView(R.id.activity_new_anim_img)
     SimpleDraweeView mAnimImg;
     @BindView(R.id.activity_new_new_layout)
     RelativeLayout mNewLayout;
+    @BindView(R.id.activity_new_float_action_btn)
+    FloatingActionButton mFloatActionBtn;
 
     private New n;
     private Bundle mStartValues;
@@ -102,9 +101,10 @@ public class NewActivity extends BaseActivity implements NewView {
 
     private AlertDialog mLoginDialog;
 
-    private boolean isShow = true;
-
+    private boolean isShowBottom = true;
     private boolean isAnimEnd = false;
+    private boolean isImgAnimEnd = false;
+    private boolean isLoadEnd = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,16 +128,17 @@ public class NewActivity extends BaseActivity implements NewView {
         }
     }
 
-
     @Override
     public void onBackPressed() {
-        if (isAnimEnd)
+        if (isAnimEnd) {
+            isAnimEnd = false;
             showFinishAnim();
+        }
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        return !isAnimEnd||super.dispatchTouchEvent(ev);
+        return !isAnimEnd || super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -151,6 +152,12 @@ public class NewActivity extends BaseActivity implements NewView {
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) mToolBar.getLayoutParams();
+            layoutParams.topMargin = UiUtil.getStatusBarHeight();
+            mToolBar.setLayoutParams(layoutParams);
+        }
     }
 
     @Override
@@ -162,22 +169,17 @@ public class NewActivity extends BaseActivity implements NewView {
             }
         });
 
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                int maxSize = UiUtil.dip2px(320) - mToolBar.getHeight();
-                if (verticalOffset <= -maxSize / 3 * 2) {
-                    ObjectAnimator.ofFloat(mTitleText, "alpha", 0f, 1f).setDuration(300).start();
-                } else {
-                    ObjectAnimator.ofFloat(mTitleText, "alpha", 1f, 0f).setDuration(300).start();
-                }
-            }
-        });
-
         mBackgroundImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SkipUtil.startPhotoActivity(NewActivity.this, null, n.getCover());
+                SkipUtil.startPhotoActivity(event.getX(), event.getY(), NewActivity.this, null, n.getCover());
+            }
+        });
+
+        mFloatActionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 
@@ -191,8 +193,8 @@ public class NewActivity extends BaseActivity implements NewView {
 
         mContentView.setOnActionListener(new NewTextAndImageView.OnActionListener() {
             @Override
-            public void onPhotoLoadEnd(View view, String photoName) {
-                SkipUtil.startPhotoActivity(NewActivity.this, null, photoName);
+            public void onPhotoLoadEnd(View view, String photoName, float touchX, float touchY) {
+                SkipUtil.startPhotoActivity(touchX, touchY, NewActivity.this, null, photoName);
             }
         });
 
@@ -244,7 +246,12 @@ public class NewActivity extends BaseActivity implements NewView {
                 if (!TextUtils.isEmpty(mCommentNumberText.getText().toString())) {
                     Intent intent = new Intent(NewActivity.this, CommentActivity.class);
                     intent.putExtra(New.class.getName(), n);
-                    startActivity(intent);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewActivity.this).toBundle());
+                    } else {
+                        startActivity(intent);
+                    }
                 }
             }
         });
@@ -252,7 +259,6 @@ public class NewActivity extends BaseActivity implements NewView {
 
     private void showNewInfo() {
         mCollapsingToolBarLayout.setTitle(n.getTitle());
-        mTitleText.setText(n.getTitle());
         mCreateTimeText.setText(n.getCreateTime());
         FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover()))
                 .into(mBackgroundImg);
@@ -262,14 +268,7 @@ public class NewActivity extends BaseActivity implements NewView {
                     @Override
                     public void onDownloadEnd(boolean success) {
                         if (success) {
-                            mAnimLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                                @Override
-                                public boolean onPreDraw() {
-                                    mAnimLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                                    showStartAnim();
-                                    return true;
-                                }
-                            });
+                            showStartAnim();
                         } else {
                             getShowOrHideAnimSet(true).start();
                         }
@@ -280,8 +279,8 @@ public class NewActivity extends BaseActivity implements NewView {
 
     private void showStartAnim() {
         if (mStartValues != null) {
-            int endWidth = mAnimLayout.getWidth();
-            int endHeight = mAnimLayout.getHeight();
+            int endWidth = UiUtil.getScreenWidth();
+            int endHeight = UiUtil.dip2px(240);
 
             float deltaX = mStartValues.getInt(SkipUtil.VIEW_X);
             float deltaY = mStartValues.getInt(SkipUtil.VIEW_Y);
@@ -331,10 +330,17 @@ public class NewActivity extends BaseActivity implements NewView {
 
             AnimatorSet imgSet = new AnimatorSet();
             imgSet.playTogether(widthAnimator, translationAnimator);
-            imgSet.setDuration(600);
+            imgSet.setDuration(400);
 
             AnimatorSet set = new AnimatorSet();
-            set.play(getShowOrHideAnimSet(true)).after(imgSet);
+            AnimatorSet.Builder builder = set.play(getShowOrHideAnimSet(true));
+
+            isImgAnimEnd = true;
+            AnimatorSet floatBtnAnim = showFloatBtn(true);
+            if (floatBtnAnim != null)
+                builder.with(floatBtnAnim);
+
+            builder.after(imgSet);
             set.start();
         } else {
             getShowOrHideAnimSet(true).start();
@@ -342,7 +348,6 @@ public class NewActivity extends BaseActivity implements NewView {
     }
 
     private void showFinishAnim() {
-        isAnimEnd = false;
         if (mStartValues != null) {
             int startWidth = mAnimLayout.getWidth();
             int startHeight = mAnimLayout.getHeight();
@@ -392,14 +397,14 @@ public class NewActivity extends BaseActivity implements NewView {
 
             AnimatorSet imgSet = new AnimatorSet();
             imgSet.playTogether(widthAnimator, translationAnimator);
-            imgSet.setDuration(600);
+            imgSet.setDuration(400);
 
             AnimatorSet set1 = new AnimatorSet();
             set1.play(getShowOrHideAnimSet(false)).with(imgSet);
 
             AnimatorSet set2 = new AnimatorSet();
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAnimLayout, "alpha", 1f, 0f);
-            objectAnimator.setDuration(200);
+            objectAnimator.setDuration(150);
             set2.play(objectAnimator).after(set1);
             set2.addListener(new Animator.AnimatorListener() {
                 @Override
@@ -435,15 +440,13 @@ public class NewActivity extends BaseActivity implements NewView {
             showSet.playTogether(ObjectAnimator.ofFloat(mNewLayout, "alpha", 0f, 1f)
                     , ObjectAnimator.ofFloat(mAppBarLayout, "alpha", 0f, 1f)
                     , ObjectAnimator.ofFloat(mNewLayout, "alpha", 0f, 1f)
-                    , ObjectAnimator.ofFloat(mBottomLayout, "translationY", mBottomLayout.getHeight(), 0f));
+                    , ObjectAnimator.ofFloat(mBottomLayout, "translationY", mBottomLayout.getTranslationY(), 0f));
         } else {
             mAppBarLayout.setAlpha(0f);
-            if (mBottomLayout.getHeight() != 0) {
-                showSet.playTogether(ObjectAnimator.ofFloat(mNewLayout, "alpha", 1f, 0f)
-                        , ObjectAnimator.ofFloat(mBottomLayout, "translationY", 0f, mBottomLayout.getHeight()));
-            } else {
-                showSet.play(ObjectAnimator.ofFloat(mNewLayout, "alpha", 1f, 0f));
-            }
+            showSet.playTogether(ObjectAnimator.ofFloat(mNewLayout, "alpha", 1f, 0f)
+                    , ObjectAnimator.ofFloat(mFloatActionBtn, "scaleX", mFloatActionBtn.getScaleX(), 0f)
+                    , ObjectAnimator.ofFloat(mFloatActionBtn, "scaleY", mFloatActionBtn.getScaleY(), 0f)
+                    , ObjectAnimator.ofFloat(mBottomLayout, "translationY", mBottomLayout.getTranslationY(), UiUtil.dip2px(48)));
         }
         showSet.addListener(new Animator.AnimatorListener() {
             @Override
@@ -466,7 +469,7 @@ public class NewActivity extends BaseActivity implements NewView {
 
             }
         });
-        showSet.setDuration(300);
+        showSet.setDuration(200);
         return showSet;
     }
 
@@ -484,24 +487,34 @@ public class NewActivity extends BaseActivity implements NewView {
 
     private void showOrHideBottomLayout(boolean showOrHide) {
         if (showOrHide) {
-            if (!isShow) {
-                isShow = true;
-                float distance;
-                if (mBottomLayout.getTranslationY() == 0) {
-                    distance = UiUtil.dip2px(48);
-                } else {
-                    distance = mBottomLayout.getTranslationY();
-                }
-                ObjectAnimator animator = ObjectAnimator.ofFloat(mBottomLayout, "translationY", distance, 0);
-                animator.setDuration(300).start();
+            if (!isShowBottom) {
+                isShowBottom = true;
+                ObjectAnimator.ofFloat(mBottomLayout, "translationY", mBottomLayout.getTranslationY(), 0)
+                        .setDuration(200).start();
             }
         } else {
-            if (isShow) {
-                isShow = true;
-                ObjectAnimator animator = ObjectAnimator.ofFloat(mBottomLayout, "translationY", 0, UiUtil.dip2px(48));
-                animator.setDuration(300).start();
+            if (isShowBottom) {
+                isShowBottom = false;
+                ObjectAnimator.ofFloat(mBottomLayout, "translationY", mBottomLayout.getTranslationY(), UiUtil.dip2px(48))
+                        .setDuration(200).start();
             }
         }
+    }
+
+    private AnimatorSet showFloatBtn(boolean isAnimEnd) {
+        if (!isImgAnimEnd || !isLoadEnd) {
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(
+                    ObjectAnimator.ofFloat(mFloatActionBtn, "scaleX", mFloatActionBtn.getScaleX(), 1f),
+                    ObjectAnimator.ofFloat(mFloatActionBtn, "scaleY", mFloatActionBtn.getScaleY(), 1f));
+            if (isAnimEnd) {
+                return set;
+            } else {
+                set.setDuration(250);
+                set.start();
+            }
+        }
+        return null;
     }
 
     @Override
@@ -511,6 +524,9 @@ public class NewActivity extends BaseActivity implements NewView {
 
     @Override
     public void getNewContentSuccess(New n) throws JSONException {
+        isLoadEnd = true;
+        showFloatBtn(false);
+
         this.n.setContent(n.getContent());
         this.n.setCommentNum(n.getCommentNum());
         mContentView.setContent(n.getContent());

@@ -1,33 +1,43 @@
 package com.team60.ournews.module.ui.activity;
 
 import android.Manifest;
+import android.animation.AnimatorSet;
+import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.PointF;
 import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
+import com.mistesu.frescoloader.FrescoLoader;
+import com.mistesu.frescoloader.OnDownloadListener;
 import com.team60.ournews.R;
 import com.team60.ournews.listener.DownListener;
+import com.team60.ournews.module.evaluator.BesselEvaluator;
+import com.team60.ournews.module.evaluator.SizeEvaluator;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.base.BaseView;
 import com.team60.ournews.util.MyUtil;
+import com.team60.ournews.util.SkipUtil;
 import com.team60.ournews.util.UiUtil;
 
 import butterknife.BindView;
@@ -40,9 +50,9 @@ public class PhotoActivity extends BaseActivity implements BaseView {
 
     public static final String TITLE_VALUE = "title";
     public static final String PHOTO_NAME_VALUE = "photo_name";
+    public static final String TOUCH_X = "touch_x";
+    public static final String TOUCH_Y = "touch_y";
 
-    @BindView(R.id.activity_photo_top_view)
-    View mTopView;
     @BindView(R.id.activity_photo_tool_bar)
     Toolbar mToolBar;
     @BindView(R.id.activity_photo_coordinator_layout)
@@ -53,30 +63,45 @@ public class PhotoActivity extends BaseActivity implements BaseView {
     ProgressBar mProgressBar;
     @BindView(R.id.activity_photo_retry_btn)
     Button mRetryBtn;
+    @BindView(R.id.activity_photo_anim_img)
+    SimpleDraweeView mAnimImg;
+    @BindView(R.id.activity_photo_anim_layout)
+    FrameLayout mAnimLayout;
 
     private String title;
     private String photoUrl;
 
     private boolean isLoadSuccess = false;
 
+    private Bundle mStartValues;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(R.color.all_transparent);
         setContentView(R.layout.activity_photo);
         ButterKnife.bind(this);
+
         hideNavigationBar();
+
         init(savedInstanceState);
         setListener();
+
         loadPhoto();
     }
 
     @Override
     public void init(Bundle savedInstanceState) {
-        title = getIntent().getStringExtra(TITLE_VALUE);
-        photoUrl = MyUtil.getPhotoUrl(getIntent().getStringExtra(PHOTO_NAME_VALUE));
+        Intent intent = getIntent();
+        mStartValues = intent.getBundleExtra(SkipUtil.VIEW_INFO);
+        title = intent.getStringExtra(TITLE_VALUE);
+        photoUrl = MyUtil.getPhotoUrl(intent.getStringExtra(PHOTO_NAME_VALUE));
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            mTopView.setLayoutParams(new AppBarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtil.getStatusBarHeight()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mToolBar.getLayoutParams();
+            layoutParams.topMargin = UiUtil.getStatusBarHeight();
+            mToolBar.setLayoutParams(layoutParams);
+        }
 
         if (title != null) mToolBar.setTitle(title);
         else mToolBar.setTitle("");
@@ -118,6 +143,13 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                 mPhotoView.update(imageInfo.getWidth(), imageInfo.getHeight());
                 mProgressBar.setVisibility(View.GONE);
                 isLoadSuccess = true;
+
+                Log.d("TAG", "width : " + imageInfo.getWidth());
+                Log.d("TAG", "height : " + imageInfo.getHeight());
+                Log.d("TAG", "1 width : " + mPhotoView.getWidth());
+                Log.d("TAG", "1 height : " + mPhotoView.getHeight());
+
+                startAnim(imageInfo.getWidth(), imageInfo.getHeight());
             }
 
             @Override
@@ -129,6 +161,108 @@ public class PhotoActivity extends BaseActivity implements BaseView {
         });
         mPhotoView.setController(controller.build());
     }
+
+    private void startAnim(final int endWidth, final int endHeight) {
+//        CoordinatorLayout.LayoutParams layoutParams
+//                = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mLayoutHeight);
+//        mAnimLayout.setLayoutParams(layoutParams);
+
+        FrescoLoader.load(photoUrl)
+                .setOnDownloadListener(new OnDownloadListener() {
+                    @Override
+                    public void onDownloadEnd(boolean b) {
+                        int mLayoutHeight = UiUtil.getScreenWidth() * endWidth / endHeight;
+
+                        if (mStartValues != null) {
+                            float deltaX = mStartValues.getInt(SkipUtil.VIEW_X);
+                            float deltaY = mStartValues.getInt(SkipUtil.VIEW_Y);
+
+                            PointF pointFEnd;
+
+                            Integer[] startSize
+                                    = {mStartValues.getInt(SkipUtil.VIEW_WIDTH), mStartValues.getInt(SkipUtil.VIEW_HEIGHT)};
+
+                            pointFEnd = new PointF(0, 0);
+
+                            Integer[] endSize = {UiUtil.getScreenWidth(), mLayoutHeight};
+
+                            ValueAnimator translationAnimator = ValueAnimator.ofObject(
+                                    new BesselEvaluator(new PointF(deltaX / 4 * 3, deltaY), new PointF(0, deltaY / 4)),
+                                    new PointF(deltaX, deltaY), pointFEnd);
+
+                            translationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                @Override
+                                public void onAnimationUpdate(ValueAnimator animation) {
+                                    PointF pointF = (PointF) animation.getAnimatedValue();
+                                    mAnimLayout.setTranslationX(pointF.x);
+                                    mAnimLayout.setTranslationY(pointF.y);
+                                }
+                            });
+
+                            ValueAnimator widthAnimator
+                                    = ValueAnimator.ofObject(new SizeEvaluator(), startSize, endSize);
+
+                            widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                @Override
+                                public void onAnimationUpdate(ValueAnimator animation) {
+                                    Integer[] size = (Integer[]) animation.getAnimatedValue();
+                                    CoordinatorLayout.LayoutParams layoutParams =
+                                            (CoordinatorLayout.LayoutParams) mAnimLayout.getLayoutParams();
+                                    layoutParams.width = size[0];
+                                    layoutParams.height = size[1];
+                                    mAnimLayout.setLayoutParams(layoutParams);
+                                }
+                            });
+
+                            AnimatorSet imgSet = new AnimatorSet();
+                            imgSet.playTogether(widthAnimator, translationAnimator);
+                            imgSet.setDuration(400);
+                            imgSet.start();
+                        }
+                    }
+                })
+                .into(mAnimImg);
+    }
+
+//    private void startAnim() {
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//            mCoordinatorLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+//                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//                @Override
+//                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+//                    mCoordinatorLayout.removeOnLayoutChangeListener(this);
+//                    float radius = (float) Math.hypot(mCoordinatorLayout.getHeight(), mCoordinatorLayout.getWidth());
+//                    Animator anim = ViewAnimationUtils.createCircularReveal(mCoordinatorLayout
+//                            , (int) touchX, (int) touchY, 0, radius);
+//                    anim.setDuration(1000);
+//                    anim.addListener(new Animator.AnimatorListener() {
+//                        @Override
+//                        public void onAnimationStart(Animator animation) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onAnimationEnd(Animator animation) {
+//                            loadPhoto();
+//                        }
+//
+//                        @Override
+//                        public void onAnimationCancel(Animator animation) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onAnimationRepeat(Animator animation) {
+//
+//                        }
+//                    });
+//                    anim.start();
+//                }
+//            });
+//        } else {
+//            loadPhoto();
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

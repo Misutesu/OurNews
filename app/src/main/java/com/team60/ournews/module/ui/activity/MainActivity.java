@@ -150,17 +150,6 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//        for (Fragment fragment : fragments) {
-//            if (fragment != null)
-//                fragmentTransaction.remove(fragment);
-//        }
-//        fragmentTransaction.commit();
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
@@ -246,7 +235,6 @@ public class MainActivity extends BaseActivity implements MainView {
             fragments.add(TypeFragment.newInstance(i));
         }
 
-//        mViewPager.setOffscreenPageLimit(fragments.size());
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {

@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_photo_coordinator_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/black_1"
-    tools:context="com.team60.ournews.module.ui.activity.PhotoActivity">
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:id="@+id/activity_photo_coordinator_layout"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:background="@color/black_1"
+                                                 tools:context="com.team60.ournews.module.ui.activity.PhotoActivity">
 
     <me.relex.photodraweeview.PhotoDraweeView
         android:id="@+id/activity_photo_photo_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center" />
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/activity_photo_anim_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/activity_photo_anim_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
 
     <ProgressBar
         android:id="@+id/activity_photo_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"/>
 
     <Button
         android:id="@+id/activity_photo_retry_btn"
@@ -30,22 +40,11 @@
         android:layout_marginRight="32dp"
         android:layout_marginStart="32dp"
         android:text="@string/load_error_click_retry"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/activity_photo_tool_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <View
-            android:id="@+id/activity_photo_top_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp" />
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/activity_photo_tool_bar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-    </LinearLayout>
+        android:layout_height="?android:actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 </android.support.design.widget.CoordinatorLayout>
