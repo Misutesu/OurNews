@@ -59,7 +59,7 @@
     <string name="is_saving">正在保存</string>
     <string name="save_success">保存信息成功</string>
 
-    <string name="load_error_click_retry">加载失败,点击重试</string>
+    <string name="load_photo_error">加载图片失败</string>
     <string name="save_img_to_phone">保存图片到本地</string>
     <string name="save_img_error">保存图片失败</string>
     <string name="save_img_success">保存图片成功,保存到OurNews目录下</string>

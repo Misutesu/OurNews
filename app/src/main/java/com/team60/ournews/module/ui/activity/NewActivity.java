@@ -415,7 +415,7 @@ public class NewActivity extends BaseActivity implements NewView {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     finish();
-                    NewActivity.this.overridePendingTransition(0, 0);
+                    overridePendingTransition(0, 0);
                 }
 
                 @Override
@@ -430,7 +430,7 @@ public class NewActivity extends BaseActivity implements NewView {
             });
             set2.start();
         } else {
-            getShowOrHideAnimSet(false).start();
+            finish();
         }
     }
 

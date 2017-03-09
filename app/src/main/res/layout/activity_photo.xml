@@ -10,12 +10,13 @@
         android:id="@+id/activity_photo_background"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleX="0.0001"
-        android:scaleY="0.0001"
         android:layout_gravity="center"
-        android:background="@drawable/circle_black"/>
+        android:background="@drawable/circle_black"
+        android:scaleX="0.0001"
+        android:scaleY="0.0001"/>
 
     <me.relex.photodraweeview.PhotoDraweeView
+        android:alpha="0"
         android:id="@+id/activity_photo_photo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
@@ -31,26 +32,8 @@
             android:layout_height="match_parent"/>
     </FrameLayout>
 
-    <ProgressBar
-        android:id="@+id/activity_photo_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
-
-    <Button
-        android:id="@+id/activity_photo_retry_btn"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginEnd="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginStart="32dp"
-        android:text="@string/load_error_click_retry"
-        android:visibility="gone"/>
-
     <android.support.v7.widget.Toolbar
+        android:alpha="0"
         android:id="@+id/activity_photo_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="?android:actionBarSize"

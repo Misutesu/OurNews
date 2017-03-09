@@ -29,6 +29,7 @@ public class SkipUtil {
         intent.putExtra(PhotoActivity.PHOTO_NAME_VALUE, photoName);
 
         activity.startActivity(intent);
+        activity.overridePendingTransition(0, 0);
     }
 
     public static void startPhotoActivity(Activity activity, String title, String photoName, View view) {
@@ -46,6 +47,7 @@ public class SkipUtil {
         Intent intent = new Intent(activity, NewActivity.class);
         intent.putExtra(New.class.getName(), n);
         intent.putExtra(VIEW_INFO, captureValues(view));
+
         activity.startActivity(intent);
         activity.overridePendingTransition(0, 0);
     }

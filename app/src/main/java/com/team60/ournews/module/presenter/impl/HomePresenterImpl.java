@@ -1,15 +1,19 @@
 package com.team60.ournews.module.presenter.impl;
 
+import android.content.SharedPreferences;
 import android.util.SparseArray;
 
+import com.google.gson.Gson;
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
+import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.connection.RetrofitUtil;
 import com.team60.ournews.module.model.HomeNewResult;
 import com.team60.ournews.module.presenter.HomePresenter;
 import com.team60.ournews.module.view.HomeView;
 import com.team60.ournews.util.ErrorUtil;
+import com.team60.ournews.util.MyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +56,10 @@ public class HomePresenterImpl implements HomePresenter {
                         e.printStackTrace();
                         onCompleted();
                         mView.getNewsError(MyApplication.getContext().getString(R.string.server_error));
+                        HomeNewResult result = getHomeNewsFromData();
+                        if (result != null) {
+                            onNext(getHomeNewsFromData());
+                        }
                     }
 
                     @Override
@@ -75,10 +83,24 @@ public class HomePresenterImpl implements HomePresenter {
                                 news.append(Integer.valueOf(beanList.get(i).getType()), newList);
                             }
                             mView.getNewsSuccess(news, type);
+                            saveHomeNewsToData(result);
                         } else {
                             mView.getNewsError(ErrorUtil.getErrorMessage(result.getErrorCode()));
                         }
                     }
                 }));
+    }
+
+    private HomeNewResult getHomeNewsFromData() {
+        SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_HOME_TEMP);
+        String homeTemp = sharedPreferences.getString("home_temp", null);
+        if (homeTemp == null)
+            return null;
+        return new Gson().fromJson(homeTemp, HomeNewResult.class);
+    }
+
+    private void saveHomeNewsToData(HomeNewResult result) {
+        SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_HOME_TEMP);
+        sharedPreferences.edit().putString("home_temp", new Gson().toJson(result)).apply();
     }
 }

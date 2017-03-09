@@ -20,9 +20,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
@@ -58,10 +57,6 @@ public class PhotoActivity extends BaseActivity implements BaseView {
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.activity_photo_photo_view)
     PhotoDraweeView mPhotoView;
-    @BindView(R.id.activity_photo_progress_bar)
-    ProgressBar mProgressBar;
-    @BindView(R.id.activity_photo_retry_btn)
-    Button mRetryBtn;
     @BindView(R.id.activity_photo_anim_img)
     SimpleDraweeView mAnimImg;
     @BindView(R.id.activity_photo_anim_layout)
@@ -73,8 +68,11 @@ public class PhotoActivity extends BaseActivity implements BaseView {
     private String photoUrl;
 
     private boolean isLoadSuccess = false;
+    private boolean isAnimShow = false;
 
     private Bundle mStartValues;
+    private int imgWidth;
+    private int imgHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +87,14 @@ public class PhotoActivity extends BaseActivity implements BaseView {
         setListener();
 
         loadPhoto();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!isAnimShow) {
+            isAnimShow = true;
+            showEndAnim();
+        }
     }
 
     @Override
@@ -119,15 +125,6 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                 finish();
             }
         });
-
-        mRetryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mProgressBar.setVisibility(View.VISIBLE);
-                loadPhoto();
-                mRetryBtn.setVisibility(View.GONE);
-            }
-        });
     }
 
     private void loadPhoto() {
@@ -142,29 +139,30 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                     return;
                 }
                 mPhotoView.update(imageInfo.getWidth(), imageInfo.getHeight());
-                mProgressBar.setVisibility(View.GONE);
                 isLoadSuccess = true;
+                imgWidth = imageInfo.getWidth();
+                imgHeight = imageInfo.getHeight();
 
-                showStartAnim(imageInfo.getWidth(), imageInfo.getHeight());
+                showStartAnim();
             }
 
             @Override
             public void onFailure(String id, Throwable throwable) {
                 super.onFailure(id, throwable);
-                mRetryBtn.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.GONE);
+                Toast.makeText(PhotoActivity.this, getString(R.string.load_photo_error), Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
         mPhotoView.setController(controller.build());
     }
 
-    private void showStartAnim(final int endWidth, final int endHeight) {
-        FrescoLoader.load(photoUrl)
-                .setOnDownloadListener(new OnDownloadListener() {
-                    @Override
-                    public void onDownloadEnd(boolean b) {
-                        if (mStartValues != null) {
-                            int mLayoutHeight = UiUtil.getScreenWidth() * endHeight / endWidth;
+    private void showStartAnim() {
+        if (mStartValues != null && imgWidth > 0 && imgHeight > 0) {
+            FrescoLoader.load(photoUrl)
+                    .setOnDownloadListener(new OnDownloadListener() {
+                        @Override
+                        public void onDownloadEnd(boolean b) {
+                            int mLayoutHeight = UiUtil.getScreenWidth() * imgHeight / imgWidth;
 
                             float deltaX = mStartValues.getInt(SkipUtil.VIEW_X);
                             float deltaY = mStartValues.getInt(SkipUtil.VIEW_Y);
@@ -222,15 +220,18 @@ public class PhotoActivity extends BaseActivity implements BaseView {
 
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
+                                    mPhotoView.setAlpha(1f);
                                     mAnimLayout.setVisibility(View.GONE);
-                                    int finalRadius = Math.max(UiUtil.getScreenWidth(), UiUtil.getScreenHeight()) * 2;
+
+                                    int finalRadius = (int) Math.hypot(UiUtil.getScreenWidth(), UiUtil.getScreenHeight()) * 2;
                                     CoordinatorLayout.LayoutParams layoutParams
                                             = (CoordinatorLayout.LayoutParams) mBackground.getLayoutParams();
                                     layoutParams.width = finalRadius;
                                     layoutParams.height = finalRadius;
                                     mBackground.setLayoutParams(layoutParams);
-                                    ObjectAnimator.ofFloat(mBackground, "scaleX", 0f, 1f).setDuration(300).start();
-                                    ObjectAnimator.ofFloat(mBackground, "scaleY", 0f, 1f).setDuration(300).start();
+                                    ObjectAnimator.ofFloat(mBackground, "scaleX", 0f, 1f).setDuration(400).start();
+                                    ObjectAnimator.ofFloat(mBackground, "scaleY", 0f, 1f).setDuration(400).start();
+                                    ObjectAnimator.ofFloat(mToolBar, "alpha", 0f, 1f).setDuration(250).start();
                                 }
 
                                 @Override
@@ -245,13 +246,145 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                             });
                             imgSet.start();
                         }
-                    }
-                })
-                .into(mAnimImg);
+                    })
+                    .into(mAnimImg);
+        } else {
+            mAnimLayout.setVisibility(View.GONE);
+
+            int finalRadius = (int) Math.hypot(UiUtil.getScreenWidth(), UiUtil.getScreenHeight()) * 2;
+            CoordinatorLayout.LayoutParams layoutParams
+                    = (CoordinatorLayout.LayoutParams) mBackground.getLayoutParams();
+            layoutParams.width = finalRadius;
+            layoutParams.height = finalRadius;
+            mBackground.setLayoutParams(layoutParams);
+            ObjectAnimator.ofFloat(mBackground, "scaleX", 0f, 1f).setDuration(400).start();
+            ObjectAnimator.ofFloat(mBackground, "scaleY", 0f, 1f).setDuration(400).start();
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(ObjectAnimator.ofFloat(mBackground, "scaleX", 0f, 1f).setDuration(400)
+                    , ObjectAnimator.ofFloat(mBackground, "scaleX", 0f, 1f).setDuration(400));
+            set.start();
+            AnimatorSet set1 = new AnimatorSet();
+            set1.play(ObjectAnimator.ofFloat(mPhotoView, "alpha", 0f, 1f).setDuration(250))
+                    .with(ObjectAnimator.ofFloat(mToolBar, "alpha", 0f, 1f).setDuration(250))
+                    .after(set);
+            set1.start();
+        }
     }
 
     private void showEndAnim() {
+        if (mStartValues != null && imgWidth > 0 && imgHeight > 0) {
+            int mLayoutHeight = UiUtil.getScreenWidth() * imgHeight / imgWidth;
 
+            float deltaX = mStartValues.getInt(SkipUtil.VIEW_X);
+            float deltaY = mStartValues.getInt(SkipUtil.VIEW_Y);
+
+            PointF pointFEnd;
+
+            Integer[] startSize
+                    = {mStartValues.getInt(SkipUtil.VIEW_WIDTH), mStartValues.getInt(SkipUtil.VIEW_HEIGHT)};
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                pointFEnd = new PointF(0, ((UiUtil.getScreenHeight() - mLayoutHeight) / 2) + UiUtil.getStatusBarHeight());
+            } else {
+                pointFEnd = new PointF(0, (UiUtil.getScreenHeight() - mLayoutHeight) / 2);
+            }
+
+            Integer[] endSize = {UiUtil.getScreenWidth(), mLayoutHeight};
+
+            ValueAnimator translationAnimator = ValueAnimator.ofObject(
+                    new BesselEvaluator(new PointF(0, (UiUtil.getScreenHeight() - mLayoutHeight) / 2 +
+                            (deltaY / 4)), new PointF(deltaX / 4 * 3, deltaY)),
+                    pointFEnd, new PointF(deltaX, deltaY));
+
+            translationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    PointF pointF = (PointF) animation.getAnimatedValue();
+                    mAnimLayout.setTranslationX(pointF.x);
+                    mAnimLayout.setTranslationY(pointF.y);
+                }
+            });
+
+            ValueAnimator widthAnimator
+                    = ValueAnimator.ofObject(new SizeEvaluator(), endSize, startSize);
+
+            widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Integer[] size = (Integer[]) animation.getAnimatedValue();
+                    CoordinatorLayout.LayoutParams layoutParams =
+                            (CoordinatorLayout.LayoutParams) mAnimLayout.getLayoutParams();
+                    layoutParams.width = size[0];
+                    layoutParams.height = size[1];
+                    mAnimLayout.setLayoutParams(layoutParams);
+                }
+            });
+
+            AnimatorSet imgSet = new AnimatorSet();
+            imgSet.playTogether(widthAnimator, translationAnimator,
+                    ObjectAnimator.ofFloat(mBackground, "scaleX", 1f, 0f),
+                    ObjectAnimator.ofFloat(mBackground, "scaleY", 1f, 0f),
+                    ObjectAnimator.ofFloat(mToolBar, "alpha", 1f, 0f));
+            imgSet.setDuration(350);
+
+            AnimatorSet set1 = new AnimatorSet();
+            set1.play(ObjectAnimator.ofFloat(mAnimLayout, "alpha", 1f, 0f).setDuration(150))
+                    .after(imgSet);
+
+            set1.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    mPhotoView.setAlpha(0f);
+                    mAnimLayout.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    finish();
+                    overridePendingTransition(0, 0);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            set1.start();
+        } else {
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(ObjectAnimator.ofFloat(mBackground, "scaleX", 1f, 0f).setDuration(400),
+                    ObjectAnimator.ofFloat(mBackground, "scaleY", 1f, 0f).setDuration(400),
+                    ObjectAnimator.ofFloat(mToolBar, "alpha", 1f, 0f).setDuration(250),
+                    ObjectAnimator.ofFloat(mPhotoView, "alpha", 1f, 0f).setDuration(250));
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    finish();
+                    overridePendingTransition(0, 0);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            set.start();
+        }
     }
 
     @Override
