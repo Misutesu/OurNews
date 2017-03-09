@@ -1,7 +1,9 @@
 package com.team60.ournews.module.ui.activity;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,8 +51,6 @@ public class PhotoActivity extends BaseActivity implements BaseView {
 
     public static final String TITLE_VALUE = "title";
     public static final String PHOTO_NAME_VALUE = "photo_name";
-    public static final String TOUCH_X = "touch_x";
-    public static final String TOUCH_Y = "touch_y";
 
     @BindView(R.id.activity_photo_tool_bar)
     Toolbar mToolBar;
@@ -67,6 +66,8 @@ public class PhotoActivity extends BaseActivity implements BaseView {
     SimpleDraweeView mAnimImg;
     @BindView(R.id.activity_photo_anim_layout)
     FrameLayout mAnimLayout;
+    @BindView(R.id.activity_photo_background)
+    View mBackground;
 
     private String title;
     private String photoUrl;
@@ -144,12 +145,7 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                 mProgressBar.setVisibility(View.GONE);
                 isLoadSuccess = true;
 
-                Log.d("TAG", "width : " + imageInfo.getWidth());
-                Log.d("TAG", "height : " + imageInfo.getHeight());
-                Log.d("TAG", "1 width : " + mPhotoView.getWidth());
-                Log.d("TAG", "1 height : " + mPhotoView.getHeight());
-
-                startAnim(imageInfo.getWidth(), imageInfo.getHeight());
+                showStartAnim(imageInfo.getWidth(), imageInfo.getHeight());
             }
 
             @Override
@@ -162,18 +158,14 @@ public class PhotoActivity extends BaseActivity implements BaseView {
         mPhotoView.setController(controller.build());
     }
 
-    private void startAnim(final int endWidth, final int endHeight) {
-//        CoordinatorLayout.LayoutParams layoutParams
-//                = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mLayoutHeight);
-//        mAnimLayout.setLayoutParams(layoutParams);
-
+    private void showStartAnim(final int endWidth, final int endHeight) {
         FrescoLoader.load(photoUrl)
                 .setOnDownloadListener(new OnDownloadListener() {
                     @Override
                     public void onDownloadEnd(boolean b) {
-                        int mLayoutHeight = UiUtil.getScreenWidth() * endWidth / endHeight;
-
                         if (mStartValues != null) {
+                            int mLayoutHeight = UiUtil.getScreenWidth() * endHeight / endWidth;
+
                             float deltaX = mStartValues.getInt(SkipUtil.VIEW_X);
                             float deltaY = mStartValues.getInt(SkipUtil.VIEW_Y);
 
@@ -182,12 +174,17 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                             Integer[] startSize
                                     = {mStartValues.getInt(SkipUtil.VIEW_WIDTH), mStartValues.getInt(SkipUtil.VIEW_HEIGHT)};
 
-                            pointFEnd = new PointF(0, 0);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                pointFEnd = new PointF(0, UiUtil.getStatusBarHeight() + ((UiUtil.getScreenHeight() - mLayoutHeight) / 2));
+                            } else {
+                                pointFEnd = new PointF(0, (UiUtil.getScreenHeight() - mLayoutHeight) / 2);
+                            }
 
                             Integer[] endSize = {UiUtil.getScreenWidth(), mLayoutHeight};
 
                             ValueAnimator translationAnimator = ValueAnimator.ofObject(
-                                    new BesselEvaluator(new PointF(deltaX / 4 * 3, deltaY), new PointF(0, deltaY / 4)),
+                                    new BesselEvaluator(new PointF(deltaX / 4 * 3, deltaY), new PointF(0, (UiUtil.getScreenHeight() - mLayoutHeight) / 2 +
+                                            (deltaY / 4))),
                                     new PointF(deltaX, deltaY), pointFEnd);
 
                             translationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -217,6 +214,35 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                             AnimatorSet imgSet = new AnimatorSet();
                             imgSet.playTogether(widthAnimator, translationAnimator);
                             imgSet.setDuration(400);
+                            imgSet.addListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    mAnimLayout.setVisibility(View.GONE);
+                                    int finalRadius = Math.max(UiUtil.getScreenWidth(), UiUtil.getScreenHeight()) * 2;
+                                    CoordinatorLayout.LayoutParams layoutParams
+                                            = (CoordinatorLayout.LayoutParams) mBackground.getLayoutParams();
+                                    layoutParams.width = finalRadius;
+                                    layoutParams.height = finalRadius;
+                                    mBackground.setLayoutParams(layoutParams);
+                                    ObjectAnimator.ofFloat(mBackground, "scaleX", 0f, 1f).setDuration(300).start();
+                                    ObjectAnimator.ofFloat(mBackground, "scaleY", 0f, 1f).setDuration(300).start();
+                                }
+
+                                @Override
+                                public void onAnimationCancel(Animator animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animator animation) {
+
+                                }
+                            });
                             imgSet.start();
                         }
                     }
@@ -224,45 +250,9 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                 .into(mAnimImg);
     }
 
-//    private void startAnim() {
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-//            mCoordinatorLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-//                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-//                @Override
-//                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-//                    mCoordinatorLayout.removeOnLayoutChangeListener(this);
-//                    float radius = (float) Math.hypot(mCoordinatorLayout.getHeight(), mCoordinatorLayout.getWidth());
-//                    Animator anim = ViewAnimationUtils.createCircularReveal(mCoordinatorLayout
-//                            , (int) touchX, (int) touchY, 0, radius);
-//                    anim.setDuration(1000);
-//                    anim.addListener(new Animator.AnimatorListener() {
-//                        @Override
-//                        public void onAnimationStart(Animator animation) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onAnimationEnd(Animator animation) {
-//                            loadPhoto();
-//                        }
-//
-//                        @Override
-//                        public void onAnimationCancel(Animator animation) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onAnimationRepeat(Animator animation) {
-//
-//                        }
-//                    });
-//                    anim.start();
-//                }
-//            });
-//        } else {
-//            loadPhoto();
-//        }
-//    }
+    private void showEndAnim() {
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

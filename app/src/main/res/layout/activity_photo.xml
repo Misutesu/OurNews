@@ -4,8 +4,16 @@
                                                  android:id="@+id/activity_photo_coordinator_layout"
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
-                                                 android:background="@color/black_1"
                                                  tools:context="com.team60.ournews.module.ui.activity.PhotoActivity">
+
+    <View
+        android:id="@+id/activity_photo_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleX="0.0001"
+        android:scaleY="0.0001"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_black"/>
 
     <me.relex.photodraweeview.PhotoDraweeView
         android:id="@+id/activity_photo_photo_view"

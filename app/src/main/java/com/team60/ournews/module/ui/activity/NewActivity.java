@@ -172,7 +172,7 @@ public class NewActivity extends BaseActivity implements NewView {
         mBackgroundImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SkipUtil.startPhotoActivity(event.getX(), event.getY(), NewActivity.this, null, n.getCover());
+                SkipUtil.startPhotoActivity(NewActivity.this, null, n.getCover(), mBackgroundImg);
             }
         });
 
@@ -193,8 +193,8 @@ public class NewActivity extends BaseActivity implements NewView {
 
         mContentView.setOnActionListener(new NewTextAndImageView.OnActionListener() {
             @Override
-            public void onPhotoLoadEnd(View view, String photoName, float touchX, float touchY) {
-                SkipUtil.startPhotoActivity(touchX, touchY, NewActivity.this, null, photoName);
+            public void onPhotoLoadEnd(View view, String photoName) {
+                SkipUtil.startPhotoActivity(NewActivity.this, null, photoName, view);
             }
         });
 
