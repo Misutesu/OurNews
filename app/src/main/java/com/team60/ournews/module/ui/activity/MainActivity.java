@@ -269,6 +269,7 @@ public class MainActivity extends BaseActivity implements MainView {
         if (User.isLogin()) {
             userName = headerUserName = user.getNickName();
             mLogoutLayout.setVisibility(View.VISIBLE);
+            MyUtil.sendLog(this, "token : " + user.getToken());
         } else {
             userName = getString(R.string.no_login);
             headerUserName = getString(R.string.click_avatar_to_login);
@@ -397,6 +398,7 @@ public class MainActivity extends BaseActivity implements MainView {
         int id = item.getItemId();
         if (id == R.id.tool_bar_search) {
             startActivity(new Intent(MainActivity.this, SearchActivity.class));
+            overridePendingTransition(0, 0);
             return true;
         }
         return super.onOptionsItemSelected(item);

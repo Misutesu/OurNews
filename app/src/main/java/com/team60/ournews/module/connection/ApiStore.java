@@ -61,6 +61,20 @@ public interface ApiStore {
                                         @Query("size") int size,
                                         @Query("sort") int sort);
 
+    @POST("getCollections")
+    Observable<ListNewResult> getCollections(@Query("id") long id,
+                                             @Query("token") String token,
+                                             @Query("page") int page,
+                                             @Query("size") int size,
+                                             @Query("sort") int sort);
+
+    @POST("getHistory")
+    Observable<ListNewResult> getHistory(@Query("id") long id,
+                                             @Query("token") String token,
+                                             @Query("page") int page,
+                                             @Query("size") int size,
+                                             @Query("sort") int sort);
+
     @POST("getNewContent")
     Observable<ContentResult> getNewContentUseId(@Query("nid") long id);
 
@@ -69,10 +83,10 @@ public interface ApiStore {
 
     @POST("sendComment")
     Observable<NoDataResult> sendCommentUseNewId(@Query("uid") long uid,
-                                           @Query("nid") long nid,
-                                           @Query("content") String content,
-                                           @Query("time") long time,
-                                           @Query("key") String key);
+                                                 @Query("nid") long nid,
+                                                 @Query("content") String content,
+                                                 @Query("time") long time,
+                                                 @Query("key") String key);
 
     @POST("getComment")
     Observable<CommentResult> getCommentsUseId(@Query("nid") long nid,

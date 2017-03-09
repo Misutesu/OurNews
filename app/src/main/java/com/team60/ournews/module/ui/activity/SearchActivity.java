@@ -320,6 +320,7 @@ public class SearchActivity extends BaseActivity {
                         mCardView.setVisibility(View.INVISIBLE);
                         MyUtil.closeKeyBord(mSearchEdit);
                         finish();
+                        overridePendingTransition(0, 0);
                     }
 
                     @Override
