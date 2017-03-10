@@ -114,7 +114,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
     public void init() {
         mPresenter = new HomePresenterImpl(this);
 
-        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtil.getColor(getActivity().getTheme(), R.attr.textColor));
+        mSwipeRefreshLayout.setColorSchemeColors(ThemeUtil.getColor(getActivity().getTheme(), R.attr.colorPrimary));
 
         if (news == null)
             news = new SparseArray<>();

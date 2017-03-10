@@ -11,7 +11,7 @@ public class ContentResult {
     /**
      * result : success
      * errorCode : 0
-     * data : {"id":10,"content":"aaa","commentNum":10,"historyNum":20,"collectionNum":30}
+     * data : {"id":10,"content":"aaa","is_collected":1,"commentNum":10,"historyNum":20,"collectionNum":30}
      */
 
     private String result;
@@ -54,6 +54,8 @@ public class ContentResult {
 
         private long id;
         private String content;
+        @SerializedName("is_collected")
+        private int isCollected = -1;
         @SerializedName("comment_num")
         private int commentNum;
         @SerializedName("history_num")
@@ -75,6 +77,14 @@ public class ContentResult {
 
         public void setContent(String content) {
             this.content = content;
+        }
+
+        public int getIsCollected() {
+            return isCollected;
+        }
+
+        public void setIsCollected(int isCollected) {
+            this.isCollected = isCollected;
         }
 
         public int getCommentNum() {

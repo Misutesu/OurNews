@@ -34,6 +34,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.R;
 import com.team60.ournews.event.ChangeViewPagerPageEvent;
+import com.team60.ournews.event.LoginEvent;
 import com.team60.ournews.event.ShowSnackEvent;
 import com.team60.ournews.module.adapter.ThemeSelectRecyclerViewAdapter;
 import com.team60.ournews.module.bean.Theme;
@@ -89,11 +90,7 @@ public class MainActivity extends BaseActivity implements MainView {
     @BindView(R.id.activity_main_view_pager)
     ViewPager mViewPager;
 
-    private HomeFragment mHomeFragment;
-
     private AlertDialog mThemeDialog;
-    private RecyclerView mThemeRecyclerView;
-    private ThemeSelectRecyclerViewAdapter mThemeAdapter;
 
     private AlertDialog mThemeHintDialog;
     private AlertDialog mLogoutDialog;
@@ -105,6 +102,12 @@ public class MainActivity extends BaseActivity implements MainView {
         ButterKnife.bind(this);
         init(savedInstanceState);
         setListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     @Override
@@ -149,11 +152,6 @@ public class MainActivity extends BaseActivity implements MainView {
         setUserInfo();
     }
 
-    @Override
-    protected void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
-    }
 
     @Override
     public void setListener() {
@@ -168,7 +166,7 @@ public class MainActivity extends BaseActivity implements MainView {
             @Override
             public void onClick(View view) {
                 if (User.isLogin()) {
-                    startActivityForResult(new Intent(MainActivity.this, UserActivity.class), UserActivity.CODE_CHANGE_INFO);
+                    startActivity(new Intent(MainActivity.this, UserActivity.class));
                 } else {
                     startActivityForResult(new Intent(MainActivity.this, LoginActivity.class), LoginActivity.CODE_LOGIN);
                 }
@@ -229,8 +227,7 @@ public class MainActivity extends BaseActivity implements MainView {
         if (fragments == null) fragments = new ArrayList<>();
         else fragments.clear();
 
-        mHomeFragment = new HomeFragment();
-        fragments.add(mHomeFragment);
+        fragments.add(new HomeFragment());
         for (int i = 1; i < 6; i++) {
             fragments.add(TypeFragment.newInstance(i));
         }
@@ -291,8 +288,8 @@ public class MainActivity extends BaseActivity implements MainView {
     private void initThemeDialog() {
         if (mThemeDialog == null) {
             View view = LayoutInflater.from(this).inflate(R.layout.dialog_select_theme, null);
-            mThemeRecyclerView = (RecyclerView) view.findViewById(R.id.layout_select_item_recycler_view);
-            mThemeAdapter = new ThemeSelectRecyclerViewAdapter(this);
+            RecyclerView mThemeRecyclerView = (RecyclerView) view.findViewById(R.id.layout_select_item_recycler_view);
+            ThemeSelectRecyclerViewAdapter mThemeAdapter = new ThemeSelectRecyclerViewAdapter(this);
             mThemeRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
             mThemeRecyclerView.setHasFixedSize(true);
             mThemeRecyclerView.setAdapter(mThemeAdapter);
@@ -346,10 +343,6 @@ public class MainActivity extends BaseActivity implements MainView {
                 setUserInfo();
                 showSnackBar(getString(R.string.login_success));
             }
-        } else if (requestCode == UserActivity.CODE_CHANGE_INFO) {
-            if (resultCode == UserActivity.CODE_CHANGE_INFO) {
-                setUserInfo();
-            }
         }
     }
 
@@ -379,6 +372,10 @@ public class MainActivity extends BaseActivity implements MainView {
         mViewPager.setCurrentItem(event.getPage());
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
+    public void onLoginEvent(LoginEvent event) {
+        setUserInfo();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

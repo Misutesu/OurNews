@@ -34,6 +34,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
 import com.mistesu.frescoloader.OnDownloadListener;
 import com.team60.ournews.R;
+import com.team60.ournews.event.LoginEvent;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.bean.User;
 import com.team60.ournews.module.evaluator.BesselEvaluator;
@@ -48,12 +49,17 @@ import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
 import com.team60.ournews.widget.NewTextAndImageView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class NewActivity extends BaseActivity implements NewView {
+
+    public final static int COLLECTION_CHANGE = 101;
 
     @BindView(R.id.activity_new_background_img)
     SimpleDraweeView mBackgroundImg;
@@ -137,12 +143,20 @@ public class NewActivity extends BaseActivity implements NewView {
     }
 
     @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return !isAnimEnd || super.dispatchTouchEvent(ev);
     }
 
     @Override
     public void init(Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
+
         mPresenter = new NewPresenterImpl(this);
 
         mToolBar.setTitle("");
@@ -179,7 +193,13 @@ public class NewActivity extends BaseActivity implements NewView {
         mFloatActionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ObjectAnimator.ofFloat(mFloatActionBtn, "scaleX", mFloatActionBtn.getScaleX(), 0f).setDuration(200).start();
+                ObjectAnimator.ofFloat(mFloatActionBtn, "scaleY", mFloatActionBtn.getScaleY(), 0f).setDuration(200).start();
+                if (n.getIsCollection() == 0) {
+                    mPresenter.collectNew(n.getId(), user.getId(), user.getToken(), 0);
+                } else if (n.getIsCollection() == 1) {
+                    mPresenter.collectNew(n.getId(), user.getId(), user.getToken(), 1);
+                }
             }
         });
 
@@ -525,19 +545,57 @@ public class NewActivity extends BaseActivity implements NewView {
     @Override
     public void getNewContentSuccess(New n) throws JSONException {
         isLoadEnd = true;
-        showFloatBtn(false);
-
-        this.n.setContent(n.getContent());
-        this.n.setCommentNum(n.getCommentNum());
+        if (n.getIsCollection() != -1) {
+            if (n.getIsCollection() == 0) {
+                mFloatActionBtn.setImageResource(R.drawable.no_collection);
+            } else {
+                mFloatActionBtn.setImageResource(R.drawable.is_collection);
+            }
+            mFloatActionBtn.setVisibility(View.VISIBLE);
+            showFloatBtn(false);
+        }
         mContentView.setContent(n.getContent());
         mCommentNumberText.setText(String.valueOf(n.getCommentNum()));
         ObjectAnimator.ofFloat(mCommentNumberText, "alpha", 0f, 1f).setDuration(300).start();
+
+        this.n.setContent(n.getContent());
+        this.n.setIsCollection(n.getIsCollection());
+        this.n.setCommentNum(n.getCommentNum());
+        this.n.setCollectionNum(n.getCollectionNum());
+        this.n.setHistoryNum(n.getHistoryNum());
     }
 
     @Override
     public void getNewContentError(String message) {
         showSnackBar(message);
         mRetryBtn.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void collectNewEnd() {
+        ObjectAnimator.ofFloat(mFloatActionBtn, "scaleX", mFloatActionBtn.getScaleX(), 1f).setDuration(200).start();
+        ObjectAnimator.ofFloat(mFloatActionBtn, "scaleY", mFloatActionBtn.getScaleY(), 1f).setDuration(200).start();
+    }
+
+    @Override
+    public void collectNewSuccess() {
+        if (n.getIsCollection() == 0) {
+            n.setIsCollection(1);
+            mFloatActionBtn.setImageResource(R.drawable.is_collection);
+            showSnackBar(getString(R.string.collect_success));
+        } else if (n.getIsCollection() == 1) {
+            n.setIsCollection(0);
+            mFloatActionBtn.setImageResource(R.drawable.no_collection);
+            showSnackBar(getString(R.string.delete_collection_success));
+        }
+        Intent intent = new Intent();
+        intent.putExtra("nid", n.getId());
+        setResult(COLLECTION_CHANGE, intent);
+    }
+
+    @Override
+    public void collectNewError(String message) {
+        showSnackBar(message);
     }
 
     @Override
@@ -548,11 +606,23 @@ public class NewActivity extends BaseActivity implements NewView {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == WriteCommentActivity.CODE_SEND)
+        if (requestCode == WriteCommentActivity.CODE_SEND) {
             if (resultCode == WriteCommentActivity.CODE_SEND) {
                 showSnackBar(getString(R.string.send_success));
                 n.setCommentNum(n.getCommentNum() + 1);
                 mCommentNumberText.setText(String.valueOf(n.getCommentNum()));
             }
+        } else if (requestCode == LoginActivity.CODE_LOGIN) {
+            if (resultCode == LoginActivity.CODE_LOGIN) {
+                showSnackBar(getString(R.string.login_success));
+                getNewContent();
+                EventBus.getDefault().post(new LoginEvent());
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
+    public void onLoginEvent(LoginEvent event) {
+        getNewContent();
     }
 }

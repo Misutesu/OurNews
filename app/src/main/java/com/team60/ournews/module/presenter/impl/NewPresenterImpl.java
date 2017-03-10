@@ -1,10 +1,13 @@
 package com.team60.ournews.module.presenter.impl;
 
+import android.util.Log;
+
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.connection.RetrofitUtil;
 import com.team60.ournews.module.model.ContentResult;
+import com.team60.ournews.module.model.NoDataResult;
 import com.team60.ournews.module.presenter.NewPresenter;
 import com.team60.ournews.module.view.NewView;
 import com.team60.ournews.util.ErrorUtil;
@@ -55,6 +58,7 @@ public class NewPresenterImpl implements NewPresenter {
                         if (result.getResult().equals("success")) {
                             New n = new New();
                             n.setContent(result.getData().getContent());
+                            n.setIsCollection(result.getData().getIsCollected());
                             n.setCommentNum(result.getData().getCommentNum());
                             n.setHistoryNum(result.getData().getHistoryNum());
                             n.setCollectionNum(result.getData().getCollectionNum());
@@ -66,6 +70,38 @@ public class NewPresenterImpl implements NewPresenter {
                             }
                         } else {
                             mView.getNewContentError(ErrorUtil.getErrorMessage(result.getErrorCode()));
+                        }
+                    }
+                }));
+    }
+
+    @Override
+    public void collectNew(long nid, long uid, String token, int type) {
+        Log.d("TAG", "nid : " + nid);
+        Log.d("TAG", "uid : " + uid);
+        Log.d("TAG", "token : " + token);
+        Log.d("TAG", "type : " + type);
+        mView.addSubscription(RetrofitUtil.newInstance().collectNew(nid, uid, token, type)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<NoDataResult>() {
+                    @Override
+                    public void onCompleted() {
+                        mView.collectNewEnd();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        onCompleted();
+                        mView.collectNewError(MyApplication.getContext().getString(R.string.internet_error));
+                    }
+
+                    @Override
+                    public void onNext(NoDataResult result) {
+                        if (result.getResult().equals("success")) {
+                            mView.collectNewSuccess();
+                        } else {
+                            mView.collectNewError(ErrorUtil.getErrorMessage(result.getErrorCode()));
                         }
                     }
                 }));

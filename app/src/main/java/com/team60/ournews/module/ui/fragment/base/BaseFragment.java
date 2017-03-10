@@ -3,6 +3,8 @@ package com.team60.ournews.module.ui.fragment.base;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
+import com.team60.ournews.module.bean.User;
+
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -11,6 +13,8 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public abstract class BaseFragment extends Fragment {
+
+    public User user = User.newInstance();
 
     private CompositeSubscription mSubscription;
 

@@ -207,7 +207,7 @@ public class SearchResultActivity extends BaseActivity implements SearchResultVi
                 this.page++;
                 this.news.addAll(news);
                 mAdapter.notifyItemRangeInserted(this.news.size(), this.news.size() + news.size() - 1);
-                if (news.size() < Constants.New_EVERY_PAGE_SIZE)
+                if (news.size() < Constants.NEW_EVERY_PAGE_SIZE)
                     hasMore = false;
             }
         }

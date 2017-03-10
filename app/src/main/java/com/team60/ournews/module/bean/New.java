@@ -15,12 +15,25 @@ public class New implements Parcelable {
     private String content;
     private String createTime;
     private int type;
+    private int isCollection;
     private int commentNum;
     private int historyNum;
     private int collectionNum;
 
     public New() {
     }
+
+    public static final Creator<New> CREATOR = new Creator<New>() {
+        @Override
+        public New createFromParcel(Parcel in) {
+            return new New(in);
+        }
+
+        @Override
+        public New[] newArray(int size) {
+            return new New[size];
+        }
+    };
 
     public long getId() {
         return id;
@@ -78,6 +91,14 @@ public class New implements Parcelable {
         this.type = type;
     }
 
+    public int getIsCollection() {
+        return isCollection;
+    }
+
+    public void setIsCollection(int isCollection) {
+        this.isCollection = isCollection;
+    }
+
     public int getCommentNum() {
         return commentNum;
     }
@@ -102,19 +123,6 @@ public class New implements Parcelable {
         this.collectionNum = collectionNum;
     }
 
-
-    public static final Creator<New> CREATOR = new Creator<New>() {
-        @Override
-        public New createFromParcel(Parcel in) {
-            return new New(in);
-        }
-
-        @Override
-        public New[] newArray(int size) {
-            return new New[size];
-        }
-    };
-
     protected New(Parcel in) {
         id = in.readLong();
         title = in.readString();
@@ -123,6 +131,7 @@ public class New implements Parcelable {
         content = in.readString();
         createTime = in.readString();
         type = in.readInt();
+        isCollection = in.readInt();
         commentNum = in.readInt();
         historyNum = in.readInt();
         collectionNum = in.readInt();
@@ -137,6 +146,7 @@ public class New implements Parcelable {
         dest.writeString(content);
         dest.writeString(createTime);
         dest.writeInt(type);
+        dest.writeInt(isCollection);
         dest.writeInt(commentNum);
         dest.writeInt(historyNum);
         dest.writeInt(collectionNum);

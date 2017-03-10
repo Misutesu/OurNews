@@ -8,7 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -132,12 +131,12 @@ public class TypeFragment extends BaseFragment implements TypeView {
     public void setListener() {
         mRecyclerView.addOnScrollListener(new TypeFragment.MyRecyclerViewOnScroll());
 
-        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return isLoad;
-            }
-        });
+//        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                return isLoad;
+//            }
+//        });
 
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -197,7 +196,7 @@ public class TypeFragment extends BaseFragment implements TypeView {
             mRecyclerView.startAnimation(inAnimation);
 
             this.page = 1;
-            if (this.news.size() < Constants.New_EVERY_PAGE_SIZE) {
+            if (this.news.size() < Constants.NEW_EVERY_PAGE_SIZE) {
                 hasMore = false;
             } else {
                 hasMore = true;
@@ -210,7 +209,7 @@ public class TypeFragment extends BaseFragment implements TypeView {
                 this.page++;
                 this.news.addAll(news);
                 mAdapter.notifyItemRangeInserted(this.news.size(), this.news.size() + news.size() - 1);
-                if (news.size() < Constants.New_EVERY_PAGE_SIZE) {
+                if (news.size() < Constants.NEW_EVERY_PAGE_SIZE) {
                     hasMore = false;
                 }
             }

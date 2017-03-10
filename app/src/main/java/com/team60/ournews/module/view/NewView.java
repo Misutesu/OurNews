@@ -15,4 +15,10 @@ public interface NewView extends BaseView {
     void getNewContentSuccess(New n) throws JSONException;
 
     void getNewContentError(String message);
+
+    void collectNewEnd();
+
+    void collectNewSuccess();
+
+    void collectNewError(String message);
 }

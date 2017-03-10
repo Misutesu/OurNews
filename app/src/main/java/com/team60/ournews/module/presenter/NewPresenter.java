@@ -6,4 +6,6 @@ package com.team60.ournews.module.presenter;
 
 public interface NewPresenter {
     void getNewContent(long id, long uid);
+
+    void collectNew(long nid, long uid, String token, int type);
 }

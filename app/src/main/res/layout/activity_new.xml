@@ -207,7 +207,7 @@
         android:clickable="true"
         android:scaleX="0.001"
         android:scaleY="0.001"
+        android:visibility="gone"
         app:layout_anchor="@id/activity_new_app_bar_layout"
-        app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/no_collection"/>
+        app:layout_anchorGravity="bottom|end"/>
 </android.support.design.widget.CoordinatorLayout>

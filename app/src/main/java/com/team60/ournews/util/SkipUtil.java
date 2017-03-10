@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.team60.ournews.module.bean.New;
@@ -50,6 +51,24 @@ public class SkipUtil {
 
         activity.startActivity(intent);
         activity.overridePendingTransition(0, 0);
+    }
+
+    public static void startNewActivityForResult(Activity activity, New n, View view, int requestCode) {
+        Intent intent = new Intent(activity, NewActivity.class);
+        intent.putExtra(New.class.getName(), n);
+        intent.putExtra(VIEW_INFO, captureValues(view));
+
+        activity.startActivityForResult(intent, requestCode);
+        activity.overridePendingTransition(0, 0);
+    }
+
+    public static void startNewActivityForResult(Fragment fragment, New n, View view, int requestCode) {
+        Intent intent = new Intent(fragment.getActivity(), NewActivity.class);
+        intent.putExtra(New.class.getName(), n);
+        intent.putExtra(VIEW_INFO, captureValues(view));
+
+        fragment.startActivityForResult(intent, requestCode);
+        fragment.getActivity().overridePendingTransition(0, 0);
     }
 
     public static Bundle captureValues(@NonNull View view) {

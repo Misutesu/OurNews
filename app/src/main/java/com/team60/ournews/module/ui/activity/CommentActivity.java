@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Transition;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -23,9 +22,11 @@ import android.widget.TextView;
 
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
+import com.team60.ournews.event.LoginEvent;
 import com.team60.ournews.module.adapter.CommentActivityRecyclerViewAdapter;
 import com.team60.ournews.module.bean.Comment;
 import com.team60.ournews.module.bean.New;
+import com.team60.ournews.module.bean.OtherUser;
 import com.team60.ournews.module.bean.User;
 import com.team60.ournews.module.presenter.CommentPresenter;
 import com.team60.ournews.module.presenter.impl.CommentPresenterImpl;
@@ -33,6 +34,8 @@ import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.CommentVIew;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,16 +161,22 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
             public void onTitleClick() {
                 finish();
             }
+
+            @Override
+            public void onCommentClick(OtherUser otherUser) {
+                if (User.isLogin()) {
+                    Intent intent = new Intent(CommentActivity.this, UserActivity.class);
+                    intent.putExtra("otherUser", otherUser);
+                    startActivity(intent);
+                } else {
+                    createLoginDialog();
+                    mLoginDialog.setMessage(getString(R.string.only_login_can_see_other_user));
+                    mLoginDialog.show();
+                }
+            }
         });
 
         mRecyclerView.addOnScrollListener(new MyRecyclerViewOnScroll());
-
-        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return isLoad;
-            }
-        });
 
         mRetryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,24 +194,8 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
                     intent.putExtra(New.class.getName(), n);
                     startActivityForResult(intent, WriteCommentActivity.CODE_SEND);
                 } else {
-                    if (mLoginDialog == null) {
-                        AlertDialog.Builder builder;
-                        if (ThemeUtil.isNightMode()) {
-                            builder = new AlertDialog.Builder(CommentActivity.this, R.style.NightDialogTheme);
-                        } else {
-                            builder = new AlertDialog.Builder(CommentActivity.this);
-                        }
-                        mLoginDialog = builder.setTitle(getString(R.string.hint))
-                                .setMessage(getString(R.string.no_login_do_you_login_now))
-                                .setPositiveButton(getString(R.string.go_to_login), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        startActivityForResult(new Intent(CommentActivity.this, LoginActivity.class), LoginActivity.CODE_LOGIN);
-                                    }
-                                })
-                                .setNegativeButton(getString(R.string.no), null)
-                                .create();
-                    }
+                    createLoginDialog();
+                    mLoginDialog.setMessage(getString(R.string.no_login_do_you_login_now));
                     mLoginDialog.show();
                 }
             }
@@ -238,6 +231,26 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
                         , mBottomLayout.getTranslationY(), UiUtil.dip2px(48))
                         .setDuration(200).start();
             }
+        }
+    }
+
+    private void createLoginDialog() {
+        if (mLoginDialog == null) {
+            AlertDialog.Builder builder;
+            if (ThemeUtil.isNightMode()) {
+                builder = new AlertDialog.Builder(CommentActivity.this, R.style.NightDialogTheme);
+            } else {
+                builder = new AlertDialog.Builder(CommentActivity.this);
+            }
+            mLoginDialog = builder.setTitle(getString(R.string.hint))
+                    .setPositiveButton(getString(R.string.go_to_login), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivityForResult(new Intent(CommentActivity.this, LoginActivity.class), LoginActivity.CODE_LOGIN);
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.no), null)
+                    .create();
         }
     }
 
@@ -315,11 +328,17 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == WriteCommentActivity.CODE_SEND)
+        if (requestCode == WriteCommentActivity.CODE_SEND) {
             if (resultCode == WriteCommentActivity.CODE_SEND) {
                 showSnackBar(getString(R.string.send_success));
                 startGetComments();
             }
+        } else if (requestCode == LoginActivity.CODE_LOGIN) {
+            if (resultCode == LoginActivity.CODE_LOGIN) {
+                showSnackBar(getString(R.string.login_success));
+                EventBus.getDefault().post(new LoginEvent());
+            }
+        }
     }
 
     private class MyRecyclerViewOnScroll extends RecyclerView.OnScrollListener {

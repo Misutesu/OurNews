@@ -64,16 +64,24 @@ public interface ApiStore {
     @POST("getCollections")
     Observable<ListNewResult> getCollections(@Query("id") long id,
                                              @Query("token") String token,
+                                             @Query("uid") long uid,
                                              @Query("page") int page,
                                              @Query("size") int size,
                                              @Query("sort") int sort);
 
     @POST("getHistory")
     Observable<ListNewResult> getHistory(@Query("id") long id,
-                                             @Query("token") String token,
-                                             @Query("page") int page,
-                                             @Query("size") int size,
-                                             @Query("sort") int sort);
+                                         @Query("token") String token,
+                                         @Query("uid") long uid,
+                                         @Query("page") int page,
+                                         @Query("size") int size,
+                                         @Query("sort") int sort);
+
+    @POST("collectNew")
+    Observable<NoDataResult> collectNew(@Query("nid") long nid,
+                                        @Query("uid") long uid,
+                                        @Query("token") String token,
+                                        @Query("type") int type);
 
     @POST("getNewContent")
     Observable<ContentResult> getNewContentUseId(@Query("nid") long id);

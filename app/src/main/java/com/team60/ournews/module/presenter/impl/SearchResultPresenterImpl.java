@@ -32,7 +32,7 @@ public class SearchResultPresenterImpl implements SearchResultPresenter {
     @Override
     public void searchNews(final String name, final int page, final int sort) {
         mView.addSubscription(RetrofitUtil.newInstance().searchNew(
-                name, page, Constants.New_EVERY_PAGE_SIZE, sort
+                name, page, Constants.NEW_EVERY_PAGE_SIZE, sort
         ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ListNewResult>() {
                     @Override

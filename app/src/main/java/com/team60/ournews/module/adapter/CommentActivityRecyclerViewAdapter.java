@@ -46,6 +46,8 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
 
     public interface OnItemClickListener {
         void onTitleClick();
+
+        void onCommentClick(OtherUser otherUser);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -102,7 +104,7 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
             mProgressBar = ((FooterViewHolder) holder).mProgressBar;
         } else if (holder instanceof NormalViewHolder) {
             position--;
-            Comment comment = comments.get(position);
+            final Comment comment = comments.get(position);
             OtherUser user = comment.getUser();
             NormalViewHolder viewHolder = (NormalViewHolder) holder;
             viewHolder.mUserNameText.setText(user.getNickName());
@@ -118,6 +120,14 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
             FrescoLoader.load(uri)
                     .setCircle()
                     .into(viewHolder.mAvatarImg);
+
+            viewHolder.mLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onItemClickListener != null)
+                        onItemClickListener.onCommentClick(comment.getUser());
+                }
+            });
         }
     }
 
@@ -155,6 +165,8 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
 
     public class NormalViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.item_comment_layout)
+        LinearLayout mLayout;
         @BindView(R.id.item_comment_avatar_img)
         SimpleDraweeView mAvatarImg;
         @BindView(R.id.item_comment_user_name_text)

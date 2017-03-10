@@ -38,6 +38,10 @@ public class ErrorUtil {
     private static final int NEW_NO_EXIST = 7001;
     // 新闻未上线
     private static final int NEW_NO_ONLINE = 8001;
+    // 已有收藏
+    public static final int HAS_COLLECTION = 9001;
+    // 没收藏过
+    public static final int NO_COLLECTION = 9002;
 
     // 上传文件不是图片
     private static final int UPLOAD_NO_IMAGE = 100001;
@@ -74,6 +78,8 @@ public class ErrorUtil {
             errorList.add(new Error(TOKEN_ERROR, "Token错误"));
             errorList.add(new Error(USER_NO_EXIST, "用户不存在"));
             errorList.add(new Error(NEW_NO_EXIST, "新闻不存在"));
+            errorList.add(new Error(HAS_COLLECTION, "已有收藏"));
+            errorList.add(new Error(NO_COLLECTION, "没收藏过"));
             errorList.add(new Error(NEW_NO_ONLINE, "新闻未上线"));
             errorList.add(new Error(UPLOAD_NO_IMAGE, "上传文件不是图片"));
             errorList.add(new Error(UPLOAD_FILE_TOO_BIG, "上传文件过大"));
