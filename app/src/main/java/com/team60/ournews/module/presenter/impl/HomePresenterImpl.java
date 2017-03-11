@@ -92,7 +92,7 @@ public class HomePresenterImpl implements HomePresenter {
     }
 
     private HomeNewResult getHomeNewsFromData() {
-        SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_HOME_TEMP);
+        SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_CACHE);
         String homeTemp = sharedPreferences.getString("home_temp", null);
         if (homeTemp == null)
             return null;
@@ -100,7 +100,7 @@ public class HomePresenterImpl implements HomePresenter {
     }
 
     private void saveHomeNewsToData(HomeNewResult result) {
-        SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_HOME_TEMP);
+        SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_CACHE);
         sharedPreferences.edit().putString("home_temp", new Gson().toJson(result)).apply();
     }
 }

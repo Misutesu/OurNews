@@ -11,10 +11,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.module.bean.User;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
+import com.umeng.message.PushAgent;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -31,7 +33,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        MyApplication.addActivity(this);
         super.onCreate(savedInstanceState);
+        PushAgent.getInstance(this).onAppStart();
 
         UiUtil.initialize(this);
 

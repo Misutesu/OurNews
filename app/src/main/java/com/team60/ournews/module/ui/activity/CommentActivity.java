@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Transition;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -61,8 +60,6 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     Button mRetryBtn;
     @BindView(R.id.activity_comment_no_comment_text)
     TextView mNoCommentText;
-    @BindView(R.id.activity_comment_top_view)
-    View mTopView;
 
     private List<Comment> comments;
     private CommentActivityRecyclerViewAdapter mAdapter;
@@ -131,9 +128,6 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         mPresenter = new CommentPresenterImpl(this);
 
         n = getIntent().getParcelableExtra(New.class.getName());
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            mTopView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtil.getStatusBarHeight()));
 
         mToolBar.setTitle(getString(R.string.comment));
         setSupportActionBar(mToolBar);
@@ -236,13 +230,7 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
 
     private void createLoginDialog() {
         if (mLoginDialog == null) {
-            AlertDialog.Builder builder;
-            if (ThemeUtil.isNightMode()) {
-                builder = new AlertDialog.Builder(CommentActivity.this, R.style.NightDialogTheme);
-            } else {
-                builder = new AlertDialog.Builder(CommentActivity.this);
-            }
-            mLoginDialog = builder.setTitle(getString(R.string.hint))
+            mLoginDialog = ThemeUtil.getThemeDialogBuilder(CommentActivity.this).setTitle(getString(R.string.hint))
                     .setPositiveButton(getString(R.string.go_to_login), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

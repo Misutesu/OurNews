@@ -2,16 +2,13 @@ package com.team60.ournews.module.ui.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -21,7 +18,6 @@ import com.team60.ournews.module.presenter.impl.LoginPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.LoginView;
 import com.team60.ournews.util.MyUtil;
-import com.team60.ournews.util.UiUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,13 +30,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
     TextInputLayout mLoginNameInputLayout;
     @BindView(R.id.activity_login_password_input_layout)
     TextInputLayout mPasswordInputLayout;
-
-    private LoginPresenter mPresenter;
-
     @BindView(R.id.activity_login_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
-    @BindView(R.id.activity_login_top_view)
-    View mTopView;
     @BindView(R.id.activity_login_login_name_text)
     EditText mLoginNameText;
     @BindView(R.id.activity_login_password_text)
@@ -52,6 +43,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @BindView(R.id.activity_login_login_btn)
     Button mLoginBtn;
 
+    private LoginPresenter mPresenter;
 
     private ProgressDialog mProgressDialog;
 
@@ -72,9 +64,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
         setSupportActionBar(mToolBar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            mTopView.setLayoutParams(new AppBarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtil.getStatusBarHeight()));
 
         MyUtil.openKeyBord(mLoginNameText);
     }

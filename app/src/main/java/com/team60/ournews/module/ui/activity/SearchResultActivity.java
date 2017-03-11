@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,21 +15,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.team60.ournews.R;
-import com.team60.ournews.module.adapter.TypeFragmentRecyclerViewAdapter;
 import com.team60.ournews.common.Constants;
+import com.team60.ournews.module.adapter.TypeFragmentRecyclerViewAdapter;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.presenter.SearchResultPresenter;
 import com.team60.ournews.module.presenter.impl.SearchResultPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.SearchResultView;
 import com.team60.ournews.util.SkipUtil;
-import com.team60.ournews.util.UiUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +39,6 @@ public class SearchResultActivity extends BaseActivity implements SearchResultVi
 
     @BindView(R.id.activity_search_result_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
-    @BindView(R.id.activity_search_result_top_view)
-    View mTopView;
     @BindView(R.id.activity_search_result_tool_bar)
     Toolbar mToolBar;
     @BindView(R.id.activity_search_result_recycler_view)
@@ -122,9 +117,6 @@ public class SearchResultActivity extends BaseActivity implements SearchResultVi
         setSupportActionBar(mToolBar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            mTopView.setLayoutParams(new AppBarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtil.getStatusBarHeight()));
 
         if (news == null)
             news = new ArrayList<>();

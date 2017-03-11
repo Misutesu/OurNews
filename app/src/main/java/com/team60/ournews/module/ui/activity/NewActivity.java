@@ -99,6 +99,12 @@ public class NewActivity extends BaseActivity implements NewView {
     RelativeLayout mNewLayout;
     @BindView(R.id.activity_new_float_action_btn)
     FloatingActionButton mFloatActionBtn;
+    @BindView(R.id.activity_new_history_text)
+    TextView mHistoryText;
+    @BindView(R.id.activity_new_collection_text)
+    TextView mCollectionText;
+    @BindView(R.id.activity_new_history_collection_layout)
+    LinearLayout mHistoryCollectionLayout;
 
     private New n;
     private Bundle mStartValues;
@@ -166,12 +172,6 @@ public class NewActivity extends BaseActivity implements NewView {
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            CollapsingToolbarLayout.LayoutParams layoutParams = (CollapsingToolbarLayout.LayoutParams) mToolBar.getLayoutParams();
-            layoutParams.topMargin = UiUtil.getStatusBarHeight();
-            mToolBar.setLayoutParams(layoutParams);
-        }
     }
 
     @Override
@@ -226,6 +226,10 @@ public class NewActivity extends BaseActivity implements NewView {
                 } else {
                     showOrHideBottomLayout(true);
                 }
+
+                if (scrollY + v.getHeight() >= v.computeVerticalScrollRange()) {
+                    showOrHideBottomLayout(true);
+                }
             }
         });
 
@@ -238,13 +242,7 @@ public class NewActivity extends BaseActivity implements NewView {
                     startActivityForResult(intent, WriteCommentActivity.CODE_SEND);
                 } else {
                     if (mLoginDialog == null) {
-                        AlertDialog.Builder builder;
-                        if (ThemeUtil.isNightMode()) {
-                            builder = new AlertDialog.Builder(NewActivity.this, R.style.NightDialogTheme);
-                        } else {
-                            builder = new AlertDialog.Builder(NewActivity.this);
-                        }
-                        mLoginDialog = builder.setTitle(getString(R.string.hint))
+                        mLoginDialog = ThemeUtil.getThemeDialogBuilder(NewActivity.this).setTitle(getString(R.string.hint))
                                 .setMessage(getString(R.string.no_login_do_you_login_now))
                                 .setPositiveButton(getString(R.string.go_to_login), new DialogInterface.OnClickListener() {
                                     @Override
@@ -543,7 +541,7 @@ public class NewActivity extends BaseActivity implements NewView {
     }
 
     @Override
-    public void getNewContentSuccess(New n) throws JSONException {
+    public void getNewContentSuccess(final New n) throws JSONException {
         isLoadEnd = true;
         if (n.getIsCollection() != -1) {
             if (n.getIsCollection() == 0) {
@@ -554,6 +552,35 @@ public class NewActivity extends BaseActivity implements NewView {
             mFloatActionBtn.setVisibility(View.VISIBLE);
             showFloatBtn(false);
         }
+
+        ObjectAnimator outAnim = ObjectAnimator.ofFloat(mHistoryCollectionLayout, "alpha", 1f, 0f).setDuration(150);
+        ObjectAnimator inAnim = ObjectAnimator.ofFloat(mHistoryCollectionLayout, "alpha", 0f, 1f).setDuration(150);
+        outAnim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mHistoryText.setText(String.valueOf(n.getHistoryNum()));
+                mCollectionText.setText(String.valueOf(n.getCollectionNum()));
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        AnimatorSet set = new AnimatorSet();
+        set.play(outAnim).before(inAnim);
+        set.start();
+
         mContentView.setContent(n.getContent());
         mCommentNumberText.setText(String.valueOf(n.getCommentNum()));
         ObjectAnimator.ofFloat(mCommentNumberText, "alpha", 0f, 1f).setDuration(300).start();
@@ -583,11 +610,14 @@ public class NewActivity extends BaseActivity implements NewView {
             n.setIsCollection(1);
             mFloatActionBtn.setImageResource(R.drawable.is_collection);
             showSnackBar(getString(R.string.collect_success));
+            n.setCollectionNum(n.getCollectionNum() + 1);
         } else if (n.getIsCollection() == 1) {
             n.setIsCollection(0);
             mFloatActionBtn.setImageResource(R.drawable.no_collection);
             showSnackBar(getString(R.string.delete_collection_success));
+            n.setCollectionNum(n.getCollectionNum() - 1);
         }
+        mCollectionText.setText(String.valueOf(n.getCollectionNum()));
         Intent intent = new Intent();
         intent.putExtra("nid", n.getId());
         setResult(COLLECTION_CHANGE, intent);

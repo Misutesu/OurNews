@@ -12,13 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <View
-            android:id="@+id/activity_comment_top_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="?attr/colorPrimary" />
-
-        <android.support.v7.widget.Toolbar
+        <com.team60.ournews.widget.CompatToolbar
             android:id="@+id/activity_comment_tool_bar"
             android:layout_width="match_parent"
             android:layout_height="?android:actionBarSize"

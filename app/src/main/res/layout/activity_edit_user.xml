@@ -1,34 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_edit_user_coordinator_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.team60.ournews.module.ui.activity.EditUserActivity">
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:id="@+id/activity_edit_user_coordinator_layout"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 tools:context="com.team60.ournews.module.ui.activity.EditUserActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <View
-            android:id="@+id/activity_edit_user_top_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="?attr/colorPrimary" />
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/activity_eidt_user_tool_bar"
+        <com.team60.ournews.widget.CompatToolbar
+            android:id="@+id/activity_edit_user_tool_bar"
             android:layout_width="match_parent"
             android:layout_height="?android:actionBarSize"
             android:background="?attr/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
-            android:background="@drawable/elevation_tool_bar" />
+            android:background="@drawable/elevation_tool_bar"/>
 
         <android.support.v7.widget.CardView
             android:id="@+id/activity_edit_user_avatar_car_view"
@@ -37,25 +31,25 @@
             android:layout_marginTop="16dp"
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
-            app:cardBackgroundColor="?attr/itemBackgroundColor"
+            app:cardBackgroundColor="?attr/textColor"
             app:cardCornerRadius="0dp"
             app:cardElevation="3dp">
 
-            <RelativeLayout
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/activity_edit_user_avatar_background_img"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"/>
 
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/activity_edit_user_avatar_background_img"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/blur_background_color_1"/>
 
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/activity_edit_user_avatar_img"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:layout_centerInParent="true" />
-            </RelativeLayout>
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/activity_edit_user_avatar_img"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center"/>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -81,7 +75,7 @@
                     android:layout_marginStart="16dp"
                     android:text="@string/loginName"
                     android:textColor="?attr/textColor1"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"/>
 
                 <TextView
                     android:id="@+id/activity_edit_user_login_name_text"
@@ -93,7 +87,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
                     android:textColor="?attr/textColor3"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -120,7 +114,7 @@
                     android:layout_marginStart="16dp"
                     android:text="@string/nickName"
                     android:textColor="?attr/textColor1"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"/>
 
                 <TextView
                     android:id="@+id/activity_edit_user_nick_name_text"
@@ -132,7 +126,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
                     android:textColor="?attr/textColor3"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -159,7 +153,7 @@
                     android:layout_marginStart="16dp"
                     android:text="@string/sex"
                     android:textColor="?attr/textColor1"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"/>
 
                 <TextView
                     android:id="@+id/activity_edit_sex_name_text"
@@ -171,7 +165,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
                     android:textColor="?attr/textColor3"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -186,6 +180,6 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
             android:text="@string/save"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

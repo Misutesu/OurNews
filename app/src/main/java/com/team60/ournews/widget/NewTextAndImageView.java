@@ -102,8 +102,6 @@ public class NewTextAndImageView extends LinearLayout {
                     }
                     if (i == 0) {
                         layoutParams.setMargins(UiUtil.dip2px(12), 0, UiUtil.dip2px(12), UiUtil.dip2px(16));
-                    } else if (i == contents.size() - 1) {
-                        layoutParams.setMargins(UiUtil.dip2px(12), UiUtil.dip2px(16), UiUtil.dip2px(12), UiUtil.dip2px(64));
                     } else {
                         layoutParams.setMargins(UiUtil.dip2px(12), UiUtil.dip2px(16), UiUtil.dip2px(12), UiUtil.dip2px(16));
                     }
@@ -141,8 +139,6 @@ public class NewTextAndImageView extends LinearLayout {
                 }
                 if (i == 0) {
                     layoutParams.setMargins(UiUtil.dip2px(12), 0, UiUtil.dip2px(12), UiUtil.dip2px(16));
-                } else if (i == contents.size() - 1) {
-                    layoutParams.setMargins(UiUtil.dip2px(12), UiUtil.dip2px(16), UiUtil.dip2px(12), UiUtil.dip2px(64));
                 } else {
                     layoutParams.setMargins(UiUtil.dip2px(12), UiUtil.dip2px(16), UiUtil.dip2px(12), UiUtil.dip2px(16));
                 }

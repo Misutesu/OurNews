@@ -22,7 +22,9 @@ public class Constants {
 
     public static final String SHARED_PREFERENCES_HISTORY = "history_shared_preferences";
 
-    public static final String SHARED_PREFERENCES_HOME_TEMP = "home_temp_shared_preferences";
+    public static final String SHARED_PREFERENCES_CACHE = "cache_shared_preferences";
+
+    public static final String SHARED_PREFERENCES_PUSH = "push_shared_preferences";
 
     public static final String SHARED_PREFERENCES_CODE = "code_shared_preferences";
 }

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,11 +17,9 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.team60.ournews.R;
@@ -42,8 +41,6 @@ import butterknife.ButterKnife;
 
 public class SearchActivity extends BaseActivity {
 
-    @BindView(R.id.activity_search_top_view)
-    View mTopView;
     @BindView(R.id.activity_search_back_btn)
     ImageView mBackBtn;
     @BindView(R.id.activity_search_edit)
@@ -55,7 +52,7 @@ public class SearchActivity extends BaseActivity {
     @BindView(R.id.activity_search_recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.activity_search_layout)
-    LinearLayout mLayout;
+    CoordinatorLayout mLayout;
     @BindView(R.id.activity_search_card_view)
     CardView mCardView;
 
@@ -84,8 +81,11 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     public void init(Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            mTopView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtil.getStatusBarHeight()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) mCardView.getLayoutParams();
+            layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin + UiUtil.getStatusBarHeight(),
+                    layoutParams.rightMargin, layoutParams.bottomMargin);
+        }
 
         sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_HISTORY);
 

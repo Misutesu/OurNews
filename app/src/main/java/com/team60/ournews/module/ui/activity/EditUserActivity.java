@@ -5,17 +5,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -37,7 +34,7 @@ import com.team60.ournews.module.presenter.impl.EditUserPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.EditUserView;
 import com.team60.ournews.util.MyUtil;
-import com.team60.ournews.util.UiUtil;
+import com.team60.ournews.util.ThemeUtil;
 
 import java.io.File;
 
@@ -52,9 +49,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
     private final String[] selectPhotoItems = {"拍照", "从相册中选择"};
     private final String[] selectSexItems = {"男", "女"};
 
-    @BindView(R.id.activity_edit_user_top_view)
-    View mTopView;
-    @BindView(R.id.activity_eidt_user_tool_bar)
+    @BindView(R.id.activity_edit_user_tool_bar)
     Toolbar mToolBar;
     @BindView(R.id.activity_edit_user_avatar_background_img)
     SimpleDraweeView mAvatarBackgroundImg;
@@ -125,9 +120,6 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
         setSupportActionBar(mToolBar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            mTopView.setLayoutParams(new AppBarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtil.getStatusBarHeight()));
     }
 
     @Override
@@ -143,7 +135,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
             @Override
             public void onClick(View view) {
                 if (mPhotoDialog == null) {
-                    mPhotoDialog = new AlertDialog.Builder(EditUserActivity.this)
+                    mPhotoDialog = ThemeUtil.getThemeDialogBuilder(EditUserActivity.this)
                             .setTitle(getString(R.string.change_avatar))
                             .setItems(selectPhotoItems, new DialogInterface.OnClickListener() {
                                 @Override
@@ -185,7 +177,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
             @Override
             public void onClick(View view) {
                 if (mSexDialog == null)
-                    mSexDialog = new AlertDialog.Builder(EditUserActivity.this)
+                    mSexDialog = ThemeUtil.getThemeDialogBuilder(EditUserActivity.this)
                             .setTitle(getString(R.string.select_sex))
                             .setItems(selectSexItems, new DialogInterface.OnClickListener() {
                                 @Override
@@ -249,12 +241,13 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
         } else {
             uri = FrescoLoader.getUri(R.drawable.user_default_avatar);
         }
-        FrescoLoader.load(uri)
+        FrescoLoader.load(Uri.parse("res:// /" + R.drawable.user_default_avatar))
                 .setCircle()
                 .setBorder(4, Color.WHITE)
                 .into(mAvatarImg);
         FrescoLoader.load(uri)
                 .resize(128, 64)
+                .setDurationTime(1000)
                 .setPostprocessor(new BlurPostprocessor(EditUserActivity.this))
                 .into(mAvatarBackgroundImg);
 
@@ -281,23 +274,27 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
 
     @Override
     public void takeSuccess(TResult result) {
-        String path = result.getImage().getCompressPath();
-        File file = new File(path);
-        if (file.exists()) {
-            FrescoLoader.load(file)
-                    .setCircle()
-                    .setBorder(4, Color.WHITE)
-                    .clearImgCache()
-                    .into(mAvatarImg);
-            FrescoLoader.load(file)
-                    .resize(128, 64)
-                    .setPostprocessor(new BlurPostprocessor(EditUserActivity.this))
-                    .clearImgCache()
-                    .into(mAvatarImg);
-            isSelectPhoto = true;
-        } else {
-            showSnackBar(getString(R.string.get_photo_error));
+        if (result != null && result.getImage() != null) {
+            String path = result.getImage().getCompressPath();
+            if (path != null) {
+                File file = new File(path);
+                if (file.exists()) {
+                    FrescoLoader.load(file)
+                            .setCircle()
+                            .setBorder(4, Color.WHITE)
+                            .clearImgCache()
+                            .into(mAvatarImg);
+                    FrescoLoader.load(file)
+                            .resize(128, 64)
+                            .setPostprocessor(new BlurPostprocessor(EditUserActivity.this))
+                            .clearImgCache()
+                            .into(mAvatarImg);
+                    isSelectPhoto = true;
+                    return;
+                }
+            }
         }
+        showSnackBar(getString(R.string.get_photo_error));
     }
 
     @Override

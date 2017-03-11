@@ -19,6 +19,7 @@ import com.team60.ournews.module.bean.Comment;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.bean.OtherUser;
 import com.team60.ournews.util.MyUtil;
+import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
 
 import java.util.List;
@@ -119,6 +120,7 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
             }
             FrescoLoader.load(uri)
                     .setCircle()
+                    .setBorder(3, ThemeUtil.getColor(context.getTheme(), R.attr.textColor))
                     .into(viewHolder.mAvatarImg);
 
             viewHolder.mLayout.setOnClickListener(new View.OnClickListener() {

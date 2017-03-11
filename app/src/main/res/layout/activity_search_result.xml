@@ -12,13 +12,7 @@
         android:orientation="vertical"
         tools:context="com.team60.ournews.module.ui.activity.SearchResultActivity">
 
-        <View
-            android:id="@+id/activity_search_result_top_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="?attr/colorPrimary"/>
-
-        <android.support.v7.widget.Toolbar
+        <com.team60.ournews.widget.CompatToolbar
             android:id="@+id/activity_search_result_tool_bar"
             android:layout_width="match_parent"
             android:layout_height="?android:actionBarSize"

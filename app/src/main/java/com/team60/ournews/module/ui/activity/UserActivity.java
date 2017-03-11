@@ -256,6 +256,7 @@ public class UserActivity extends BaseActivity implements UserView {
                 .into(mUserAvatarImg);
         FrescoLoader.load(uri)
                 .resize(128, 128)
+                .setDurationTime(1000)
                 .setPostprocessor(new BlurPostprocessor(UserActivity.this))
                 .into(mBackgroundImg);
     }

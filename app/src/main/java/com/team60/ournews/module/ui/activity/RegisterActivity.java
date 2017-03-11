@@ -2,16 +2,13 @@ package com.team60.ournews.module.ui.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -21,7 +18,6 @@ import com.team60.ournews.module.presenter.impl.RegisterPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.RegisterView;
 import com.team60.ournews.util.MyUtil;
-import com.team60.ournews.util.UiUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,8 +28,6 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
 
     private RegisterPresenter mPresenter;
 
-    @BindView(R.id.activity_register_top_view)
-    View mTopView;
     @BindView(R.id.activity_register_tool_bar)
     Toolbar mToolBar;
     @BindView(R.id.activity_register_login_name_text)
@@ -72,9 +66,6 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
         setSupportActionBar(mToolBar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            mTopView.setLayoutParams(new AppBarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtil.getStatusBarHeight()));
 
         MyUtil.openKeyBord(mLoginNameText);
     }

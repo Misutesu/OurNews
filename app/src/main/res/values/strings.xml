@@ -19,6 +19,7 @@
     <string name="photo_too_big">选择的图片过大</string>
     <string name="change_info_error">修改用户信息错误</string>
     <string name="open_new_error">打开新闻失败</string>
+    <string name="no_write_permission">没有读写权限</string>
 
     <string name="ok">确定</string>
     <string name="no">取消</string>
@@ -105,4 +106,8 @@
 
     <string name="no_collection">暂无收藏</string>
     <string name="no_history">暂无浏览历史</string>
+    <string name="see_history">浏览</string>
+    <string name="collection">收藏</string>
+    <string name="temp">-</string>
+    <string name="spot">·</string>
 </resources>

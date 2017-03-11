@@ -1,7 +1,6 @@
 package com.team60.ournews.module.presenter.impl;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
@@ -37,10 +36,6 @@ public class CenterPresenterImpl implements CenterPresenter {
 
     @Override
     public void getNewList(long id, String token, long uid, int type, final int page, int sort) {
-        Log.d("TAG", "id : " + id);
-        Log.d("TAG", "token : " + token);
-        Log.d("TAG", "uid : " + uid);
-        Log.d("TAG", "type : " + type);
         Observable<ListNewResult> observable;
         if (type == 0) {
             observable = RetrofitUtil.newInstance().getCollections(id, token, uid, page, Constants.NEW_EVERY_PAGE_SIZE, sort);

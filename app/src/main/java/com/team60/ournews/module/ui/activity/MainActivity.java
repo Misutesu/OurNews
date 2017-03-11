@@ -1,19 +1,24 @@
 package com.team60.ournews.module.ui.activity;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -44,6 +49,7 @@ import com.team60.ournews.module.ui.fragment.HomeFragment;
 import com.team60.ournews.module.ui.fragment.TypeFragment;
 import com.team60.ournews.module.view.MainView;
 import com.team60.ournews.util.MyUtil;
+import com.team60.ournews.util.PushUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
 
@@ -58,6 +64,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity implements MainView {
+
+    private final int PERMISSION_CODE = 100;
 
     public final String[] titles = {"推荐", "ACG", "游戏", "社会", "娱乐", "科技"};
 
@@ -102,6 +110,7 @@ public class MainActivity extends BaseActivity implements MainView {
         ButterKnife.bind(this);
         init(savedInstanceState);
         setListener();
+        checkPermission();
     }
 
     @Override
@@ -203,8 +212,7 @@ public class MainActivity extends BaseActivity implements MainView {
             @Override
             public void onClick(View v) {
                 if (mLogoutDialog == null) {
-                    mLogoutDialog = new AlertDialog.Builder(MainActivity.this)
-                            .setMessage(getString(R.string.are_you_sure_logout))
+                    mLogoutDialog = ThemeUtil.getThemeDialogBuilder(MainActivity.this).setMessage(getString(R.string.are_you_sure_logout))
                             .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -252,6 +260,17 @@ public class MainActivity extends BaseActivity implements MainView {
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PERMISSION_CODE);
+            }
+        }
+    }
+
     private void setUserInfo() {
         Uri uri;
         String userName;
@@ -294,7 +313,7 @@ public class MainActivity extends BaseActivity implements MainView {
             mThemeRecyclerView.setHasFixedSize(true);
             mThemeRecyclerView.setAdapter(mThemeAdapter);
 
-            mThemeDialog = new AlertDialog.Builder(this)
+            mThemeDialog = ThemeUtil.getThemeDialogBuilder(this)
                     .setView(view)
                     .create();
 
@@ -304,7 +323,7 @@ public class MainActivity extends BaseActivity implements MainView {
                     if (theme.getThemeId() != ThemeUtil.getStyle()) {
                         if (ThemeUtil.isNightMode()) {
                             if (mThemeHintDialog == null)
-                                mThemeHintDialog = new AlertDialog.Builder(MainActivity.this)
+                                mThemeHintDialog = ThemeUtil.getThemeDialogBuilder(MainActivity.this)
                                         .setTitle(getString(R.string.hint))
                                         .setMessage(getString(R.string.select_theme_hint))
                                         .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
@@ -399,5 +418,17 @@ public class MainActivity extends BaseActivity implements MainView {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                PushUtil.initPush(MainActivity.this);
+            } else {
+                showSnackBar(getString(R.string.no_write_permission));
+            }
+        }
     }
 }

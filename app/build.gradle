@@ -12,10 +12,15 @@ android {
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        ndk {
+            abiFilters "armeabi","x86"
+        }
     }
     buildTypes {
         debug {
-            zipAlignEnabled false
+            minifyEnabled false
+            zipAlignEnabled true
             shrinkResources false
         }
         release {
@@ -28,7 +33,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -56,4 +61,5 @@ dependencies {
     compile 'com.github.Misutesu:FrescoLoader:1.0.2'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile project(':PushSDK')
 }

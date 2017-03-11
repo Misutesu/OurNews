@@ -1,8 +1,10 @@
 package com.team60.ournews.util;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.support.annotation.AttrRes;
+import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 
 import com.team60.ournews.R;
@@ -18,6 +20,16 @@ public class ThemeUtil {
     public static boolean isFirstActivity = true;
 
     private static SharedPreferences sharedPreferences;
+
+    public static AlertDialog.Builder getThemeDialogBuilder(Context context) {
+        AlertDialog.Builder builder;
+        if (ThemeUtil.isNightMode()) {
+            builder = new AlertDialog.Builder(context, R.style.NightDialogTheme);
+        } else {
+            builder = new AlertDialog.Builder(context);
+        }
+        return builder;
+    }
 
     public static int getColor(Resources.Theme theme, @AttrRes int id) {
         TypedValue typedValue = new TypedValue();
