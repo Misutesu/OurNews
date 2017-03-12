@@ -17,8 +17,6 @@ import com.team60.ournews.common.Constants;
 public class ThemeUtil {
     private static final int[] styles = new int[9];
 
-    public static boolean isFirstActivity = true;
-
     private static SharedPreferences sharedPreferences;
 
     public static AlertDialog.Builder getThemeDialogBuilder(Context context) {

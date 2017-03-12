@@ -7,4 +7,7 @@ import com.team60.ournews.module.view.base.BaseView;
  */
 
 public interface MainView extends BaseView {
+    void checkLoginSuccess();
+
+    void checkLoginError();
 }

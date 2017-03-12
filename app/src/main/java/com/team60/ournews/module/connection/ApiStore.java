@@ -1,5 +1,6 @@
 package com.team60.ournews.module.connection;
 
+import com.team60.ournews.module.model.CheckLoginResult;
 import com.team60.ournews.module.model.CommentResult;
 import com.team60.ournews.module.model.ContentResult;
 import com.team60.ournews.module.model.HomeNewResult;
@@ -34,7 +35,13 @@ public interface ApiStore {
     @POST("login")
     Observable<LoginResult> login(@Query("login_name") String loginName
             , @Query("password") String password
-            , @Query("time") long time);
+            , @Query("time") long time
+            , @Query("umeng_token") String umengToken);
+
+    @POST("checkLogin")
+    Observable<CheckLoginResult> checkLogin(@Query("id") long id
+            , @Query("token") String token
+            , @Query("umeng_token") String umengToken);
 
     @POST("changeInfo")
     Observable<NoDataResult> changeInfo(@Query("id") long id,
@@ -94,6 +101,7 @@ public interface ApiStore {
                                                  @Query("nid") long nid,
                                                  @Query("content") String content,
                                                  @Query("time") long time,
+                                                 @Query("token") String token,
                                                  @Query("key") String key);
 
     @POST("getComment")

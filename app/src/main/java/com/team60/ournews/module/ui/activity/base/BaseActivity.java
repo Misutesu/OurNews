@@ -14,6 +14,8 @@ import android.view.WindowManager;
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.module.bean.User;
+import com.team60.ournews.module.ui.activity.FirstActivity;
+import com.team60.ournews.module.view.base.BaseView;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
 import com.umeng.message.PushAgent;
@@ -25,7 +27,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Misutesu on 2016/12/26 0026.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements BaseView {
 
     public User user = User.newInstance();
 
@@ -39,9 +41,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         UiUtil.initialize(this);
 
-        if (ThemeUtil.isFirstActivity) {
-            ThemeUtil.isFirstActivity = false;
-        } else {
+        if (!getClass().getName().equals(FirstActivity.class.getName())) {
             if (ThemeUtil.isNightMode()) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 setTheme(R.style.NightTheme);
@@ -97,4 +97,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     public abstract void init(Bundle savedInstanceState);
 
     public abstract void setListener();
+
+    @Override
+    public void showSnackBar(String message) {
+
+    }
 }

@@ -1,12 +1,8 @@
 package com.team60.ournews;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
 
 import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.util.PushUtil;
@@ -48,13 +44,14 @@ public class MyApplication extends Application {
         super.onCreate();
         mApplication = this;
         FrescoLoader.init(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                PushUtil.initPush(this);
-            }
-        } else {
-            PushUtil.initPush(this);
-        }
+        PushUtil.newInstance().initPush(this);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                    == PackageManager.PERMISSION_GRANTED) {
+//                PushUtil.initPush(this);
+//            }
+//        } else {
+//            PushUtil.initPush(this);
+//        }
     }
 }

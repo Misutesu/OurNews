@@ -27,10 +27,10 @@ public class WriteCommentPresenterImpl implements WriteCommentPresenter {
     }
 
     @Override
-    public void sendComment(final long uid, final long nid, final String content) {
+    public void sendComment(final long uid, final long nid, final String content, String token) {
         long time = System.currentTimeMillis();
         mView.addSubscription(RetrofitUtil.newInstance()
-                .sendCommentUseNewId(uid, nid, content, time, MD5Util.getMD5(Constants.KEY + time))
+                .sendCommentUseNewId(uid, nid, content, time, token, MD5Util.getMD5(Constants.KEY + token + time))
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<NoDataResult>() {
                     @Override

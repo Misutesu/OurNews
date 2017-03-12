@@ -1,24 +1,19 @@
 package com.team60.ournews.module.ui.activity;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -44,6 +39,8 @@ import com.team60.ournews.event.ShowSnackEvent;
 import com.team60.ournews.module.adapter.ThemeSelectRecyclerViewAdapter;
 import com.team60.ournews.module.bean.Theme;
 import com.team60.ournews.module.bean.User;
+import com.team60.ournews.module.presenter.MainPresenter;
+import com.team60.ournews.module.presenter.impl.MainPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.ui.fragment.HomeFragment;
 import com.team60.ournews.module.ui.fragment.TypeFragment;
@@ -64,8 +61,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity implements MainView {
-
-    private final int PERMISSION_CODE = 100;
 
     public final String[] titles = {"推荐", "ACG", "游戏", "社会", "娱乐", "科技"};
 
@@ -98,10 +93,14 @@ public class MainActivity extends BaseActivity implements MainView {
     @BindView(R.id.activity_main_view_pager)
     ViewPager mViewPager;
 
+    private MainPresenter mPresenter;
+
     private AlertDialog mThemeDialog;
 
     private AlertDialog mThemeHintDialog;
     private AlertDialog mLogoutDialog;
+
+    private int checkLoginNum = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +109,8 @@ public class MainActivity extends BaseActivity implements MainView {
         ButterKnife.bind(this);
         init(savedInstanceState);
         setListener();
-        checkPermission();
+        setUserInfo();
+        checkLogin();
     }
 
     @Override
@@ -122,6 +122,8 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     public void init(Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
+
+        mPresenter = new MainPresenterImpl(this, this);
 
         View mHeaderView = mNavView.getHeaderView(0);
         mHeaderUserAvatarImg = (SimpleDraweeView) mHeaderView.findViewById(R.id.header_user_avatar_img);
@@ -157,8 +159,6 @@ public class MainActivity extends BaseActivity implements MainView {
             mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
 
         initViewPager();
-
-        setUserInfo();
     }
 
 
@@ -260,14 +260,9 @@ public class MainActivity extends BaseActivity implements MainView {
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    private void checkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        PERMISSION_CODE);
-            }
+    private void checkLogin() {
+        if (User.isLogin()) {
+            mPresenter.checkLogin(user.getId(), user.getToken(), PushUtil.newInstance().getUmengToken(MainActivity.this));
         }
     }
 
@@ -302,6 +297,10 @@ public class MainActivity extends BaseActivity implements MainView {
                 .setCircle()
                 .setBorder(4, Color.WHITE)
                 .into(mHeaderUserAvatarImg);
+
+        if (user.getPushState() == 0) {
+            PushUtil.newInstance().disablePush(MainActivity.this);
+        }
     }
 
     private void initThemeDialog() {
@@ -402,13 +401,6 @@ public class MainActivity extends BaseActivity implements MainView {
         return true;
     }
 
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-//        menu.findItem(R.id.tool_bar_save_img).setVisible(true);
-//        invalidateOptionsMenu();
-//        return super.onPrepareOptionsMenu(menu);
-//    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -421,14 +413,44 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                PushUtil.initPush(MainActivity.this);
-            } else {
-                showSnackBar(getString(R.string.no_write_permission));
-            }
+    public void checkLoginSuccess() {
+        checkLoginNum = 0;
+        setUserInfo();
+    }
+
+    @Override
+    public void checkLoginError() {
+        if (checkLoginNum <= 10) {
+            checkLoginNum++;
+            checkLogin();
         }
     }
+
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        menu.findItem(R.id.tool_bar_save_img).setVisible(true);
+//        invalidateOptionsMenu();
+//        return super.onPrepareOptionsMenu(menu);
+//    }
+//    private void checkPermission() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                    == PackageManager.PERMISSION_DENIED) {
+//                ActivityCompat.requestPermissions(MainActivity.this,
+//                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                        PERMISSION_CODE);
+//            }
+//        }
+//    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == PERMISSION_CODE) {
+//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                PushUtil.newInstance().initPush(MainActivity.this);
+//            } else {
+//                showSnackBar(getString(R.string.no_write_permission));
+//            }
+//        }
+//    }
 }

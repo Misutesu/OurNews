@@ -32,6 +32,8 @@ public class ErrorUtil {
     private static final int CHANGE_INFO_ERROR = 3001;
     // Token错误
     private static final int TOKEN_ERROR = 3002;
+    // 用户被封禁
+    public static final int USER_NO_ONLINE = 3003;
     // 用户不存在(ID)
     private static final int USER_NO_EXIST = 5001;
     // 新闻不存在(ID)
@@ -76,6 +78,7 @@ public class ErrorUtil {
             errorList.add(new Error(PASSWORD_ERROR, "密码错误"));
             errorList.add(new Error(CHANGE_INFO_ERROR, "修改用户信息错误或用户不存在"));
             errorList.add(new Error(TOKEN_ERROR, "Token错误"));
+            errorList.add(new Error(USER_NO_ONLINE, "用户被封禁"));
             errorList.add(new Error(USER_NO_EXIST, "用户不存在"));
             errorList.add(new Error(NEW_NO_EXIST, "新闻不存在"));
             errorList.add(new Error(HAS_COLLECTION, "已有收藏"));

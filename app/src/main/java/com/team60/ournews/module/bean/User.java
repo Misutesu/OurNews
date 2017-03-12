@@ -15,9 +15,10 @@ public class User {
     private long id;
     private String loginName;
     private String nickName;
-    private int sex;
+    private int sex = -1;
     private String photo;
     private String token;
+    private int pushState = -1;
 
     private static User user = new User();
     private static SharedPreferences sharedPreferences;
@@ -32,7 +33,12 @@ public class User {
 
     public static void breakLogin() {
         sharedPreferences.edit().clear().apply();
-        user = new User();
+        user.setId(0);
+        user.setLoginName(null);
+        user.setNickName(null);
+        user.setSex(0);
+        user.setPhoto(null);
+        user.setToken(null);
     }
 
     public static boolean isLogin() {
@@ -76,8 +82,8 @@ public class User {
     }
 
     public int getSex() {
-        if (sex == 0)
-            sex = sharedPreferences.getInt("sex", 0);
+        if (sex == -1)
+            sex = sharedPreferences.getInt("sex", -1);
         return sex;
     }
 
@@ -106,5 +112,16 @@ public class User {
     public void setToken(String token) {
         if (sharedPreferences.edit().putString("token", token).commit())
             this.token = token;
+    }
+
+    public int getPushState() {
+        if (pushState == -1)
+            pushState = sharedPreferences.getInt("pushState", -1);
+        return pushState;
+    }
+
+    public void setPushState(int pushState) {
+        if (sharedPreferences.edit().putInt("pushState", pushState).commit())
+            this.pushState = pushState;
     }
 }

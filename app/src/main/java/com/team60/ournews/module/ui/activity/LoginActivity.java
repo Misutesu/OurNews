@@ -18,6 +18,7 @@ import com.team60.ournews.module.presenter.impl.LoginPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.LoginView;
 import com.team60.ournews.util.MyUtil;
+import com.team60.ournews.util.PushUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -140,7 +141,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 mProgressDialog.setCancelable(false);
             }
             mProgressDialog.show();
-            mPresenter.login(loginName, password);
+            mPresenter.login(loginName, password, PushUtil.newInstance().getUmengToken(LoginActivity.this));
         }
         if (mLoginNameText.isFocusable())
             MyUtil.closeKeyBord(mLoginNameText);

@@ -5,5 +5,5 @@ package com.team60.ournews.module.presenter;
  */
 
 public interface WriteCommentPresenter {
-    void sendComment(long uid, long nid, String content);
+    void sendComment(long uid, long nid, String content, String token);
 }

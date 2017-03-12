@@ -149,7 +149,7 @@ public class WriteCommentActivity extends BaseActivity implements WriteCommentVi
             showSnackBar(getString(R.string.no_content));
         } else {
             showOrHideLayout(false);
-            mPresenter.sendComment(user.getId(), n.getId(), content);
+            mPresenter.sendComment(user.getId(), n.getId(), content, user.getToken());
         }
     }
 

@@ -3,15 +3,15 @@ package com.team60.ournews.module.model;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Misutesu on 2017/3/5 0005.
+ * Created by Misutesu on 2017/3/12 0012.
  */
 
-public class LoginResult {
+public class CheckLoginResult {
 
     /**
      * result : success
      * errorCode : 0
-     * data : {"id":12,"nickName":"Test","sex":1,"photo":"NoImage","loginName":"Test","token":"5095c4cfad764a6aa5e8262443671ca4","push_state",1}
+     * data : {"id":1,"loginName":"Test","nickName":"Test","sex":1,"photo":"NoImage","pushState":1}
      */
 
     private String result;
@@ -45,23 +45,21 @@ public class LoginResult {
 
     public static class DataBean {
         /**
-         * id : 12
-         * nick_name : Test
+         * id : 1
+         * loginName : Test
+         * nickName : Test
          * sex : 1
          * photo : NoImage
-         * login_name : Test
-         * token : 5095c4cfad764a6aa5e8262443671ca4
-         * push_state : 1
+         * pushState : 1
          */
 
         private int id;
+        @SerializedName("login_name")
+        private String loginName;
         @SerializedName("nick_name")
         private String nickName;
         private int sex;
         private String photo;
-        @SerializedName("login_name")
-        private String loginName;
-        private String token;
         @SerializedName("push_state")
         private int pushState;
 
@@ -71,6 +69,14 @@ public class LoginResult {
 
         public void setId(int id) {
             this.id = id;
+        }
+
+        public String getLoginName() {
+            return loginName;
+        }
+
+        public void setLoginName(String loginName) {
+            this.loginName = loginName;
         }
 
         public String getNickName() {
@@ -95,22 +101,6 @@ public class LoginResult {
 
         public void setPhoto(String photo) {
             this.photo = photo;
-        }
-
-        public String getLoginName() {
-            return loginName;
-        }
-
-        public void setLoginName(String loginName) {
-            this.loginName = loginName;
-        }
-
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
         }
 
         public int getPushState() {

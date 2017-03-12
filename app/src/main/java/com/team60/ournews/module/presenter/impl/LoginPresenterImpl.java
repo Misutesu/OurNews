@@ -1,5 +1,7 @@
 package com.team60.ournews.module.presenter.impl;
 
+import android.util.Log;
+
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
@@ -28,10 +30,11 @@ public class LoginPresenterImpl implements LoginPresenter {
     }
 
     @Override
-    public void login(final String loginName, final String password) {
+    public void login(String loginName, String password, String umengToken) {
+        Log.d("TAG", "umengToken : " + umengToken);
         long time = System.currentTimeMillis();
         mView.addSubscription(RetrofitUtil.newInstance()
-                .login(loginName, MD5Util.getMD5(Constants.KEY + password + time), time)
+                .login(loginName, MD5Util.getMD5(Constants.KEY + password + time), time, umengToken)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<LoginResult>() {
                     @Override
@@ -56,6 +59,7 @@ public class LoginPresenterImpl implements LoginPresenter {
                             user.setSex(result.getData().getSex());
                             user.setPhoto(result.getData().getPhoto());
                             user.setToken(result.getData().getToken());
+                            user.setPushState(result.getData().getPushState());
                             mView.loginSuccess();
                         } else {
                             mView.loginError(ErrorUtil.getErrorMessage(result.getErrorCode()));
