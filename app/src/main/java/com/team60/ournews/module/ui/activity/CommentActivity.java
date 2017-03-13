@@ -200,13 +200,21 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         isLoad = true;
         if (mProgressBar.getVisibility() == View.GONE)
             mProgressBar.setVisibility(View.VISIBLE);
-        mPresenter.getComments(n.getId(), 1, sort);
+        long uid = -1;
+        if (User.isLogin()) {
+            uid = user.getId();
+        }
+        mPresenter.getComments(uid, n.getId(), 1, sort);
     }
 
     private void startLoadMore() {
         isLoad = true;
         mAdapter.setLoadMore(true);
-        mPresenter.getComments(n.getId(), page + 1, sort);
+        long uid = -1;
+        if (User.isLogin()) {
+            uid = user.getId();
+        }
+        mPresenter.getComments(uid, n.getId(), page + 1, sort);
     }
 
     private void showOrHideBottomLayout(boolean showOrHide) {

@@ -3,47 +3,24 @@ package com.team60.ournews.module.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Misutesu on 2016/12/29 0029.
  */
 
-public class Comment implements Parcelable{
+public class Comment implements Parcelable {
+
     private long id;
     private long nid;
     private String content;
     private String createTime;
+    private int lickNum;
+    private int childNum;
     private OtherUser user;
+    private List<CommentChild> childList;
 
     public Comment() {
-    }
-
-    public static List<Comment> getComments(long nid, JSONObject jsonObject) throws JSONException {
-        List<Comment> comments = new ArrayList<>();
-        JSONArray jsonArray = jsonObject.getJSONArray("comments");
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jComment = jsonArray.getJSONObject(i);
-            Comment comment = new Comment();
-            comment.setId(jComment.getLong("id"));
-            comment.setNid(nid);
-            comment.setContent(jComment.getString("content"));
-            comment.setCreateTime(jComment.getString("createtime"));
-            JSONObject jUser = jComment.getJSONObject("user");
-            OtherUser user = new OtherUser();
-            user.setId(jUser.getLong("id"));
-            user.setNickName(jUser.getString("nickname"));
-            user.setPhoto(jUser.getString("photo"));
-            user.setSex(jUser.getInt("sex"));
-            comment.setUser(user);
-            comments.add(comment);
-        }
-        return comments;
     }
 
     public long getId() {
@@ -78,6 +55,22 @@ public class Comment implements Parcelable{
         this.createTime = createTime;
     }
 
+    public int getLickNum() {
+        return lickNum;
+    }
+
+    public void setLickNum(int lickNum) {
+        this.lickNum = lickNum;
+    }
+
+    public int getChildNum() {
+        return childNum;
+    }
+
+    public void setChildNum(int childNum) {
+        this.childNum = childNum;
+    }
+
     public OtherUser getUser() {
         return user;
     }
@@ -86,11 +79,22 @@ public class Comment implements Parcelable{
         this.user = user;
     }
 
+    public List<CommentChild> getChildList() {
+        return childList;
+    }
+
+    public void setChildList(List<CommentChild> childList) {
+        this.childList = childList;
+    }
+
     protected Comment(Parcel in) {
         id = in.readLong();
         nid = in.readLong();
         content = in.readString();
         createTime = in.readString();
+        lickNum = in.readInt();
+        childNum = in.readInt();
+        user = in.readParcelable(OtherUser.class.getClassLoader());
     }
 
     @Override
@@ -99,6 +103,9 @@ public class Comment implements Parcelable{
         dest.writeLong(nid);
         dest.writeString(content);
         dest.writeString(createTime);
+        dest.writeInt(lickNum);
+        dest.writeInt(childNum);
+        dest.writeParcelable(user, flags);
     }
 
     @Override

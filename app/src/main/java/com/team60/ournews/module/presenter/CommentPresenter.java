@@ -5,5 +5,5 @@ package com.team60.ournews.module.presenter;
  */
 
 public interface CommentPresenter {
-    void getComments(long nid, int page, int sort);
+    void getComments(long uid, long nid, int page, int sort);
 }

@@ -13,7 +13,7 @@ public class CommentResult {
     /**
      * result : success
      * errorCode : 0
-     * data : {"comments":[{"id":30,"content":"hdhxj","createTime":"32295天前","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"}},{"id":29,"content":"公益事业","createTime":"41690天前","user":{"id":3,"nickName":"18684040127","sex":0,"photo":"NoImage"}},{"id":2,"content":"弟弟你是","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"}}]}
+     * data : {"comments":[{"id":9,"content":"饿哦给一下","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"},"isLike":1,"likeNum":1,"commentChildrenList":[{"id":1,"content":"123","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"}},{"id":3,"content":"123","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"}},{"id":4,"content":"123","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"}}],"childNum":13},{"id":8,"content":"地宫一个月","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"},"isLike":0,"likeNum":0,"commentChildrenList":[],"childNum":0},{"id":7,"content":"顶你后","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"},"isLike":0,"likeNum":0,"commentChildrenList":[],"childNum":0},{"id":6,"content":"您给我说","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"},"isLike":0,"likeNum":0,"commentChildrenList":[],"childNum":0},{"id":5,"content":"蛤蟆","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"},"isLike":0,"likeNum":0,"commentChildrenList":[],"childNum":0},{"id":4,"content":"爹婆婆哄孩子","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"},"isLike":0,"likeNum":0,"commentChildrenList":[],"childNum":0}]}
      */
 
     private String result;
@@ -58,10 +58,14 @@ public class CommentResult {
 
         public static class CommentsBean {
             /**
-             * id : 30
-             * content : hdhxj
-             * createTime : 32295天前
+             * id : 9
+             * content : 饿哦给一下
+             * createTime : 2017-03-06 00:13:18
              * user : {"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"}
+             * isLike : 1
+             * likeNum : 1
+             * commentChildrenList : [{"id":1,"content":"123","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"}},{"id":3,"content":"123","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"}},{"id":4,"content":"123","createTime":"2017-03-06 00:13:18","user":{"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"}}]
+             * childNum : 13
              */
 
             private int id;
@@ -69,6 +73,14 @@ public class CommentResult {
             @SerializedName("create_time")
             private String createTime;
             private UserBean user;
+            @SerializedName("is_like")
+            private int isLike;
+            @SerializedName("like_num")
+            private int likeNum;
+            @SerializedName("child_num")
+            private int childNum;
+            @SerializedName("comment_children")
+            private List<CommentChildrenBean> commentChildrenList;
 
             public int getId() {
                 return id;
@@ -101,6 +113,86 @@ public class CommentResult {
             public void setUser(UserBean user) {
                 this.user = user;
             }
+
+            public int getIsLike() {
+                return isLike;
+            }
+
+            public void setIsLike(int isLike) {
+                this.isLike = isLike;
+            }
+
+            public int getLikeNum() {
+                return likeNum;
+            }
+
+            public void setLikeNum(int likeNum) {
+                this.likeNum = likeNum;
+            }
+
+            public int getChildNum() {
+                return childNum;
+            }
+
+            public void setChildNum(int childNum) {
+                this.childNum = childNum;
+            }
+
+            public List<CommentChildrenBean> getCommentChildrenList() {
+                return commentChildrenList;
+            }
+
+            public void setCommentChildrenList(List<CommentChildrenBean> commentChildrenList) {
+                this.commentChildrenList = commentChildrenList;
+            }
+
+            public static class CommentChildrenBean {
+                /**
+                 * id : 1
+                 * content : 123
+                 * createTime : 2017-03-06 00:13:18
+                 * user : {"id":1,"nickName":"Misutesu","sex":1,"photo":"dc75cccf96cc430db1a1740007d6b2da.jpeg"}
+                 */
+
+                private int id;
+                private String content;
+                @SerializedName("create_time")
+                private String createTime;
+                private UserBean user;
+
+                public int getId() {
+                    return id;
+                }
+
+                public void setId(int id) {
+                    this.id = id;
+                }
+
+                public String getContent() {
+                    return content;
+                }
+
+                public void setContent(String content) {
+                    this.content = content;
+                }
+
+                public String getCreateTime() {
+                    return createTime;
+                }
+
+                public void setCreateTime(String createTime) {
+                    this.createTime = createTime;
+                }
+
+                public UserBean getUser() {
+                    return user;
+                }
+
+                public void setUser(UserBean user) {
+                    this.user = user;
+                }
+            }
+
 
             public static class UserBean {
                 /**

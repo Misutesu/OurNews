@@ -4,6 +4,7 @@ import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.bean.Comment;
+import com.team60.ournews.module.bean.CommentChild;
 import com.team60.ournews.module.bean.OtherUser;
 import com.team60.ournews.module.connection.RetrofitUtil;
 import com.team60.ournews.module.model.CommentResult;
@@ -14,6 +15,7 @@ import com.team60.ournews.util.ErrorUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
@@ -31,9 +33,14 @@ public class CommentPresenterImpl implements CommentPresenter {
     }
 
     @Override
-    public void getComments(final long nid, final int page, final int sort) {
-        mView.addSubscription(RetrofitUtil.newInstance()
-                .getCommentsUseId(nid, page, Constants.COMMENT_EVERY_PAGE_SIZE, sort)
+    public void getComments(long uid, final long nid, final int page, final int sort) {
+        Flowable<CommentResult> flowable;
+        if (uid == -1) {
+            flowable = RetrofitUtil.newInstance().getCommentsUseId(nid, page, Constants.COMMENT_EVERY_PAGE_SIZE, sort);
+        } else {
+            flowable = RetrofitUtil.newInstance().getCommentsUseId(uid, nid, page, Constants.COMMENT_EVERY_PAGE_SIZE, sort);
+        }
+        mView.addSubscription(flowable
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableSubscriber<CommentResult>() {
                     @Override
@@ -63,12 +70,31 @@ public class CommentPresenterImpl implements CommentPresenter {
                                 comment.setNid(nid);
                                 comment.setContent(result.getData().getComments().get(i).getContent());
                                 comment.setCreateTime(result.getData().getComments().get(i).getCreateTime());
+                                comment.setLickNum(result.getData().getComments().get(i).getLikeNum());
+                                comment.setChildNum(result.getData().getComments().get(i).getChildNum());
                                 OtherUser otherUser = new OtherUser();
                                 otherUser.setId(result.getData().getComments().get(i).getUser().getId());
                                 otherUser.setNickName(result.getData().getComments().get(i).getUser().getNickName());
                                 otherUser.setSex(result.getData().getComments().get(i).getUser().getSex());
                                 otherUser.setPhoto(result.getData().getComments().get(i).getUser().getPhoto());
                                 comment.setUser(otherUser);
+
+                                List<CommentChild> childList = new ArrayList<>();
+                                for (int n = 0; n < result.getData().getComments().get(i).getCommentChildrenList().size(); n++) {
+                                    CommentChild commentChild = new CommentChild();
+                                    commentChild.setId(result.getData().getComments().get(i).getCommentChildrenList().get(n).getId());
+                                    commentChild.setCid(result.getData().getComments().get(i).getId());
+                                    commentChild.setContent(result.getData().getComments().get(i).getCommentChildrenList().get(n).getContent());
+                                    commentChild.setCreateTime(result.getData().getComments().get(i).getCommentChildrenList().get(n).getCreateTime());
+                                    OtherUser childOtherUser = new OtherUser();
+                                    childOtherUser.setId(result.getData().getComments().get(i).getCommentChildrenList().get(n).getUser().getId());
+                                    childOtherUser.setNickName(result.getData().getComments().get(i).getCommentChildrenList().get(n).getUser().getNickName());
+                                    childOtherUser.setSex(result.getData().getComments().get(i).getCommentChildrenList().get(n).getUser().getSex());
+                                    childOtherUser.setPhoto(result.getData().getComments().get(i).getCommentChildrenList().get(n).getUser().getPhoto());
+                                    commentChild.setUser(childOtherUser);
+                                    childList.add(commentChild);
+                                }
+                                comment.setChildList(childList);
                                 comments.add(comment);
                             }
                             mView.getCommentsSuccess(comments, page);

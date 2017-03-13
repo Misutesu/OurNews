@@ -3,10 +3,12 @@ package com.team60.ournews.module.adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -130,6 +132,17 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
                         onItemClickListener.onCommentClick(comment.getUser());
                 }
             });
+
+            if (comment.getChildList() != null && comment.getChildList().size() != 0) {
+                if (viewHolder.mRecyclerView == null) {
+                    viewHolder.getRecyclerView();
+                    if (viewHolder.mAdapter == null) {
+                        viewHolder.mAdapter = new CommentActivityChildRecyclerViewAdapter(context, comment.getChildList());
+                        viewHolder.mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+                    }
+                }
+                viewHolder.mRecyclerView.setAdapter(viewHolder.mAdapter);
+            }
         }
     }
 
@@ -167,6 +180,8 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
 
     public class NormalViewHolder extends RecyclerView.ViewHolder {
 
+        private View view;
+
         @BindView(R.id.item_comment_layout)
         LinearLayout mLayout;
         @BindView(R.id.item_comment_avatar_img)
@@ -177,10 +192,21 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
         TextView mContentText;
         @BindView(R.id.item_comment_time_text)
         TextView mTimeText;
+        @BindView(R.id.item_comment_content_view_stub)
+        ViewStub mViewStub;
+
+        private RecyclerView mRecyclerView;
+        private CommentActivityChildRecyclerViewAdapter mAdapter;
 
         public NormalViewHolder(View itemView) {
             super(itemView);
+            view = itemView;
             ButterKnife.bind(this, itemView);
+        }
+
+        public void getRecyclerView() {
+            mViewStub.inflate();
+            mRecyclerView = (RecyclerView) view.findViewById(R.id.item_comment_recycler_view);
         }
     }
 

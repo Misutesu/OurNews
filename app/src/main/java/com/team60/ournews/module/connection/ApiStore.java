@@ -43,10 +43,10 @@ public interface ApiStore {
 
     @POST("changeInfo")
     Flowable<NoDataResult> changeInfo(@Query("id") long id,
-                                        @Query("token") String token,
-                                        @Query("nick_name") String nickName,
-                                        @Query("sex") String sex,
-                                        @Query("photo") String photo);
+                                      @Query("token") String token,
+                                      @Query("nick_name") String nickName,
+                                      @Query("sex") String sex,
+                                      @Query("photo") String photo);
 
     @POST("getHomeNews")
     Flowable<HomeNewResult> getHomeNews();
@@ -56,37 +56,37 @@ public interface ApiStore {
 
     @POST("getNewList")
     Flowable<ListNewResult> getNewListUseType(@Query("type") int type,
-                                                @Query("page") int page,
-                                                @Query("size") int size,
-                                                @Query("sort") int sort);
+                                              @Query("page") int page,
+                                              @Query("size") int size,
+                                              @Query("sort") int sort);
 
     @POST("searchNew")
     Flowable<ListNewResult> searchNew(@Query("name") String name,
-                                        @Query("page") int page,
-                                        @Query("size") int size,
-                                        @Query("sort") int sort);
+                                      @Query("page") int page,
+                                      @Query("size") int size,
+                                      @Query("sort") int sort);
 
     @POST("getCollections")
     Flowable<ListNewResult> getCollections(@Query("id") long id,
-                                             @Query("token") String token,
-                                             @Query("uid") long uid,
-                                             @Query("page") int page,
-                                             @Query("size") int size,
-                                             @Query("sort") int sort);
+                                           @Query("token") String token,
+                                           @Query("uid") long uid,
+                                           @Query("page") int page,
+                                           @Query("size") int size,
+                                           @Query("sort") int sort);
 
     @POST("getHistory")
     Flowable<ListNewResult> getHistory(@Query("id") long id,
-                                         @Query("token") String token,
-                                         @Query("uid") long uid,
-                                         @Query("page") int page,
-                                         @Query("size") int size,
-                                         @Query("sort") int sort);
+                                       @Query("token") String token,
+                                       @Query("uid") long uid,
+                                       @Query("page") int page,
+                                       @Query("size") int size,
+                                       @Query("sort") int sort);
 
     @POST("collectNew")
     Flowable<NoDataResult> collectNew(@Query("nid") long nid,
-                                        @Query("uid") long uid,
-                                        @Query("token") String token,
-                                        @Query("type") int type);
+                                      @Query("uid") long uid,
+                                      @Query("token") String token,
+                                      @Query("type") int type);
 
     @POST("getNewContent")
     Flowable<ContentResult> getNewContentUseId(@Query("nid") long id);
@@ -96,17 +96,24 @@ public interface ApiStore {
 
     @POST("sendComment")
     Flowable<NoDataResult> sendCommentUseNewId(@Query("uid") long uid,
-                                                 @Query("nid") long nid,
-                                                 @Query("content") String content,
-                                                 @Query("time") long time,
-                                                 @Query("token") String token,
-                                                 @Query("key") String key);
+                                               @Query("nid") long nid,
+                                               @Query("content") String content,
+                                               @Query("time") long time,
+                                               @Query("token") String token,
+                                               @Query("key") String key);
 
     @POST("getComment")
     Flowable<CommentResult> getCommentsUseId(@Query("nid") long nid,
-                                               @Query("page") int page,
-                                               @Query("size") int size,
-                                               @Query("sort") int sort);
+                                             @Query("page") int page,
+                                             @Query("size") int size,
+                                             @Query("sort") int sort);
+
+    @POST("getComment")
+    Flowable<CommentResult> getCommentsUseId(@Query("uid") long uid,
+                                             @Query("nid") long nid,
+                                             @Query("page") int page,
+                                             @Query("size") int size,
+                                             @Query("sort") int sort);
 
     @Multipart
     @POST("uploadImage")

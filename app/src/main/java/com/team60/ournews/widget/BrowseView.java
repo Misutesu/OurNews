@@ -1,5 +1,8 @@
 package com.team60.ournews.widget;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
@@ -111,7 +114,34 @@ public class BrowseView extends LinearLayout {
             this.news = new ArrayList<>();
         this.news.clear();
         this.news.addAll(news);
-        showData();
+
+        ObjectAnimator outAnim = ObjectAnimator.ofFloat(this, "alpha", 1f, 0f);
+        outAnim.setDuration(150);
+        outAnim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                showData();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        AnimatorSet set = new AnimatorSet();
+        set.play(ObjectAnimator.ofFloat(this, "alpha", 0f, 1f).setDuration(150))
+                .after(outAnim);
+        set.start();
     }
 
     private void init(Context context) {

@@ -27,9 +27,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:layout_marginRight="12dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingEnd="12dp"
+            android:paddingRight="12dp">
 
             <TextView
                 android:id="@+id/item_comment_user_name_text"
@@ -54,9 +54,19 @@
                 android:id="@+id/item_comment_time_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="18dp"
+                android:layout_marginBottom="12dp"
                 android:layout_marginTop="8dp"
                 android:textColor="?attr/textColor3"/>
+
+            <ViewStub
+                android:id="@+id/item_comment_content_view_stub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="8dp"
+                android:clipToPadding="false"
+                android:layout="@layout/item_comment_child_layout"/>
         </LinearLayout>
 
         <View
