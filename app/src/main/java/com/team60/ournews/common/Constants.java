@@ -12,7 +12,7 @@ public class Constants {
 
     public static final int COMMENT_EVERY_PAGE_SIZE = 6;
 
-    public static final boolean IS_DEBUG_MODE = false;
+    public static final boolean IS_DEBUG_MODE = true;
 
     public static final String SHARED_PREFERENCES_SETTING = "setting_shared_preferences";
 

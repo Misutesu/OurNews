@@ -10,9 +10,9 @@ import com.team60.ournews.module.view.WriteCommentView;
 import com.team60.ournews.util.ErrorUtil;
 import com.team60.ournews.util.MD5Util;
 
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 
 /**
  * Created by Misutesu on 2016/12/29 0029.
@@ -32,16 +32,21 @@ public class WriteCommentPresenterImpl implements WriteCommentPresenter {
         mView.addSubscription(RetrofitUtil.newInstance()
                 .sendCommentUseNewId(uid, nid, content, time, token, MD5Util.getMD5(Constants.KEY + token + time))
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<NoDataResult>() {
+                .subscribeWith(new DisposableSubscriber<NoDataResult>() {
                     @Override
-                    public void onCompleted() {
+                    protected void onStart() {
+                        request(1);
+                    }
+
+                    @Override
+                    public void onComplete() {
                         mView.sendCommentEnd();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        onCompleted();
+                        onComplete();
                         mView.sendCommentError(MyApplication.getContext().getString(R.string.internet_error));
                     }
 

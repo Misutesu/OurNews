@@ -15,10 +15,10 @@ import com.team60.ournews.util.ErrorUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 
 /**
  * Created by wujiaquan on 2017/3/10.
@@ -36,23 +36,28 @@ public class CenterPresenterImpl implements CenterPresenter {
 
     @Override
     public void getNewList(long id, String token, long uid, int type, final int page, int sort) {
-        Observable<ListNewResult> observable;
+        Flowable<ListNewResult> flowable;
         if (type == 0) {
-            observable = RetrofitUtil.newInstance().getCollections(id, token, uid, page, Constants.NEW_EVERY_PAGE_SIZE, sort);
+            flowable = RetrofitUtil.newInstance().getCollections(id, token, uid, page, Constants.NEW_EVERY_PAGE_SIZE, sort);
         } else {
-            observable = RetrofitUtil.newInstance().getHistory(id, token, uid, page, Constants.NEW_EVERY_PAGE_SIZE, sort);
+            flowable = RetrofitUtil.newInstance().getHistory(id, token, uid, page, Constants.NEW_EVERY_PAGE_SIZE, sort);
         }
-        mView.addSubscription(observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ListNewResult>() {
+        mView.addSubscription(flowable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSubscriber<ListNewResult>() {
                     @Override
-                    public void onCompleted() {
+                    protected void onStart() {
+                        request(1);
+                    }
+
+                    @Override
+                    public void onComplete() {
                         mView.onGetNewsEnd();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        onCompleted();
+                        onComplete();
                         mView.onGetNewsError(MyApplication.getContext().getString(R.string.internet_error), page);
                     }
 
@@ -60,13 +65,13 @@ public class CenterPresenterImpl implements CenterPresenter {
                     public void onNext(ListNewResult result) {
                         if (result.getResult().equals("success")) {
                             List<New> news = new ArrayList<>();
-                            for (int i = 0; i < result.getData().size(); i++) {
-                                ListNewResult.DataBean bean = result.getData().get(i);
+                            for (int i = 0; i < result.getData().getNews().size(); i++) {
+                                ListNewResult.DataBean.NewsBean bean = result.getData().getNews().get(i);
                                 New n = new New();
                                 n.setId(bean.getId());
                                 n.setTitle(bean.getTitle());
                                 n.setCover(bean.getCover());
-                                n.setAbstractContent(bean.getAbstact());
+                                n.setAbstractContent(bean.getAbstractContent());
                                 n.setCreateTime(bean.getCreateTime());
                                 n.setType(bean.getType());
                                 news.add(n);

@@ -1,7 +1,5 @@
 package com.team60.ournews.module.presenter.impl;
 
-import android.util.Log;
-
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
@@ -13,9 +11,9 @@ import com.team60.ournews.module.view.LoginView;
 import com.team60.ournews.util.ErrorUtil;
 import com.team60.ournews.util.MD5Util;
 
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 
 /**
  * Created by Misutesu on 2016/12/26 0026.
@@ -30,22 +28,26 @@ public class LoginPresenterImpl implements LoginPresenter {
     }
 
     @Override
-    public void login(String loginName, String password, String umengToken) {
-        Log.d("TAG", "umengToken : " + umengToken);
+    public void login(String loginName, String password) {
         long time = System.currentTimeMillis();
         mView.addSubscription(RetrofitUtil.newInstance()
-                .login(loginName, MD5Util.getMD5(Constants.KEY + password + time), time, umengToken)
+                .login(loginName, MD5Util.getMD5(Constants.KEY + password + time), time)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<LoginResult>() {
+                .subscribeWith(new DisposableSubscriber<LoginResult>() {
                     @Override
-                    public void onCompleted() {
+                    protected void onStart() {
+                        request(1);
+                    }
+
+                    @Override
+                    public void onComplete() {
                         mView.loginEnd();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        onCompleted();
+                        onComplete();
                         mView.loginError(MyApplication.getContext().getString(R.string.internet_error));
                     }
 
@@ -59,7 +61,6 @@ public class LoginPresenterImpl implements LoginPresenter {
                             user.setSex(result.getData().getSex());
                             user.setPhoto(result.getData().getPhoto());
                             user.setToken(result.getData().getToken());
-                            user.setPushState(result.getData().getPushState());
                             mView.loginSuccess();
                         } else {
                             mView.loginError(ErrorUtil.getErrorMessage(result.getErrorCode()));

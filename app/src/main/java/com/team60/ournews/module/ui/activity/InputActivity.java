@@ -73,4 +73,9 @@ public class InputActivity extends BaseActivity {
             }
         });
     }
+
+    @Override
+    public void showSnackBar(String message) {
+
+    }
 }

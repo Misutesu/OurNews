@@ -18,7 +18,6 @@ public class User {
     private int sex = -1;
     private String photo;
     private String token;
-    private int pushState = -1;
 
     private static User user = new User();
     private static SharedPreferences sharedPreferences;
@@ -112,16 +111,5 @@ public class User {
     public void setToken(String token) {
         if (sharedPreferences.edit().putString("token", token).commit())
             this.token = token;
-    }
-
-    public int getPushState() {
-        if (pushState == -1)
-            pushState = sharedPreferences.getInt("pushState", -1);
-        return pushState;
-    }
-
-    public void setPushState(int pushState) {
-        if (sharedPreferences.edit().putInt("pushState", pushState).commit())
-            this.pushState = pushState;
     }
 }

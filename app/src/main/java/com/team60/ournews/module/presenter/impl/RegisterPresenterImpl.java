@@ -10,9 +10,9 @@ import com.team60.ournews.module.view.RegisterView;
 import com.team60.ournews.util.ErrorUtil;
 import com.team60.ournews.util.MD5Util;
 
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 
 /**
  * Created by Misutesu on 2016/12/26 0026.
@@ -32,16 +32,16 @@ public class RegisterPresenterImpl implements RegisterPresenter {
         mView.addSubscription(RetrofitUtil.newInstance()
                 .register(loginName, password, time, MD5Util.getMD5(Constants.KEY + time))
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<NoDataResult>() {
+                .subscribeWith(new DisposableSubscriber<NoDataResult>() {
                     @Override
-                    public void onCompleted() {
+                    public void onComplete() {
                         mView.registerEnd();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        onCompleted();
+                        onComplete();
                         mView.registerError(MyApplication.getContext().getString(R.string.internet_error));
                     }
 

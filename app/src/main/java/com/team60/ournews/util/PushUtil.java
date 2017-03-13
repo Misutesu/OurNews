@@ -1,18 +1,26 @@
 package com.team60.ournews.util;
 
 import android.content.Context;
-import android.text.TextUtils;
+import android.content.SharedPreferences;
 
-import com.umeng.message.IUmengCallback;
-import com.umeng.message.IUmengRegisterCallback;
-import com.umeng.message.PushAgent;
+import com.team60.ournews.common.Constants;
+
+import java.util.Set;
+
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 
 /**
  * Created by wujiaquan on 2017/3/11.
  */
 
 public class PushUtil {
+
     private static PushUtil pushUtil;
+
+    private boolean isStartSetAlias;
+
+    private boolean isLogout;
 
     private PushUtil() {
     }
@@ -27,102 +35,47 @@ public class PushUtil {
         return pushUtil;
     }
 
-    public String getUmengToken(Context context) {
-        String umengToken = PushAgent.getInstance(context).getRegistrationId();
-        if (umengToken == null)
-            umengToken = "";
-        return umengToken;
-    }
-
     public void initPush(Context context) {
-        final PushAgent mPushAgent = PushAgent.getInstance(context);
-        mPushAgent.setMessageChannel("Android");
-        mPushAgent.setDebugMode(false);
-        final int[] getTokenNum = {0};
-        final IUmengRegisterCallback callback = new IUmengRegisterCallback() {
-            @Override
-            public void onSuccess(String deviceToken) {
-                if (TextUtils.isEmpty(deviceToken) && getTokenNum[0] <= 10) {
-                    mPushAgent.register(this);
-                    getTokenNum[0]++;
-                    waitOneSecond();
-                }
-            }
-
-            @Override
-            public void onFailure(String s, String s1) {
-                if (getTokenNum[0] <= 10) {
-                    mPushAgent.register(this);
-                    getTokenNum[0]++;
-                    waitOneSecond();
-                }
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mPushAgent.register(callback);
-            }
-        }).start();
+        if (Constants.IS_DEBUG_MODE) JPushInterface.setDebugMode(true);
+        JPushInterface.init(context);
     }
 
-    public void enablePush(Context context) {
-        final PushAgent mPushAgent = PushAgent.getInstance(context);
-        final int[] enableNum = {0};
-        final IUmengCallback callback = new IUmengCallback() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onFailure(String s, String s1) {
-                if (enableNum[0] <= 10) {
-                    mPushAgent.enable(this);
-                    enableNum[0]++;
-                    waitOneSecond();
+    public void setAlias(final Context context, String alias) {
+        final SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_PUSH);
+        if (!isStartSetAlias && !sharedPreferences.getBoolean("isSetAlias", false)) {
+            isStartSetAlias = true;
+            JPushInterface.setAlias(context, alias, new TagAliasCallback() {
+                @Override
+                public void gotResult(int code, String alias, Set<String> tags) {
+                    if (code == 0) {
+                        sharedPreferences.edit().putBoolean("isSetAlias", true).apply();
+                        isStartSetAlias = false;
+                    } else {
+                        if (!isLogout) {
+                            JPushInterface.setAlias(context, alias, this);
+                        } else {
+                            isLogout = false;
+                            isStartSetAlias = false;
+                        }
+                    }
                 }
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mPushAgent.enable(callback);
-            }
-        }).start();
-    }
-
-    public void disablePush(Context context) {
-        final PushAgent mPushAgent = PushAgent.getInstance(context);
-        final int[] disableNum = {0};
-        final IUmengCallback callback = new IUmengCallback() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onFailure(String s, String s1) {
-                if (disableNum[0] <= 10) {
-                    mPushAgent.disable(this);
-                    disableNum[0]++;
-                    waitOneSecond();
-                }
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mPushAgent.disable(callback);
-            }
-        }).start();
-    }
-
-    private void waitOneSecond() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            });
         }
+    }
+
+    public void logout(final Context context) {
+        isLogout = true;
+        final SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_PUSH);
+        if (sharedPreferences.getBoolean("isSetAlias", false))
+            JPushInterface.setAlias(context, "", new TagAliasCallback() {
+                @Override
+                public void gotResult(int code, String alias, Set<String> tags) {
+                    if (code == 0) {
+                        sharedPreferences.edit().putBoolean("isSetAlias", false).apply();
+                    } else {
+                        JPushInterface.setAlias(context, "", this);
+                    }
+                }
+            });
     }
 }

@@ -340,4 +340,9 @@ public class SearchActivity extends BaseActivity {
             }
         }
     }
+
+    @Override
+    public void showSnackBar(String message) {
+
+    }
 }

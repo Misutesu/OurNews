@@ -39,12 +39,9 @@ import com.team60.ournews.event.ShowSnackEvent;
 import com.team60.ournews.module.adapter.ThemeSelectRecyclerViewAdapter;
 import com.team60.ournews.module.bean.Theme;
 import com.team60.ournews.module.bean.User;
-import com.team60.ournews.module.presenter.MainPresenter;
-import com.team60.ournews.module.presenter.impl.MainPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.ui.fragment.HomeFragment;
 import com.team60.ournews.module.ui.fragment.TypeFragment;
-import com.team60.ournews.module.view.MainView;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.PushUtil;
 import com.team60.ournews.util.ThemeUtil;
@@ -60,7 +57,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements MainView {
+public class MainActivity extends BaseActivity {
 
     public final String[] titles = {"推荐", "ACG", "游戏", "社会", "娱乐", "科技"};
 
@@ -93,8 +90,6 @@ public class MainActivity extends BaseActivity implements MainView {
     @BindView(R.id.activity_main_view_pager)
     ViewPager mViewPager;
 
-    private MainPresenter mPresenter;
-
     private AlertDialog mThemeDialog;
 
     private AlertDialog mThemeHintDialog;
@@ -110,7 +105,6 @@ public class MainActivity extends BaseActivity implements MainView {
         init(savedInstanceState);
         setListener();
         setUserInfo();
-        checkLogin();
     }
 
     @Override
@@ -122,8 +116,6 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     public void init(Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
-
-        mPresenter = new MainPresenterImpl(this, this);
 
         View mHeaderView = mNavView.getHeaderView(0);
         mHeaderUserAvatarImg = (SimpleDraweeView) mHeaderView.findViewById(R.id.header_user_avatar_img);
@@ -217,6 +209,7 @@ public class MainActivity extends BaseActivity implements MainView {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     User.breakLogin();
+                                    PushUtil.newInstance().logout(MainActivity.this);
                                     setUserInfo();
                                     if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                                         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -260,12 +253,6 @@ public class MainActivity extends BaseActivity implements MainView {
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    private void checkLogin() {
-        if (User.isLogin()) {
-            mPresenter.checkLogin(user.getId(), user.getToken(), PushUtil.newInstance().getUmengToken(MainActivity.this));
-        }
-    }
-
     private void setUserInfo() {
         Uri uri;
         String userName;
@@ -280,7 +267,6 @@ public class MainActivity extends BaseActivity implements MainView {
         if (User.isLogin()) {
             userName = headerUserName = user.getNickName();
             mLogoutLayout.setVisibility(View.VISIBLE);
-            MyUtil.sendLog(this, "token : " + user.getToken());
         } else {
             userName = getString(R.string.no_login);
             headerUserName = getString(R.string.click_avatar_to_login);
@@ -297,10 +283,6 @@ public class MainActivity extends BaseActivity implements MainView {
                 .setCircle()
                 .setBorder(4, Color.WHITE)
                 .into(mHeaderUserAvatarImg);
-
-        if (user.getPushState() == 0) {
-            PushUtil.newInstance().disablePush(MainActivity.this);
-        }
     }
 
     private void initThemeDialog() {
@@ -358,7 +340,6 @@ public class MainActivity extends BaseActivity implements MainView {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LoginActivity.CODE_LOGIN) {
             if (resultCode == LoginActivity.CODE_LOGIN) {
-                setUserInfo();
                 showSnackBar(getString(R.string.login_success));
             }
         }
@@ -410,20 +391,6 @@ public class MainActivity extends BaseActivity implements MainView {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void checkLoginSuccess() {
-        checkLoginNum = 0;
-        setUserInfo();
-    }
-
-    @Override
-    public void checkLoginError() {
-        if (checkLoginNum <= 10) {
-            checkLoginNum++;
-            checkLogin();
-        }
     }
 
 //    @Override

@@ -13,12 +13,14 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.team60.ournews.R;
+import com.team60.ournews.event.LoginEvent;
 import com.team60.ournews.module.presenter.LoginPresenter;
 import com.team60.ournews.module.presenter.impl.LoginPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.LoginView;
 import com.team60.ournews.util.MyUtil;
-import com.team60.ournews.util.PushUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -141,7 +143,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 mProgressDialog.setCancelable(false);
             }
             mProgressDialog.show();
-            mPresenter.login(loginName, password, PushUtil.newInstance().getUmengToken(LoginActivity.this));
+            mPresenter.login(loginName, password);
         }
         if (mLoginNameText.isFocusable())
             MyUtil.closeKeyBord(mLoginNameText);
@@ -162,6 +164,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     public void loginSuccess() {
+        EventBus.getDefault().post(new LoginEvent());
         setResult(CODE_LOGIN);
         finish();
     }

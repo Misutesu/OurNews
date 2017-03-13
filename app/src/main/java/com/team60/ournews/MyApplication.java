@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.mistesu.frescoloader.FrescoLoader;
+import com.team60.ournews.module.bean.User;
 import com.team60.ournews.util.PushUtil;
 
 import java.util.ArrayList;
@@ -45,13 +46,5 @@ public class MyApplication extends Application {
         mApplication = this;
         FrescoLoader.init(this);
         PushUtil.newInstance().initPush(this);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                    == PackageManager.PERMISSION_GRANTED) {
-//                PushUtil.initPush(this);
-//            }
-//        } else {
-//            PushUtil.initPush(this);
-//        }
     }
 }

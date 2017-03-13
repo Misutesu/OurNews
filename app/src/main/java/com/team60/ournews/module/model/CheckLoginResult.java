@@ -50,7 +50,6 @@ public class CheckLoginResult {
          * nickName : Test
          * sex : 1
          * photo : NoImage
-         * pushState : 1
          */
 
         private int id;
@@ -60,8 +59,6 @@ public class CheckLoginResult {
         private String nickName;
         private int sex;
         private String photo;
-        @SerializedName("push_state")
-        private int pushState;
 
         public int getId() {
             return id;
@@ -101,14 +98,6 @@ public class CheckLoginResult {
 
         public void setPhoto(String photo) {
             this.photo = photo;
-        }
-
-        public int getPushState() {
-            return pushState;
-        }
-
-        public void setPushState(int pushState) {
-            this.pushState = pushState;
         }
     }
 }

@@ -14,9 +14,9 @@ import com.team60.ournews.util.ErrorUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 
 /**
  * Created by Misutesu on 2016/12/29 0029.
@@ -35,16 +35,21 @@ public class CommentPresenterImpl implements CommentPresenter {
         mView.addSubscription(RetrofitUtil.newInstance()
                 .getCommentsUseId(nid, page, Constants.COMMENT_EVERY_PAGE_SIZE, sort)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CommentResult>() {
+                .subscribeWith(new DisposableSubscriber<CommentResult>() {
                     @Override
-                    public void onCompleted() {
+                    protected void onStart() {
+                        request(1);
+                    }
+
+                    @Override
+                    public void onComplete() {
                         mView.getCommentsEnd();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        onCompleted();
+                        onComplete();
                         mView.getCommentsError(MyApplication.getContext().getString(R.string.internet_error), page);
                     }
 
@@ -52,17 +57,17 @@ public class CommentPresenterImpl implements CommentPresenter {
                     public void onNext(CommentResult result) {
                         if (result.getResult().equals("success")) {
                             List<Comment> comments = new ArrayList<>();
-                            for (int i = 0; i < result.getData().size(); i++) {
+                            for (int i = 0; i < result.getData().getComments().size(); i++) {
                                 Comment comment = new Comment();
-                                comment.setId(result.getData().get(i).getId());
+                                comment.setId(result.getData().getComments().get(i).getId());
                                 comment.setNid(nid);
-                                comment.setContent(result.getData().get(i).getContent());
-                                comment.setCreateTime(result.getData().get(i).getCreateTime());
+                                comment.setContent(result.getData().getComments().get(i).getContent());
+                                comment.setCreateTime(result.getData().getComments().get(i).getCreateTime());
                                 OtherUser otherUser = new OtherUser();
-                                otherUser.setId(result.getData().get(i).getUser().getId());
-                                otherUser.setNickName(result.getData().get(i).getUser().getNickName());
-                                otherUser.setSex(result.getData().get(i).getUser().getSex());
-                                otherUser.setPhoto(result.getData().get(i).getUser().getPhoto());
+                                otherUser.setId(result.getData().getComments().get(i).getUser().getId());
+                                otherUser.setNickName(result.getData().getComments().get(i).getUser().getNickName());
+                                otherUser.setSex(result.getData().getComments().get(i).getUser().getSex());
+                                otherUser.setPhoto(result.getData().getComments().get(i).getUser().getPhoto());
                                 comment.setUser(otherUser);
                                 comments.add(comment);
                             }

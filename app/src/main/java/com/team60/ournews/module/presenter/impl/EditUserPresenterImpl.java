@@ -14,12 +14,12 @@ import com.team60.ournews.util.ErrorUtil;
 
 import java.io.File;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Misutesu on 2016/12/27 0027.
@@ -52,16 +52,21 @@ public class EditUserPresenterImpl implements EditUserPresenter {
 
                 mView.addSubscription(RetrofitUtil.newInstance().uploadImage(description, body)
                         .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<UploadResult>() {
+                        .subscribeWith(new DisposableSubscriber<UploadResult>() {
                             @Override
-                            public void onCompleted() {
+                            protected void onStart() {
+                                request(1);
+                            }
+
+                            @Override
+                            public void onComplete() {
                                 mView.saveEnd();
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 e.printStackTrace();
-                                onCompleted();
+                                onComplete();
                                 mView.saveError(MyApplication.getContext().getString(R.string.internet_error));
                             }
 
@@ -87,16 +92,21 @@ public class EditUserPresenterImpl implements EditUserPresenter {
 
         mView.addSubscription(RetrofitUtil.newInstance().changeInfo(id, token, nickName, sexStr, photo)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<NoDataResult>() {
+                .subscribeWith(new DisposableSubscriber<NoDataResult>() {
                     @Override
-                    public void onCompleted() {
+                    protected void onStart() {
+                        request(1);
+                    }
+
+                    @Override
+                    public void onComplete() {
                         mView.saveEnd();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        onCompleted();
+                        onComplete();
                         mView.saveError(MyApplication.getContext().getString(R.string.internet_error));
                     }
 

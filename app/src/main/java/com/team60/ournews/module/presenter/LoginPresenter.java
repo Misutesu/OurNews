@@ -5,5 +5,5 @@ package com.team60.ournews.module.presenter;
  */
 
 public interface LoginPresenter {
-    void login(String loginName, String password, String umengToken);
+    void login(String loginName, String password);
 }

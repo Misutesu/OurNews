@@ -1,7 +1,5 @@
 package com.team60.ournews.module.presenter.impl;
 
-import android.util.Log;
-
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.module.bean.New;
@@ -14,10 +12,10 @@ import com.team60.ournews.util.ErrorUtil;
 
 import org.json.JSONException;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 
 /**
  * Created by Misutesu on 2016/12/28 0028.
@@ -33,23 +31,28 @@ public class NewPresenterImpl implements NewPresenter {
 
     @Override
     public void getNewContent(final long id, final long uid) {
-        Observable<ContentResult> observable;
+        Flowable<ContentResult> flowable;
         if (uid == -1) {
-            observable = RetrofitUtil.newInstance().getNewContentUseId(id);
+            flowable = RetrofitUtil.newInstance().getNewContentUseId(id);
         } else {
-            observable = RetrofitUtil.newInstance().getNewContentUseId(id, uid);
+            flowable = RetrofitUtil.newInstance().getNewContentUseId(id, uid);
         }
-        mView.addSubscription(observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ContentResult>() {
+        mView.addSubscription(flowable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSubscriber<ContentResult>() {
                     @Override
-                    public void onCompleted() {
+                    protected void onStart() {
+                        request(1);
+                    }
+
+                    @Override
+                    public void onComplete() {
                         mView.getNewContentEnd();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        onCompleted();
+                        onComplete();
                         mView.getNewContentError(MyApplication.getContext().getString(R.string.internet_error));
                     }
 
@@ -77,22 +80,23 @@ public class NewPresenterImpl implements NewPresenter {
 
     @Override
     public void collectNew(long nid, long uid, String token, int type) {
-        Log.d("TAG", "nid : " + nid);
-        Log.d("TAG", "uid : " + uid);
-        Log.d("TAG", "token : " + token);
-        Log.d("TAG", "type : " + type);
         mView.addSubscription(RetrofitUtil.newInstance().collectNew(nid, uid, token, type)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<NoDataResult>() {
+                .subscribeWith(new DisposableSubscriber<NoDataResult>() {
                     @Override
-                    public void onCompleted() {
+                    protected void onStart() {
+                        request(1);
+                    }
+
+                    @Override
+                    public void onComplete() {
                         mView.collectNewEnd();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        onCompleted();
+                        onComplete();
                         mView.collectNewError(MyApplication.getContext().getString(R.string.internet_error));
                     }
 

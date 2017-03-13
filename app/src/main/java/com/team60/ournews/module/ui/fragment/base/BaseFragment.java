@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment;
 
 import com.team60.ournews.module.bean.User;
 
-import rx.Subscription;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by Misutesu on 2016/12/27 0027.
@@ -16,19 +16,19 @@ public abstract class BaseFragment extends Fragment {
 
     public User user = User.newInstance();
 
-    private CompositeSubscription mSubscription;
+    private CompositeDisposable mSubscription;
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (mSubscription != null && mSubscription.hasSubscriptions())
+        if (mSubscription != null)
             mSubscription.clear();
     }
 
-    public void addSubscription(@NonNull Subscription subscription) {
+    public void addSubscription(@NonNull Disposable disposable) {
         if (mSubscription == null)
-            mSubscription = new CompositeSubscription();
-        mSubscription.add(subscription);
+            mSubscription = new CompositeDisposable();
+        mSubscription.add(disposable);
     }
 
     public abstract void init();

@@ -11,13 +11,13 @@ public class NoDataResult {
     /**
      * result : success
      * errorCode : 0
-     * data :
+     * data : {}
      */
 
     private String result;
     @SerializedName("error_code")
     private int errorCode;
-    private String data;
+    private DataBean data;
 
     public String getResult() {
         return result;
@@ -35,20 +35,14 @@ public class NoDataResult {
         this.errorCode = errorCode;
     }
 
-    public String getData() {
+    public DataBean getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(DataBean data) {
         this.data = data;
     }
 
-    @Override
-    public String toString() {
-        return "NoDataResult{" +
-                "result='" + result + '\'' +
-                ", errorCode=" + errorCode +
-                ", data='" + data + '\'' +
-                '}';
+    public static class DataBean {
     }
 }

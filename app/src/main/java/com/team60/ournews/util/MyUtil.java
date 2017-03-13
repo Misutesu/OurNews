@@ -34,7 +34,7 @@ import rx.schedulers.Schedulers;
 public class MyUtil {
 
     public static void sendLog(Object object, String message) {
-        if (!Constants.IS_DEBUG_MODE)
+        if (Constants.IS_DEBUG_MODE)
             Log.d(object.getClass().getName(), message);
     }
 

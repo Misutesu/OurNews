@@ -20,6 +20,7 @@
     <string name="change_info_error">修改用户信息错误</string>
     <string name="open_new_error">打开新闻失败</string>
     <string name="no_write_permission">没有读写权限</string>
+    <string name="token_error">此账号自动登录过期或已在其他设备登录,请尝试重新登录</string>
 
     <string name="ok">确定</string>
     <string name="no">取消</string>

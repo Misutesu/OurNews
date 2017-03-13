@@ -43,20 +43,18 @@
             android:windowSoftInputMode="adjustUnspecified"/>
         <activity android:name=".module.ui.activity.CommentActivity"/>
         <activity
-            android:name=".module.ui.activity.LoginTempActivity"
-            android:theme="@style/Transparent"/>
-        <activity
             android:name=".module.ui.activity.SearchActivity"
             android:theme="@style/Transparent"/>
         <activity android:name=".module.ui.activity.SearchResultActivity">
         </activity>
 
-        <!--友盟推送-->
-        <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="58c38c8daed1790c750014a2"/>
-        <meta-data
-            android:name="UMENG_MESSAGE_SECRET"
-            android:value="69fc8968e83e2f50418b891c6fa15674"/>
+        <receiver
+            android:name=".module.receiver.PushReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/>
+                <category android:name="com.team60.ournews"/>
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

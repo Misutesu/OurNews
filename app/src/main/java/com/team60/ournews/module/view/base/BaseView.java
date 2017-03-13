@@ -1,6 +1,6 @@
 package com.team60.ournews.module.view.base;
 
-import rx.Subscription;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by Misutesu on 2016/12/26 0026.
@@ -9,5 +9,5 @@ import rx.Subscription;
 public interface BaseView {
     void showSnackBar(String message);
 
-    void addSubscription(Subscription subscription);
+    void addSubscription(Disposable disposable);
 }

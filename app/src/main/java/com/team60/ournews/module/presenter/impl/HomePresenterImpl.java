@@ -18,10 +18,10 @@ import com.team60.ournews.util.MyUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 
 /**
  * Created by Misutesu on 2016/12/28 0028.
@@ -37,25 +37,30 @@ public class HomePresenterImpl implements HomePresenter {
 
     @Override
     public void getHomeNews(final int type) {
-        Observable<HomeNewResult> observable;
+        Flowable<HomeNewResult> flowable;
         if (type == -1) {
-            observable = RetrofitUtil.newInstance().getHomeNews();
+            flowable = RetrofitUtil.newInstance().getHomeNews();
         } else {
-            observable = RetrofitUtil.newInstance().getHomeNewsUseType(type);
+            flowable = RetrofitUtil.newInstance().getHomeNewsUseType(type);
         }
-        mView.addSubscription(observable
+        mView.addSubscription(flowable
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<HomeNewResult>() {
+                .subscribeWith(new DisposableSubscriber<HomeNewResult>() {
                     @Override
-                    public void onCompleted() {
+                    protected void onStart() {
+                        request(1);
+                    }
+
+                    @Override
+                    public void onComplete() {
                         mView.getNewsEnd();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        onCompleted();
-                        mView.getNewsError(MyApplication.getContext().getString(R.string.server_error));
+                        onComplete();
+                        mView.getNewsError(MyApplication.getContext().getString(R.string.internet_error));
                         HomeNewResult result = getHomeNewsFromData();
                         if (result != null) {
                             onNext(getHomeNewsFromData());
@@ -66,12 +71,12 @@ public class HomePresenterImpl implements HomePresenter {
                     public void onNext(HomeNewResult result) {
                         if (result.getResult().equals("success")) {
                             SparseArray<List<New>> news = new SparseArray<>();
-                            List<HomeNewResult.DataBean> beanList = result.getData();
+                            List<HomeNewResult.DataBean.NewsBean> beanList = result.getData().getNews();
                             for (int i = 0; i < beanList.size(); i++) {
-                                List<HomeNewResult.DataBean.ListBean> list = beanList.get(i).getList();
+                                List<HomeNewResult.DataBean.NewsBean.ListBean> list = beanList.get(i).getList();
                                 List<New> newList = new ArrayList<>();
                                 for (int j = 0; j < list.size(); j++) {
-                                    HomeNewResult.DataBean.ListBean bean = list.get(j);
+                                    HomeNewResult.DataBean.NewsBean.ListBean bean = list.get(j);
                                     New n = new New();
                                     n.setId(bean.getId());
                                     n.setTitle(bean.getTitle());
@@ -80,7 +85,7 @@ public class HomePresenterImpl implements HomePresenter {
                                     n.setCreateTime(bean.getCreateTime());
                                     newList.add(n);
                                 }
-                                news.append(Integer.valueOf(beanList.get(i).getType()), newList);
+                                news.append(beanList.get(i).getType(), newList);
                             }
                             mView.getNewsSuccess(news, type);
                             saveHomeNewsToData(result);

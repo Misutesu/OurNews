@@ -51,7 +51,6 @@ public class LoginResult {
          * photo : NoImage
          * login_name : Test
          * token : 5095c4cfad764a6aa5e8262443671ca4
-         * push_state : 1
          */
 
         private int id;
@@ -62,8 +61,6 @@ public class LoginResult {
         @SerializedName("login_name")
         private String loginName;
         private String token;
-        @SerializedName("push_state")
-        private int pushState;
 
         public int getId() {
             return id;
@@ -111,14 +108,6 @@ public class LoginResult {
 
         public void setToken(String token) {
             this.token = token;
-        }
-
-        public int getPushState() {
-            return pushState;
-        }
-
-        public void setPushState(int pushState) {
-            this.pushState = pushState;
         }
     }
 }

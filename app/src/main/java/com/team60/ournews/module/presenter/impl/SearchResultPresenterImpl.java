@@ -13,9 +13,9 @@ import com.team60.ournews.util.ErrorUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 
 /**
  * Created by Misutesu on 2017/1/23 0023.
@@ -34,16 +34,21 @@ public class SearchResultPresenterImpl implements SearchResultPresenter {
         mView.addSubscription(RetrofitUtil.newInstance().searchNew(
                 name, page, Constants.NEW_EVERY_PAGE_SIZE, sort
         ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ListNewResult>() {
+                .subscribeWith(new DisposableSubscriber<ListNewResult>() {
                     @Override
-                    public void onCompleted() {
+                    protected void onStart() {
+                        request(1);
+                    }
+
+                    @Override
+                    public void onComplete() {
                         mView.searchEnd();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        onCompleted();
+                        onComplete();
                         mView.searchError(MyApplication.getContext().getString(R.string.internet_error));
                     }
 
@@ -51,13 +56,13 @@ public class SearchResultPresenterImpl implements SearchResultPresenter {
                     public void onNext(ListNewResult result) {
                         if (result.getResult().equals("success")) {
                             List<New> news = new ArrayList<>();
-                            for (int i = 0; i < result.getData().size(); i++) {
-                                ListNewResult.DataBean bean = result.getData().get(i);
+                            for (int i = 0; i < result.getData().getNews().size(); i++) {
+                                ListNewResult.DataBean.NewsBean bean = result.getData().getNews().get(i);
                                 New n = new New();
                                 n.setId(bean.getId());
                                 n.setTitle(bean.getTitle());
                                 n.setCover(bean.getCover());
-                                n.setAbstractContent(bean.getAbstact());
+                                n.setAbstractContent(bean.getAbstractContent());
                                 n.setCreateTime(bean.getCreateTime());
                                 n.setType(bean.getType());
                                 news.add(n);
