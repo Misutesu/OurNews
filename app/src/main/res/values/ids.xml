@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="tag_img"/>
+    <item type="id" name="tag_new"/>
+
+    <item type="id" name="tag_theme"/>
+    <item type="id" name="tag_position"/>
+
+    <item type="id" name="tag_comment"/>
+    <item type="id" name="tag_like_num_text"/>
+</resources>

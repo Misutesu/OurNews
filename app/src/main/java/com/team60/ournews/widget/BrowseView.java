@@ -19,6 +19,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
+import com.team60.ournews.listener.MyObjectAnimatorListener;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.util.MyUtil;
 
@@ -49,6 +50,7 @@ public class BrowseView extends LinearLayout {
     private RotateAnimation rotateAnimation = new RotateAnimation(0, 3600
             , Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 
+    private boolean isFirst = true;
     private boolean isRefreshAll = false;
     private boolean isRefresh = false;
     private long lastClickTime = 0;
@@ -115,33 +117,24 @@ public class BrowseView extends LinearLayout {
         this.news.clear();
         this.news.addAll(news);
 
-        ObjectAnimator outAnim = ObjectAnimator.ofFloat(this, "alpha", 1f, 0f);
-        outAnim.setDuration(150);
-        outAnim.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                showData();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        AnimatorSet set = new AnimatorSet();
-        set.play(ObjectAnimator.ofFloat(this, "alpha", 0f, 1f).setDuration(150))
-                .after(outAnim);
-        set.start();
+        if (isFirst) {
+            isFirst = false;
+            showData();
+            ObjectAnimator.ofFloat(this, "alpha", 0f, 1f).setDuration(150).start();
+        } else {
+            ObjectAnimator outAnim = ObjectAnimator.ofFloat(this, "alpha", 1f, 0f);
+            outAnim.setDuration(150);
+            outAnim.addListener(new MyObjectAnimatorListener(){
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    showData();
+                }
+            });
+            AnimatorSet set = new AnimatorSet();
+            set.play(ObjectAnimator.ofFloat(this, "alpha", 0f, 1f).setDuration(150))
+                    .after(outAnim);
+            set.start();
+        }
     }
 
     private void init(Context context) {
@@ -152,6 +145,9 @@ public class BrowseView extends LinearLayout {
         rotateAnimation.setRepeatMode(Animation.RESTART);
         rotateAnimation.setRepeatCount(Animation.INFINITE);
         rotateAnimation.setInterpolator(new LinearInterpolator());
+
+        if (this.news == null)
+            this.news = new ArrayList<>();
 
         View view = LayoutInflater.from(context).inflate(R.layout.layout_browse_view, this, true);
 

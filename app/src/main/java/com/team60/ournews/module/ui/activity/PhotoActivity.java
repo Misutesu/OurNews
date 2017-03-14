@@ -32,6 +32,7 @@ import com.mistesu.frescoloader.FrescoLoader;
 import com.mistesu.frescoloader.OnDownloadListener;
 import com.team60.ournews.R;
 import com.team60.ournews.listener.DownListener;
+import com.team60.ournews.listener.MyObjectAnimatorListener;
 import com.team60.ournews.module.evaluator.BesselEvaluator;
 import com.team60.ournews.module.evaluator.SizeEvaluator;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
@@ -212,12 +213,7 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                             AnimatorSet imgSet = new AnimatorSet();
                             imgSet.playTogether(widthAnimator, translationAnimator);
                             imgSet.setDuration(400);
-                            imgSet.addListener(new Animator.AnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-
-                                }
-
+                            imgSet.addListener(new MyObjectAnimatorListener(){
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
                                     mPhotoView.setAlpha(1f);
@@ -232,16 +228,6 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                                     ObjectAnimator.ofFloat(mBackground, "scaleX", 0f, 1f).setDuration(400).start();
                                     ObjectAnimator.ofFloat(mBackground, "scaleY", 0f, 1f).setDuration(400).start();
                                     ObjectAnimator.ofFloat(mToolBar, "alpha", 0f, 1f).setDuration(250).start();
-                                }
-
-                                @Override
-                                public void onAnimationCancel(Animator animation) {
-
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animator animation) {
-
                                 }
                             });
                             imgSet.start();
@@ -331,7 +317,7 @@ public class PhotoActivity extends BaseActivity implements BaseView {
             set1.play(ObjectAnimator.ofFloat(mAnimLayout, "alpha", 1f, 0f).setDuration(150))
                     .after(imgSet);
 
-            set1.addListener(new Animator.AnimatorListener() {
+            set1.addListener(new MyObjectAnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     mPhotoView.setAlpha(0f);
@@ -343,16 +329,6 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                     finish();
                     overridePendingTransition(0, 0);
                 }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
             });
             set1.start();
         } else {
@@ -361,26 +337,11 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                     ObjectAnimator.ofFloat(mBackground, "scaleY", 1f, 0f).setDuration(400),
                     ObjectAnimator.ofFloat(mToolBar, "alpha", 1f, 0f).setDuration(250),
                     ObjectAnimator.ofFloat(mPhotoView, "alpha", 1f, 0f).setDuration(250));
-            set.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
+            set.addListener(new MyObjectAnimatorListener() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     finish();
                     overridePendingTransition(0, 0);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
                 }
             });
             set.start();

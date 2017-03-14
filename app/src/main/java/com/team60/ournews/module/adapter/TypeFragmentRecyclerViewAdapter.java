@@ -37,7 +37,7 @@ public class TypeFragmentRecyclerViewAdapter extends RecyclerView.Adapter {
     private ProgressBar mProgressBar;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, New n, int position);
+        void onItemClick(View view, New n);
     }
 
     public TypeFragmentRecyclerViewAdapter(Context context, List<New> news) {
@@ -65,8 +65,7 @@ public class TypeFragmentRecyclerViewAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof NormalViewHolder) {
             final NormalViewHolder viewHolder = (NormalViewHolder) holder;
-            final int positionTemp = position;
-            final New n = news.get(positionTemp);
+            final New n = news.get(position);
             viewHolder.mTitleText.setText(n.getTitle());
             viewHolder.mTimeText.setText(n.getCreateTime());
 
@@ -74,13 +73,9 @@ public class TypeFragmentRecyclerViewAdapter extends RecyclerView.Adapter {
                     .setCircleRound(6)
                     .into(viewHolder.mCoverImg);
 
-            viewHolder.mLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onItemClickListener != null)
-                        onItemClickListener.onItemClick(viewHolder.mCoverImg, n, positionTemp);
-                }
-            });
+            viewHolder.mLayout.setTag(R.id.tag_img, viewHolder.mCoverImg);
+            viewHolder.mLayout.setTag(R.id.tag_new, n);
+            viewHolder.mLayout.setOnClickListener(mOnClickListener);
         } else if (holder instanceof FooterViewHolder) {
             mProgressBar = ((FooterViewHolder) holder).mProgressBar;
         }
@@ -104,6 +99,20 @@ public class TypeFragmentRecyclerViewAdapter extends RecyclerView.Adapter {
                 mProgressBar.setVisibility(View.INVISIBLE);
         }
     }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.item_type_new_layout:
+                    SimpleDraweeView mCoverImg = (SimpleDraweeView) v.getTag(R.id.tag_img);
+                    New n = (New) v.getTag(R.id.tag_new);
+                    if (onItemClickListener != null)
+                        onItemClickListener.onItemClick(mCoverImg, n);
+                    break;
+            }
+        }
+    };
 
     public class NormalViewHolder extends RecyclerView.ViewHolder {
 

@@ -15,6 +15,7 @@ public class Comment implements Parcelable {
     private long nid;
     private String content;
     private String createTime;
+    private int isLike;
     private int lickNum;
     private int childNum;
     private OtherUser user;
@@ -55,6 +56,14 @@ public class Comment implements Parcelable {
         this.createTime = createTime;
     }
 
+    public int getIsLike() {
+        return isLike;
+    }
+
+    public void setIsLike(int isLike) {
+        this.isLike = isLike;
+    }
+
     public int getLickNum() {
         return lickNum;
     }
@@ -92,6 +101,7 @@ public class Comment implements Parcelable {
         nid = in.readLong();
         content = in.readString();
         createTime = in.readString();
+        isLike = in.readInt();
         lickNum = in.readInt();
         childNum = in.readInt();
         user = in.readParcelable(OtherUser.class.getClassLoader());
@@ -103,6 +113,7 @@ public class Comment implements Parcelable {
         dest.writeLong(nid);
         dest.writeString(content);
         dest.writeString(createTime);
+        dest.writeInt(isLike);
         dest.writeInt(lickNum);
         dest.writeInt(childNum);
         dest.writeParcelable(user, flags);

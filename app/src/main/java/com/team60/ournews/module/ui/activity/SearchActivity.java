@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
+import com.team60.ournews.listener.MyObjectAnimatorListener;
 import com.team60.ournews.module.adapter.SearchActivityRecyclerViewAdapter;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.util.MyUtil;
@@ -273,7 +274,7 @@ public class SearchActivity extends BaseActivity {
                         int cy = mCardView.getTop();
                         int finalRadius = Math.max(mCardView.getWidth(), mCardView.getHeight());
                         Animator anim = ViewAnimationUtils.createCircularReveal(mCardView, cx, cy, 0, finalRadius);
-                        anim.addListener(new Animator.AnimatorListener() {
+                        anim.addListener(new MyObjectAnimatorListener() {
                             @Override
                             public void onAnimationStart(Animator animation) {
                                 mCardView.setVisibility(View.VISIBLE);
@@ -283,16 +284,6 @@ public class SearchActivity extends BaseActivity {
                             public void onAnimationEnd(Animator animation) {
                                 MyUtil.openKeyBord(mSearchEdit);
                                 mSearchEdit.requestFocus();
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-
                             }
                         });
                         anim.start();
@@ -309,28 +300,13 @@ public class SearchActivity extends BaseActivity {
                 int cy = mCardView.getTop();
                 int finalRadius = Math.max(mCardView.getWidth(), mCardView.getHeight());
                 Animator anim = ViewAnimationUtils.createCircularReveal(mCardView, cx, cy, finalRadius, 0);
-                anim.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
+                anim.addListener(new MyObjectAnimatorListener() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         mCardView.setVisibility(View.INVISIBLE);
                         MyUtil.closeKeyBord(mSearchEdit);
                         finish();
                         overridePendingTransition(0, 0);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
                     }
                 });
                 anim.start();

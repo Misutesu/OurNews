@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
+import com.team60.ournews.listener.MyTransitionListener;
 import com.team60.ournews.module.adapter.TypeFragmentRecyclerViewAdapter;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.presenter.SearchResultPresenter;
@@ -73,30 +74,10 @@ public class SearchResultActivity extends BaseActivity implements SearchResultVi
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Explode explodeIn = new Explode();
             explodeIn.setDuration(400);
-            explodeIn.addListener(new Transition.TransitionListener() {
-                @Override
-                public void onTransitionStart(Transition transition) {
-
-                }
-
+            explodeIn.addListener(new MyTransitionListener() {
                 @Override
                 public void onTransitionEnd(Transition transition) {
                     mPresenter.searchNews(searchStr, page, sort);
-                }
-
-                @Override
-                public void onTransitionCancel(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionPause(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionResume(Transition transition) {
-
                 }
             });
             getWindow().setEnterTransition(explodeIn);
@@ -146,8 +127,8 @@ public class SearchResultActivity extends BaseActivity implements SearchResultVi
 
         mAdapter.setOnItemClickListener(new TypeFragmentRecyclerViewAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, New n, int position) {
-                SkipUtil.startNewActivity(SearchResultActivity.this, news.get(position), view);
+            public void onItemClick(View view, New n) {
+                SkipUtil.startNewActivity(SearchResultActivity.this, n, view);
             }
         });
     }

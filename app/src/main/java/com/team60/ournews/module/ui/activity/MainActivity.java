@@ -95,8 +95,6 @@ public class MainActivity extends BaseActivity {
     private AlertDialog mThemeHintDialog;
     private AlertDialog mLogoutDialog;
 
-    private int checkLoginNum = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -352,7 +350,10 @@ public class MainActivity extends BaseActivity {
         } else if (mViewPager.getCurrentItem() != 0) {
             mViewPager.setCurrentItem(0);
         } else {
-            super.onBackPressed();
+//            super.onBackPressed();
+            Intent launcherIntent = new Intent(Intent.ACTION_MAIN);
+            launcherIntent.addCategory(Intent.CATEGORY_HOME);
+            startActivity(launcherIntent);
         }
     }
 

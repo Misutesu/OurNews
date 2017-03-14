@@ -81,8 +81,10 @@
     <string name="get_new_content_error_click_retry">获取新闻内容失败,点击重试</string>
     <string name="load_new_image_error">加载图片失败</string>
     <string name="write_comment">写评论</string>
-    <string name="only_login_can_see_other_user">只有登录用户才可查看其他用户</string>
+    <string name="only_login_can_see_other_user">只有登录用户才能查看其他用户</string>
     <string name="no_login_do_you_login_now">只有登录用户才能发表评论</string>
+    <string name="only_login_can_like_comment">只有登录用户才能点赞</string>
+    <string name="only_login_can_reply_comment">只有登录用户才能回复评论</string>
     <string name="go_to_login">去登陆</string>
     <string name="send">发表</string>
     <string name="no_content">写都没写你想发什么?</string>
@@ -111,4 +113,5 @@
     <string name="collection">收藏</string>
     <string name="temp">-</string>
     <string name="spot">·</string>
+    <string name="reply">回复</string>
 </resources>

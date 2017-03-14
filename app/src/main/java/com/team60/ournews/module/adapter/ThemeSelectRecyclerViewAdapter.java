@@ -54,18 +54,13 @@ public class ThemeSelectRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ThemViewHolder viewHolder = (ThemViewHolder) holder;
-        final int positionTemp = position;
-        final Theme theme = themes.get(positionTemp);
+        final Theme theme = themes.get(position);
         viewHolder.mImg.setColorFilter(theme.getColor());
-        viewHolder.mLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onItemClickListener != null)
-                    onItemClickListener.onClick(theme, positionTemp);
-            }
-        });
+        viewHolder.mLayout.setTag(R.id.tag_theme, theme);
+        viewHolder.mLayout.setTag(R.id.tag_position, position);
+        viewHolder.mLayout.setOnClickListener(mOnClickListener);
     }
 
     @Override
@@ -73,10 +68,24 @@ public class ThemeSelectRecyclerViewAdapter extends RecyclerView.Adapter {
         return themes.size();
     }
 
-    class ThemViewHolder extends RecyclerView.ViewHolder {
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.item_theme_layout:
+                    Theme theme = (Theme) v.getTag(R.id.tag_theme);
+                    int position = (int) v.getTag(R.id.tag_position);
+                    if (theme != null && onItemClickListener != null)
+                        onItemClickListener.onClick(theme, position);
+                    break;
+            }
+        }
+    };
+
+    public class ThemViewHolder extends RecyclerView.ViewHolder {
 
         private FrameLayout mLayout;
-        ImageView mImg;
+        private ImageView mImg;
 
         public ThemViewHolder(View itemView) {
             super(itemView);

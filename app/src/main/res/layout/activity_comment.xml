@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_comment_coordinator_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.team60.ournews.module.ui.activity.CommentActivity">
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:id="@+id/activity_comment_coordinator_layout"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 tools:context="com.team60.ournews.module.ui.activity.CommentActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?android:actionBarSize"
             android:background="?attr/colorPrimary"
-            app:theme="@style/ToolBarTheme" />
+            app:theme="@style/ToolBarTheme"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -28,12 +28,12 @@
                 android:id="@+id/activity_comment_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:overScrollMode="never" />
+                android:overScrollMode="never"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
-                android:background="@drawable/elevation_tool_bar" />
+                android:background="@drawable/elevation_tool_bar"/>
         </FrameLayout>
     </LinearLayout>
 
@@ -44,13 +44,13 @@
         android:layout_gravity="center"
         android:text="@string/no_comment"
         android:textColor="?attr/textColor"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/activity_comment_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"/>
 
     <Button
         android:id="@+id/activity_comment_retry_btn"
@@ -64,7 +64,7 @@
         android:layout_marginStart="32dp"
         android:text="@string/get_comments_error_click_retry"
         android:textColor="@color/white"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/activity_new_bottom_layout"
@@ -76,7 +76,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:background="@drawable/elevation_down" />
+            android:background="@drawable/elevation_down"/>
 
         <LinearLayout
             android:id="@+id/activity_new_bottom_action_layout"
@@ -91,8 +91,8 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                app:srcCompat="@drawable/edit"
-                android:tint="@color/white" />
+                android:tint="@color/white"
+                app:srcCompat="@drawable/edit"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -101,7 +101,9 @@
                 android:layout_marginStart="16dp"
                 android:text="@string/write_comment"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
         </LinearLayout>
     </LinearLayout>
+
+    <include layout="@layout/layout_comment_child"/>
 </android.support.design.widget.CoordinatorLayout>

@@ -131,13 +131,6 @@ public class TypeFragment extends BaseFragment implements TypeView {
     public void setListener() {
         mRecyclerView.addOnScrollListener(new TypeFragment.MyRecyclerViewOnScroll());
 
-//        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                return isLoad;
-//            }
-//        });
-
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -147,7 +140,7 @@ public class TypeFragment extends BaseFragment implements TypeView {
 
         mAdapter.setOnItemClickListener(new TypeFragmentRecyclerViewAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, New n, int position) {
+            public void onItemClick(View view, New n) {
                 SkipUtil.startNewActivity(getActivity(), n, view);
             }
         });

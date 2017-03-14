@@ -70,6 +70,7 @@ public class CommentPresenterImpl implements CommentPresenter {
                                 comment.setNid(nid);
                                 comment.setContent(result.getData().getComments().get(i).getContent());
                                 comment.setCreateTime(result.getData().getComments().get(i).getCreateTime());
+                                comment.setIsLike(result.getData().getComments().get(i).getIsLike());
                                 comment.setLickNum(result.getData().getComments().get(i).getLikeNum());
                                 comment.setChildNum(result.getData().getComments().get(i).getChildNum());
                                 OtherUser otherUser = new OtherUser();

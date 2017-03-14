@@ -36,6 +36,8 @@ public class ErrorUtil {
     public static final int USER_NO_ONLINE = 3003;
     // 用户不存在(ID)
     private static final int USER_NO_EXIST = 5001;
+    // 查找用户不存在(ID)
+    public static final int OTHER_USER_NO_EXIST = 5002;
     // 新闻不存在(ID)
     private static final int NEW_NO_EXIST = 7001;
     // 新闻未上线
@@ -44,6 +46,14 @@ public class ErrorUtil {
     public static final int HAS_COLLECTION = 9001;
     // 没收藏过
     public static final int NO_COLLECTION = 9002;
+    // 评论不存在
+    public static final int NO_COMMENT = 9003;
+    // 评论被封禁
+    public static final int COMMENT_NO_ONLINE = 9004;
+    // 此评论已点赞过
+    public static final int HAS_LIKE_COMMENT = 9005;
+    // 此评论没有点赞过
+    public static final int NO_LIKE_COMMENT = 9006;
 
     // 上传文件不是图片
     private static final int UPLOAD_NO_IMAGE = 100001;
@@ -74,16 +84,21 @@ public class ErrorUtil {
             errorList.add(new Error(LOGIN_NAME_LENGTH_ERROR, "用户名长度不正确"));
             errorList.add(new Error(PASSWORD_LENGTH_ERROR, "密码长度不正确"));
             errorList.add(new Error(LOGIN_NAME_IS_EXIST, "用户名已存在"));
-            errorList.add(new Error(LOGIN_NAME_NO_EXIST, "用户名不存在"));
+            errorList.add(new Error(LOGIN_NAME_NO_EXIST, "查找用户不存在"));
             errorList.add(new Error(PASSWORD_ERROR, "密码错误"));
             errorList.add(new Error(CHANGE_INFO_ERROR, "修改用户信息错误或用户不存在"));
             errorList.add(new Error(TOKEN_ERROR, "Token错误"));
             errorList.add(new Error(USER_NO_ONLINE, "用户被封禁"));
             errorList.add(new Error(USER_NO_EXIST, "用户不存在"));
+            errorList.add(new Error(OTHER_USER_NO_EXIST, "用户不存在"));
             errorList.add(new Error(NEW_NO_EXIST, "新闻不存在"));
             errorList.add(new Error(HAS_COLLECTION, "已有收藏"));
             errorList.add(new Error(NO_COLLECTION, "没收藏过"));
             errorList.add(new Error(NEW_NO_ONLINE, "新闻未上线"));
+            errorList.add(new Error(NO_COMMENT, "评论不存在"));
+            errorList.add(new Error(COMMENT_NO_ONLINE, "评论被封禁"));
+            errorList.add(new Error(HAS_LIKE_COMMENT, "此评论已点赞过"));
+            errorList.add(new Error(NO_LIKE_COMMENT, "此评论没有点赞过"));
             errorList.add(new Error(UPLOAD_NO_IMAGE, "上传文件不是图片"));
             errorList.add(new Error(UPLOAD_FILE_TOO_BIG, "上传文件过大"));
         }

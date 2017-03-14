@@ -115,6 +115,12 @@ public interface ApiStore {
                                              @Query("size") int size,
                                              @Query("sort") int sort);
 
+    @POST("lickComment")
+    Flowable<NoDataResult> lickComment(@Query("cid") long cid,
+                                      @Query("uid") long uid,
+                                      @Query("token") String token,
+                                      @Query("type") int type);
+
     @Multipart
     @POST("uploadImage")
     Flowable<UploadResult> uploadImage(@Part("description") RequestBody description, @Part MultipartBody.Part file);

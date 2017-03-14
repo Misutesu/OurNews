@@ -35,6 +35,7 @@ import com.mistesu.frescoloader.FrescoLoader;
 import com.mistesu.frescoloader.OnDownloadListener;
 import com.team60.ournews.R;
 import com.team60.ournews.event.LoginEvent;
+import com.team60.ournews.listener.MyObjectAnimatorListener;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.bean.User;
 import com.team60.ournews.module.evaluator.BesselEvaluator;
@@ -424,26 +425,12 @@ public class NewActivity extends BaseActivity implements NewView {
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mAnimLayout, "alpha", 1f, 0f);
             objectAnimator.setDuration(150);
             set2.play(objectAnimator).after(set1);
-            set2.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
+            set2.addListener(new MyObjectAnimatorListener() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     finish();
                     overridePendingTransition(0, 0);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
+                    isAnimEnd = true;
                 }
             });
             set2.start();
@@ -466,25 +453,10 @@ public class NewActivity extends BaseActivity implements NewView {
                     , ObjectAnimator.ofFloat(mFloatActionBtn, "scaleY", mFloatActionBtn.getScaleY(), 0f)
                     , ObjectAnimator.ofFloat(mBottomLayout, "translationY", mBottomLayout.getTranslationY(), UiUtil.dip2px(48)));
         }
-        showSet.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
+        showSet.addListener(new MyObjectAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                isAnimEnd = true;
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
+                if(isShow) isAnimEnd = true;
             }
         });
         showSet.setDuration(200);
@@ -555,26 +527,11 @@ public class NewActivity extends BaseActivity implements NewView {
 
         ObjectAnimator outAnim = ObjectAnimator.ofFloat(mHistoryCollectionLayout, "alpha", 1f, 0f).setDuration(150);
         ObjectAnimator inAnim = ObjectAnimator.ofFloat(mHistoryCollectionLayout, "alpha", 0f, 1f).setDuration(150);
-        outAnim.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
+        outAnim.addListener(new MyObjectAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mHistoryText.setText(String.valueOf(n.getHistoryNum()));
                 mCollectionText.setText(String.valueOf(n.getCollectionNum()));
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
             }
         });
         AnimatorSet set = new AnimatorSet();

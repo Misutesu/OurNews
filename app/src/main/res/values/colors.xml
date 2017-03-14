@@ -12,6 +12,7 @@
     <color name="day_windows_background">#f7f7f7</color>
     <color name="night_windows_background">#474747</color>
     <color name="night_item_background">#6c6c6c</color>
+    <color name="night_item_background2">#474747</color>
     <color name="night_button_background">#1c1c1c</color>
 
     <color name="white">#FFFFFF</color>

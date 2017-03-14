@@ -8,4 +8,5 @@
     <attr name="viewColor" format="color"/>
     <attr name="windowsBackgroundColor" format="color"/>
     <attr name="itemBackgroundColor" format="color"/>
+    <attr name="itemBackgroundColor2" format="color"/>
 </resources>

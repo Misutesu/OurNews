@@ -1,10 +1,14 @@
 package com.team60.ournews.module.ui.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -13,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Transition;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -22,17 +27,23 @@ import android.widget.TextView;
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.event.LoginEvent;
+import com.team60.ournews.listener.MyObjectAnimatorListener;
+import com.team60.ournews.listener.MyTransitionListener;
 import com.team60.ournews.module.adapter.CommentActivityRecyclerViewAdapter;
 import com.team60.ournews.module.bean.Comment;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.bean.OtherUser;
 import com.team60.ournews.module.bean.User;
+import com.team60.ournews.module.connection.RetrofitUtil;
+import com.team60.ournews.module.model.NoDataResult;
 import com.team60.ournews.module.presenter.CommentPresenter;
 import com.team60.ournews.module.presenter.impl.CommentPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.CommentVIew;
+import com.team60.ournews.util.ErrorUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
+import com.team60.ournews.widget.LikeButton;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -41,6 +52,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 
 public class CommentActivity extends BaseActivity implements CommentVIew {
 
@@ -60,11 +74,19 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     Button mRetryBtn;
     @BindView(R.id.activity_comment_no_comment_text)
     TextView mNoCommentText;
+    @BindView(R.id.activity_comment_child_layout)
+    CoordinatorLayout mChildLayout;
 
     private List<Comment> comments;
     private CommentActivityRecyclerViewAdapter mAdapter;
 
     private CommentPresenter mPresenter;
+
+    private AlertDialog mLoginDialog;
+
+    private BottomSheetDialog mChildDialog;
+
+    private BottomSheetBehavior behavior;
 
     private New n;
     private int page = 1;
@@ -75,7 +97,6 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
 
     private boolean isShow = true;
 
-    private AlertDialog mLoginDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,30 +110,10 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Explode explodeIn = new Explode();
             explodeIn.setDuration(400);
-            explodeIn.addListener(new Transition.TransitionListener() {
-                @Override
-                public void onTransitionStart(Transition transition) {
-
-                }
-
+            explodeIn.addListener(new MyTransitionListener() {
                 @Override
                 public void onTransitionEnd(Transition transition) {
                     startGetComments();
-                }
-
-                @Override
-                public void onTransitionCancel(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionPause(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionResume(Transition transition) {
-
                 }
             });
             getWindow().setEnterTransition(explodeIn);
@@ -139,6 +140,10 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         mAdapter = new CommentActivityRecyclerViewAdapter(this, n, comments);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
+
+        behavior = BottomSheetBehavior.from(mChildLayout);
+        behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        behavior.setPeekHeight(UiUtil.getScreenHeight() * 4 / 5);
     }
 
     @Override
@@ -157,7 +162,7 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
             }
 
             @Override
-            public void onCommentClick(OtherUser otherUser) {
+            public void onAvatarClick(OtherUser otherUser) {
                 if (User.isLogin()) {
                     Intent intent = new Intent(CommentActivity.this, UserActivity.class);
                     intent.putExtra("otherUser", otherUser);
@@ -165,6 +170,80 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
                 } else {
                     createLoginDialog();
                     mLoginDialog.setMessage(getString(R.string.only_login_can_see_other_user));
+                    mLoginDialog.show();
+                }
+            }
+
+            @Override
+            public void onLayoutClick(Comment comment) {
+//                showChildLayout();
+                mChildDialog = new BottomSheetDialog(CommentActivity.this);
+                View view = LayoutInflater.from(CommentActivity.this).inflate(R.layout.layout_comment_child, null);
+                mChildDialog.setContentView(view);
+                mChildDialog.show();
+
+            }
+
+            @Override
+            public void onLickBtnClick(final Comment comment, final TextView mLikeNumText, final LikeButton likeButton) {
+                if (User.isLogin() && comment.getIsLike() != -1) {
+                    addSubscription(RetrofitUtil.newInstance()
+                            .lickComment(comment.getId(), user.getId(), user.getToken(), comment.getIsLike())
+                            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(new DisposableSubscriber<NoDataResult>() {
+                                @Override
+                                protected void onStart() {
+                                    likeButton.startLoad();
+                                    request(1);
+                                }
+
+                                @Override
+                                public void onNext(NoDataResult result) {
+                                    if (result.getResult().equals("success")) {
+                                        if (comment.getIsLike() == 0) {
+                                            comment.setIsLike(1);
+                                            comment.setLickNum(comment.getLickNum() + 1);
+                                            likeButton.hasLike();
+                                        } else {
+                                            comment.setIsLike(0);
+                                            comment.setLickNum(comment.getLickNum() - 1);
+                                            likeButton.noLike();
+                                        }
+                                        ObjectAnimator outAnim = ObjectAnimator.ofFloat(mLikeNumText, "alpha", mLikeNumText.getAlpha(), 0f);
+                                        outAnim.addListener(new MyObjectAnimatorListener() {
+                                            @Override
+                                            public void onAnimationEnd(Animator animation) {
+                                                String likeNumText = comment.getLickNum() + " 赞";
+                                                mLikeNumText.setText(likeNumText);
+                                            }
+                                        });
+
+                                        outAnim.setDuration(100);
+                                        ObjectAnimator inAnim = ObjectAnimator.ofFloat(mLikeNumText, "alpha", mLikeNumText.getAlpha(), 1f);
+                                        inAnim.setDuration(100);
+                                        AnimatorSet set = new AnimatorSet();
+                                        set.play(outAnim).before(inAnim);
+                                        set.start();
+                                    } else {
+                                        showSnackBar(ErrorUtil.getErrorMessage(result.getErrorCode()));
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable t) {
+                                    t.printStackTrace();
+                                    onComplete();
+                                    showSnackBar(getString(R.string.internet_error));
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    likeButton.endLoad();
+                                }
+                            }));
+                } else {
+                    createLoginDialog();
+                    mLoginDialog.setMessage(getString(R.string.only_login_can_like_comment));
                     mLoginDialog.show();
                 }
             }
@@ -250,6 +329,14 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         }
     }
 
+    private void showChildLayout() {
+        if (behavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        }
+    }
+
     @Override
     public void getCommentsEnd() {
         mProgressBar.setVisibility(View.GONE);
@@ -331,6 +418,10 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
             }
         } else if (requestCode == LoginActivity.CODE_LOGIN) {
             if (resultCode == LoginActivity.CODE_LOGIN) {
+                comments.clear();
+                mProgressBar.setVisibility(View.VISIBLE);
+                mAdapter.notifyDataSetChanged();
+                startGetComments();
                 showSnackBar(getString(R.string.login_success));
                 EventBus.getDefault().post(new LoginEvent());
             }

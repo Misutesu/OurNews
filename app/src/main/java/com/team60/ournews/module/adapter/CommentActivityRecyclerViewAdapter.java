@@ -1,11 +1,11 @@
 package com.team60.ournews.module.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -23,11 +23,13 @@ import com.team60.ournews.module.bean.OtherUser;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
+import com.team60.ournews.widget.LikeButton;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.fresco.processors.ColorFilterPostprocessor;
 
 /**
  * Created by Misutesu on 2016/12/29 0029.
@@ -50,7 +52,11 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
     public interface OnItemClickListener {
         void onTitleClick();
 
-        void onCommentClick(OtherUser otherUser);
+        void onAvatarClick(OtherUser otherUser);
+
+        void onLayoutClick(Comment comment);
+
+        void onLickBtnClick(Comment comment, TextView mLikeNumText, LikeButton likeButton);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -96,13 +102,7 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HeaderViewHolder) {
-            ((HeaderViewHolder) holder).mCardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onItemClickListener != null)
-                        onItemClickListener.onTitleClick();
-                }
-            });
+            ((HeaderViewHolder) holder).mCardView.setOnClickListener(mOnClickListener);
         } else if (holder instanceof FooterViewHolder) {
             mProgressBar = ((FooterViewHolder) holder).mProgressBar;
         } else if (holder instanceof NormalViewHolder) {
@@ -113,25 +113,34 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
             viewHolder.mUserNameText.setText(user.getNickName());
             viewHolder.mContentText.setText(comment.getContent());
             viewHolder.mTimeText.setText(comment.getCreateTime());
+            String likeNumText = comment.getLickNum() + " 赞";
+            viewHolder.mLikeNumText.setText(likeNumText);
 
-            Uri uri;
-            if (!user.getPhoto().equals("NoImage")) {
-                uri = FrescoLoader.getUri(MyUtil.getPhotoUrl(user.getPhoto()));
+            if (comment.getIsLike() == -1 || comment.getIsLike() == 0) {
+                viewHolder.mLikeBtn.noLike();
             } else {
-                uri = FrescoLoader.getUri(R.drawable.user_default_avatar);
+                viewHolder.mLikeBtn.hasLike();
             }
-            FrescoLoader.load(uri)
-                    .setCircle()
-                    .setBorder(3, ThemeUtil.getColor(context.getTheme(), R.attr.textColor))
-                    .into(viewHolder.mAvatarImg);
+            viewHolder.mLikeBtn.setTag(R.id.tag_like_num_text, viewHolder.mLikeNumText);
+            viewHolder.mLikeBtn.setTag(R.id.tag_comment, comment);
+            viewHolder.mLikeBtn.setOnLikeButtonListener(mOnLikeButtonListener);
 
-            viewHolder.mLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onItemClickListener != null)
-                        onItemClickListener.onCommentClick(comment.getUser());
-                }
-            });
+            if (user.getPhoto().equals("NoImage")) {
+                FrescoLoader.load(R.drawable.user_default_avatar)
+                        .setCircle()
+                        .setPostprocessor(new ColorFilterPostprocessor(ThemeUtil.getColor(context.getTheme(), R.attr.colorPrimary)))
+                        .into(viewHolder.mAvatarImg);
+            } else {
+                FrescoLoader.load(MyUtil.getPhotoUrl(user.getPhoto()))
+                        .setCircle()
+                        .into(viewHolder.mAvatarImg);
+            }
+
+            viewHolder.mAvatarImg.setTag(R.id.tag_comment, comment.getUser());
+            viewHolder.mAvatarImg.setOnClickListener(mOnClickListener);
+
+            viewHolder.mLayout.setTag(comment);
+            viewHolder.mLayout.setOnClickListener(mOnClickListener);
 
             if (comment.getChildList() != null && comment.getChildList().size() != 0) {
                 if (viewHolder.mRecyclerView == null) {
@@ -141,6 +150,7 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
                         viewHolder.mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                     }
                 }
+                viewHolder.mCardView.setOnClickListener(mOnClickListener);
                 viewHolder.mRecyclerView.setAdapter(viewHolder.mAdapter);
             }
         }
@@ -150,6 +160,39 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return comments.size() + 2;
     }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.item_comment_header_card_view:
+                    if (onItemClickListener != null)
+                        onItemClickListener.onTitleClick();
+                    break;
+                case R.id.item_comment_avatar_img:
+                    OtherUser otherUser = (OtherUser) v.getTag();
+                    if (otherUser != null && onItemClickListener != null)
+                        onItemClickListener.onAvatarClick(otherUser);
+                    break;
+                case R.id.item_comment_layout:
+                    Comment comment = (Comment) v.getTag();
+                    if (comment != null && onItemClickListener != null)
+                        onItemClickListener.onLayoutClick(comment);
+                    break;
+            }
+        }
+    };
+
+    private LikeButton.OnLikeButtonListener mOnLikeButtonListener = new LikeButton.OnLikeButtonListener() {
+        @Override
+        public void onButtonClick(View v) {
+            TextView mLikeNumText = (TextView) v.getTag(R.id.tag_like_num_text);
+            Comment comment = (Comment) v.getTag(R.id.tag_comment);
+            if (mLikeNumText != null && comment != null && onItemClickListener != null) {
+                onItemClickListener.onLickBtnClick(comment, mLikeNumText, (LikeButton) v);
+            }
+        }
+    };
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
 
@@ -192,9 +235,14 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
         TextView mContentText;
         @BindView(R.id.item_comment_time_text)
         TextView mTimeText;
+        @BindView(R.id.item_comment_like_num_text)
+        TextView mLikeNumText;
+        @BindView(R.id.item_comment_like_btn)
+        LikeButton mLikeBtn;
         @BindView(R.id.item_comment_content_view_stub)
         ViewStub mViewStub;
 
+        private CardView mCardView;
         private RecyclerView mRecyclerView;
         private CommentActivityChildRecyclerViewAdapter mAdapter;
 
@@ -206,7 +254,14 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
 
         public void getRecyclerView() {
             mViewStub.inflate();
-            mRecyclerView = (RecyclerView) view.findViewById(R.id.item_comment_recycler_view);
+            mCardView = (CardView) view.findViewById(R.id.item_comment_child_card_view);
+            mRecyclerView = (RecyclerView) view.findViewById(R.id.item_comment_child_recycler_view);
+            mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return true;
+                }
+            });
         }
     }
 

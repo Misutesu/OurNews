@@ -83,14 +83,27 @@ public class SearchActivityRecyclerViewAdapter extends RecyclerView.Adapter {
             ButterKnife.bind(this, itemView);
             mLayout = (LinearLayout) itemView.findViewById(R.id.item_search_layout);
             mText = (TextView) itemView.findViewById(R.id.item_search_text);
-            mLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onTextItemClick(getLayoutPosition());
-                }
-            });
+            mLayout.setTag(getLayoutPosition());
+            mLayout.setOnClickListener(mOnClickListener);
         }
     }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.item_search_layout:
+                    int position = (int) v.getTag();
+                    if (onItemClickListener != null)
+                        onItemClickListener.onTextItemClick(position);
+                    break;
+                case R.id.item_search_footer_text:
+                    if (onItemClickListener != null)
+                        onItemClickListener.onClearBtnClick();
+                    break;
+            }
+        }
+    };
 
     public class FooterViewHolder extends RecyclerView.ViewHolder {
 
@@ -100,13 +113,7 @@ public class SearchActivityRecyclerViewAdapter extends RecyclerView.Adapter {
         public FooterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
-            mTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onClearBtnClick();
-                }
-            });
+            mTextView.setOnClickListener(mOnClickListener);
         }
     }
 }

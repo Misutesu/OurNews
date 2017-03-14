@@ -157,7 +157,7 @@ public class CenterFragment extends BaseFragment implements CenterView {
 
         mAdapter.setOnItemClickListener(new TypeFragmentRecyclerViewAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, New n, int position) {
+            public void onItemClick(View view, New n) {
                 if (type == 0 && mOtherUser == null) {
                     SkipUtil.startNewActivityForResult(CenterFragment.this, n, view, NewActivity.COLLECTION_CHANGE);
                 } else {
