@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_login_coordinator_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.team60.ournews.module.ui.activity.RegisterActivity">
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:id="@+id/activity_login_coordinator_layout"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 tools:context="com.team60.ournews.module.ui.activity.RegisterActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,17 +32,19 @@
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
             android:layout_marginStart="32dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="12"
             android:layout_marginTop="32dp">
 
             <EditText
+                android:maxLength="12"
                 android:id="@+id/activity_register_login_name_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:digits="0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
                 android:hint="@string/please_input_login_name"
                 android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"
-                android:maxLength="12" />
+                android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -49,19 +52,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="16"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp">
 
             <EditText
+                android:maxLength="16"
                 android:id="@+id/activity_register_password_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/please_input_password"
                 android:imeOptions="actionNext"
-                android:inputType="textPassword"
-                android:maxLength="16" />
+                android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -71,17 +76,19 @@
             android:layout_marginEnd="32dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="16"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp">
 
             <EditText
+                android:maxLength="16"
                 android:id="@+id/activity_register_password_text_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/please_input_password_again"
                 android:imeOptions="actionDone"
-                android:inputType="textPassword"
-                android:maxLength="16" />
+                android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
         <Button

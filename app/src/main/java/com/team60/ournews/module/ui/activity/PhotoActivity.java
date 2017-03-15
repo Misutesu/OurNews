@@ -213,7 +213,7 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                             AnimatorSet imgSet = new AnimatorSet();
                             imgSet.playTogether(widthAnimator, translationAnimator);
                             imgSet.setDuration(400);
-                            imgSet.addListener(new MyObjectAnimatorListener(){
+                            imgSet.addListener(new MyObjectAnimatorListener() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
                                     mPhotoView.setAlpha(1f);
@@ -403,7 +403,7 @@ public class PhotoActivity extends BaseActivity implements BaseView {
     }
 
     private void savePhoto() {
-        MyUtil.savePhoto(photoUrl, new DownListener() {
+        MyUtil.savePhoto(PhotoActivity.this, photoUrl, new DownListener() {
             @Override
             public void success() {
                 showSnackBar(getString(R.string.save_img_success));

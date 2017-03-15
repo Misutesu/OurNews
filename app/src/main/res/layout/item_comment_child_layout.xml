@@ -5,11 +5,9 @@
     android:id="@+id/item_comment_child_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="false"
     app:cardBackgroundColor="?attr/itemBackgroundColor2">
 
     <android.support.v7.widget.RecyclerView
-        android:clickable="false"
         android:foreground="?android:attr/selectableItemBackground"
         android:id="@+id/item_comment_child_recycler_view"
         android:layout_width="match_parent"

@@ -456,7 +456,7 @@ public class NewActivity extends BaseActivity implements NewView {
         showSet.addListener(new MyObjectAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                if(isShow) isAnimEnd = true;
+                if (isShow) isAnimEnd = true;
             }
         });
         showSet.setDuration(200);

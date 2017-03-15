@@ -11,9 +11,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-import com.facebook.binaryresource.FileBinaryResource;
-import com.facebook.cache.common.SimpleCacheKey;
-import com.facebook.drawee.backends.pipeline.Fresco;
+import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.listener.DownListener;
@@ -26,10 +24,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.subscribers.DisposableSubscriber;
 
 public class MyUtil {
 
@@ -74,83 +74,79 @@ public class MyUtil {
         return RetrofitUtil.BASE_URL + "downloadImage?name=" + photoName;
     }
 
-    public static void savePhoto(final String photoUrl, final DownListener downListener) {
-        Observable.create(new Observable.OnSubscribe<Object>() {
+    public static Disposable savePhoto(final Context context, final String photoUrl, @NonNull final DownListener downListener) {
+        return Flowable.create(new FlowableOnSubscribe<Integer>() {
             @Override
-            public void call(Subscriber<? super Object> subscriber) {
-                FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory()
-                        .getMainDiskStorageCache().getResource(new SimpleCacheKey(photoUrl));
-                File tempPhoto = resource.getFile();
-                if (tempPhoto.exists()) {
-                    // 首先保存图片
-                    File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsoluteFile();//注意小米手机必须这样获得public绝对路径
+            public void subscribe(FlowableEmitter<Integer> flowable) throws Exception {
+                File file = FrescoLoader.getLocalCache(context, FrescoLoader.getUri(photoUrl));
+                if (file != null && file.exists()) {
+                    File saveFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsoluteFile();//注意小米手机必须这样获得public绝对路径
                     String fileName = "OurNews";
-                    File appDir = new File(file, fileName);
+                    File appDir = new File(saveFile, fileName);
                     if (!appDir.exists()) {
-                        appDir.mkdirs();
-                    }
-                    fileName = System.currentTimeMillis() + ".jpg";
-                    File currentFile = new File(appDir, fileName);
-
-                    InputStream inputStream = null;
-                    FileOutputStream fileOutputStream = null;
-                    try {
-                        int byteRead;
-                        inputStream = new FileInputStream(tempPhoto);
-                        fileOutputStream = new FileOutputStream(currentFile);
-                        byte[] buffer = new byte[1024];
-                        while ((byteRead = inputStream.read(buffer)) != -1) {
-                            fileOutputStream.write(buffer, 0, byteRead);
+                        if (appDir.mkdirs()) {
+                            callSystemUpdate(copyFileToOtherFolder(file, saveFile, System.currentTimeMillis() + ".png"));
+                            flowable.onNext(1);
+                        } else {
+                            flowable.onError(new IOException());
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        subscriber.onError(e);
-                    } finally {
-                        if (inputStream != null)
-                            try {
-                                inputStream.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        if (fileOutputStream != null)
-                            try {
-                                fileOutputStream.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                    } else {
+                        callSystemUpdate(copyFileToOtherFolder(file, saveFile, System.currentTimeMillis() + ".png"));
+                        flowable.onNext(1);
                     }
-
-                    subscriber.onNext(null);
-                    // 其次把文件插入到系统图库
-                    try {
-                        MediaStore.Images.Media.insertImage(MyApplication.getContext().getContentResolver(),
-                                currentFile.getAbsolutePath(), fileName, null);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    // 最后通知图库更新
-                    MyApplication.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                            Uri.fromFile(new File(currentFile.getPath()))));
                 } else {
-                    subscriber.onError(new Exception());
+                    flowable.onError(new FileNotFoundException());
                 }
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Object>() {
+        }, BackpressureStrategy.BUFFER)
+                .subscribeOn(io.reactivex.schedulers.Schedulers.io()).observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSubscriber<Integer>() {
                     @Override
-                    public void onCompleted() {
-
+                    protected void onStart() {
+                        request(1);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onNext(Integer integer) {
+                        downListener.success();
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        t.printStackTrace();
                         downListener.error();
                     }
 
                     @Override
-                    public void onNext(Object o) {
-                        downListener.success();
+                    public void onComplete() {
+
                     }
                 });
+    }
+
+    public static File copyFileToOtherFolder(@NonNull File file, @NonNull File saveFolder
+            , @NonNull String fileName) throws IOException {
+        if (!file.exists() || !saveFolder.exists() || !saveFolder.isDirectory())
+            return null;
+        File currentFile = new File(saveFolder, fileName);
+        int byteRead;
+        InputStream inputStream = new FileInputStream(file);
+        FileOutputStream fileOutputStream = new FileOutputStream(currentFile);
+        byte[] buffer = new byte[1024];
+        while ((byteRead = inputStream.read(buffer)) != -1) {
+            fileOutputStream.write(buffer, 0, byteRead);
+        }
+        inputStream.close();
+        fileOutputStream.close();
+        return currentFile;
+    }
+
+    public static void callSystemUpdate(File file) throws FileNotFoundException {
+        if (file == null || !file.exists())
+            throw new FileNotFoundException();
+        MediaStore.Images.Media.insertImage(MyApplication.getContext().getContentResolver(),
+                file.getAbsolutePath(), file.getName(), null);
+        MyApplication.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                Uri.fromFile(new File(file.getPath()))));
     }
 }

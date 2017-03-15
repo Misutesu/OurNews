@@ -17,7 +17,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Transition;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -177,11 +176,10 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
             @Override
             public void onLayoutClick(Comment comment) {
 //                showChildLayout();
-                mChildDialog = new BottomSheetDialog(CommentActivity.this);
-                View view = LayoutInflater.from(CommentActivity.this).inflate(R.layout.layout_comment_child, null);
-                mChildDialog.setContentView(view);
-                mChildDialog.show();
-
+//                mChildDialog = new BottomSheetDialog(CommentActivity.this);
+//                View view = LayoutInflater.from(CommentActivity.this).inflate(R.layout.layout_comment_child, null);
+//                mChildDialog.setContentView(view);
+//                mChildDialog.show();
             }
 
             @Override

@@ -76,10 +76,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
             mDisposable.clear();
     }
 
-    public void addSubscription(@NonNull Disposable dis) {
+    public void addSubscription(@NonNull Disposable disposable) {
         if (mDisposable == null)
             mDisposable = new CompositeDisposable();
-        mDisposable.add(dis);
+        mDisposable.add(disposable);
     }
 
     private void hideStatusBar() {

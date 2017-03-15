@@ -200,16 +200,17 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="?attr/colorPrimary"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:targetApi="lollipop">
 
             <LinearLayout
+                android:clickable="true"
                 android:id="@+id/activity_new_write_comment_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -232,12 +233,12 @@
             </LinearLayout>
 
             <LinearLayout
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:id="@+id/activity_new_comment_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 android:orientation="horizontal">
 

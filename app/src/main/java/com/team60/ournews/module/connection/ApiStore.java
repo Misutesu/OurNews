@@ -67,7 +67,7 @@ public interface ApiStore {
                                       @Query("sort") int sort);
 
     @POST("getCollections")
-    Flowable<ListNewResult> getCollections(@Query("id") long id,
+    Flowable<ListNewResult> getCollections(@Query("nid") long id,
                                            @Query("token") String token,
                                            @Query("uid") long uid,
                                            @Query("page") int page,
@@ -75,7 +75,7 @@ public interface ApiStore {
                                            @Query("sort") int sort);
 
     @POST("getHistory")
-    Flowable<ListNewResult> getHistory(@Query("id") long id,
+    Flowable<ListNewResult> getHistory(@Query("nid") long id,
                                        @Query("token") String token,
                                        @Query("uid") long uid,
                                        @Query("page") int page,
