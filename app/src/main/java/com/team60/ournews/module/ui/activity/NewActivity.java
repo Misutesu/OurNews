@@ -137,7 +137,7 @@ public class NewActivity extends BaseActivity implements NewView {
             init(savedInstanceState);
             setListener();
             showNewInfo();
-            getNewContent();
+//            getNewContent();
         }
     }
 
@@ -171,8 +171,7 @@ public class NewActivity extends BaseActivity implements NewView {
         mCollapsingToolBarLayout.setExpandedTitleColor(Color.WHITE);
         mCollapsingToolBarLayout.setCollapsedTitleTextColor(Color.WHITE);
 
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -602,7 +601,6 @@ public class NewActivity extends BaseActivity implements NewView {
         } else if (requestCode == LoginActivity.CODE_LOGIN) {
             if (resultCode == LoginActivity.CODE_LOGIN) {
                 showSnackBar(getString(R.string.login_success));
-                getNewContent();
                 EventBus.getDefault().post(new LoginEvent());
             }
         }

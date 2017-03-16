@@ -121,6 +121,14 @@ public interface ApiStore {
                                       @Query("token") String token,
                                       @Query("type") int type);
 
+    @POST("sendChildComment")
+    Flowable<NoDataResult> sendChildComment(@Query("uid") long uid,
+                                               @Query("cid") long cid,
+                                               @Query("content") String content,
+                                               @Query("time") long time,
+                                               @Query("token") String token,
+                                               @Query("key") String key);
+
     @Multipart
     @POST("uploadImage")
     Flowable<UploadResult> uploadImage(@Part("description") RequestBody description, @Part MultipartBody.Part file);

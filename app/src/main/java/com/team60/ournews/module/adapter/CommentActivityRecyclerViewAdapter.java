@@ -2,13 +2,10 @@ package com.team60.ournews.module.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -23,6 +20,7 @@ import com.team60.ournews.module.bean.OtherUser;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
+import com.team60.ournews.widget.CommentChildLayout;
 import com.team60.ournews.widget.LikeButton;
 
 import java.util.List;
@@ -143,15 +141,10 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
             viewHolder.mLayout.setOnClickListener(mOnClickListener);
 
             if (comment.getChildList() != null && comment.getChildList().size() != 0) {
-                if (viewHolder.mRecyclerView == null) {
+                if (viewHolder.mCommentChildLayout == null) {
                     viewHolder.getRecyclerView();
-                    if (viewHolder.mAdapter == null) {
-                        viewHolder.mAdapter = new CommentActivityChildRecyclerViewAdapter(context, comment.getChildList());
-                        viewHolder.mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-                    }
+                    viewHolder.mCommentChildLayout.setData(comment.getChildList());
                 }
-                viewHolder.mCardView.setOnClickListener(mOnClickListener);
-                viewHolder.mRecyclerView.setAdapter(viewHolder.mAdapter);
             }
         }
     }
@@ -223,8 +216,6 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
 
     public class NormalViewHolder extends RecyclerView.ViewHolder {
 
-        private View view;
-
         @BindView(R.id.item_comment_layout)
         LinearLayout mLayout;
         @BindView(R.id.item_comment_avatar_img)
@@ -239,29 +230,17 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
         TextView mLikeNumText;
         @BindView(R.id.item_comment_like_btn)
         LikeButton mLikeBtn;
-        @BindView(R.id.item_comment_content_view_stub)
-        ViewStub mViewStub;
 
-        private CardView mCardView;
-        private RecyclerView mRecyclerView;
-        private CommentActivityChildRecyclerViewAdapter mAdapter;
+        private CommentChildLayout mCommentChildLayout;
 
         public NormalViewHolder(View itemView) {
             super(itemView);
-            view = itemView;
             ButterKnife.bind(this, itemView);
         }
 
         public void getRecyclerView() {
-            mViewStub.inflate();
-            mCardView = (CardView) view.findViewById(R.id.item_comment_child_card_view);
-            mRecyclerView = (RecyclerView) view.findViewById(R.id.item_comment_child_recycler_view);
-            mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    return true;
-                }
-            });
+            View view = LayoutInflater.from(context).inflate(R.layout.item_comment_child_layout, mLayout, true);
+            mCommentChildLayout = (CommentChildLayout) view.findViewById(R.id.item_comment_child_layout);
         }
     }
 

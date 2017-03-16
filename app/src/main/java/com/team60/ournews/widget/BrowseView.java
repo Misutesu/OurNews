@@ -111,29 +111,33 @@ public class BrowseView extends LinearLayout {
         }
     }
 
-    public void setData(List<New> news) {
+    public void setData(List<New> news, boolean hasAnim) {
         if (this.news == null)
             this.news = new ArrayList<>();
         this.news.clear();
         this.news.addAll(news);
 
-        if (isFirst) {
-            isFirst = false;
-            showData();
-            ObjectAnimator.ofFloat(this, "alpha", 0f, 1f).setDuration(150).start();
+        if (hasAnim) {
+            if (isFirst) {
+                isFirst = false;
+                showData();
+                ObjectAnimator.ofFloat(this, "alpha", 0f, 1f).setDuration(150).start();
+            } else {
+                ObjectAnimator outAnim = ObjectAnimator.ofFloat(this, "alpha", 1f, 0f);
+                outAnim.setDuration(150);
+                outAnim.addListener(new MyObjectAnimatorListener() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        showData();
+                    }
+                });
+                AnimatorSet set = new AnimatorSet();
+                set.play(ObjectAnimator.ofFloat(this, "alpha", 0f, 1f).setDuration(150))
+                        .after(outAnim);
+                set.start();
+            }
         } else {
-            ObjectAnimator outAnim = ObjectAnimator.ofFloat(this, "alpha", 1f, 0f);
-            outAnim.setDuration(150);
-            outAnim.addListener(new MyObjectAnimatorListener(){
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    showData();
-                }
-            });
-            AnimatorSet set = new AnimatorSet();
-            set.play(ObjectAnimator.ofFloat(this, "alpha", 0f, 1f).setDuration(150))
-                    .after(outAnim);
-            set.start();
+            showData();
         }
     }
 
@@ -204,21 +208,23 @@ public class BrowseView extends LinearLayout {
     }
 
     private void showData() {
-        for (int i = 0; i < 4; i++) {
-            final int finalI = i;
-            final New n = BrowseView.this.news.get(i);
-            FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover())).into(mCoverImages.get(i));
-            mTitleTexts.get(i).setText(n.getTitle());
-            mCardViews.get(i).setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!isRefresh && !isRefreshAll) {
-                        if (onActionListener != null) {
-                            onActionListener.onNewClick(n, mCoverImages.get(finalI));
+        if (news != null && news.size() >= 4) {
+            for (int i = 0; i < 4; i++) {
+                final int finalI = i;
+                final New n = news.get(i);
+                FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover())).into(mCoverImages.get(i));
+                mTitleTexts.get(i).setText(n.getTitle());
+                mCardViews.get(i).setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!isRefresh && !isRefreshAll) {
+                            if (onActionListener != null) {
+                                onActionListener.onNewClick(n, mCoverImages.get(finalI));
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
     }
 }

@@ -3,10 +3,10 @@
                                                  xmlns:app="http://schemas.android.com/apk/res-auto"
                                                  android:id="@+id/activity_comment_child_layout"
                                                  android:layout_width="match_parent"
-                                                 android:layout_height="800dp"
-                                                 android:background="@color/black"
-                                                 app:behavior_hideable="true"
-                                                 app:behavior_peekHeight="0dp"
-                                                 app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+                                                 android:layout_height="match_parent">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/layout_comment_child_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </android.support.design.widget.CoordinatorLayout>

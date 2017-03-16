@@ -83,7 +83,11 @@ public class HomeFragment extends BaseFragment implements HomeView {
         setListener();
 
         isViewCreated = true;
-        getData();
+        if (news.size() == 0) {
+            getData();
+        } else {
+            showData(false);
+        }
     }
 
     @Override
@@ -115,8 +119,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
 
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtil.getColor(getActivity().getTheme(), R.attr.colorPrimary));
 
-        if (news == null)
-            news = new SparseArray<>();
+        if (news == null) news = new SparseArray<>();
 
         mBrowseViews = new ArrayList<>();
         mBrowseViews.add(mComicBrowseView);
@@ -218,6 +221,15 @@ public class HomeFragment extends BaseFragment implements HomeView {
         mPresenter.getHomeNews(type);
     }
 
+    private void showData(boolean hasAnim) {
+        for (int i = 0; i < 5; i++) {
+            mBrowseViews.get(i).setData(this.news.get(i + 1), hasAnim);
+        }
+        mAdvertisementView.setData(this.news.get(6));
+        if (mScrollLayout.getVisibility() == View.GONE) mScrollLayout.setVisibility(View.VISIBLE);
+        if (mRetryBtn.getVisibility() == View.VISIBLE) mRetryBtn.setVisibility(View.GONE);
+    }
+
     @Override
     public void getNewsEnd() {
         if (mSwipeRefreshLayout.isRefreshing())
@@ -232,23 +244,15 @@ public class HomeFragment extends BaseFragment implements HomeView {
     public void getNewsSuccess(SparseArray<List<New>> news, int type) {
         this.news = news;
         if (type == -1) {
-            for (int i = 0; i < 5; i++) {
-                mBrowseViews.get(i).setData(news.get(i + 1));
-            }
-            mAdvertisementView.setData(news.get(6));
-            if (mScrollLayout.getVisibility() == View.GONE)
-                mScrollLayout.setVisibility(View.VISIBLE);
-            if (mRetryBtn.getVisibility() == View.VISIBLE)
-                mRetryBtn.setVisibility(View.GONE);
+            showData(true);
         } else {
-            mBrowseViews.get(type - 1).setData(news.get(type));
+            mBrowseViews.get(type - 1).setData(news.get(type), true);
         }
     }
 
     @Override
     public void getNewsError(String message) {
-        if (mScrollLayout.getVisibility() == View.GONE)
-            mRetryBtn.setVisibility(View.VISIBLE);
+        if (mScrollLayout.getVisibility() == View.GONE) mRetryBtn.setVisibility(View.VISIBLE);
         showSnackBar(message);
     }
 

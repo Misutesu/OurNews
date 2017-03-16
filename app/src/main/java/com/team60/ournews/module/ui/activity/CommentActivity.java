@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Transition;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -43,6 +44,7 @@ import com.team60.ournews.util.ErrorUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
 import com.team60.ournews.widget.LikeButton;
+import com.team60.ournews.widget.MyBottomSheetDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -84,8 +86,7 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     private AlertDialog mLoginDialog;
 
     private BottomSheetDialog mChildDialog;
-
-    private BottomSheetBehavior behavior;
+    private BottomSheetBehavior mBehavior;
 
     private New n;
     private int page = 1;
@@ -139,10 +140,6 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         mAdapter = new CommentActivityRecyclerViewAdapter(this, n, comments);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
-
-        behavior = BottomSheetBehavior.from(mChildLayout);
-        behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        behavior.setPeekHeight(UiUtil.getScreenHeight() * 4 / 5);
     }
 
     @Override
@@ -175,11 +172,17 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
 
             @Override
             public void onLayoutClick(Comment comment) {
-//                showChildLayout();
-//                mChildDialog = new BottomSheetDialog(CommentActivity.this);
-//                View view = LayoutInflater.from(CommentActivity.this).inflate(R.layout.layout_comment_child, null);
-//                mChildDialog.setContentView(view);
-//                mChildDialog.show();
+                if (mChildDialog == null) {
+                    mChildDialog = new MyBottomSheetDialog(CommentActivity.this);
+                    View view = LayoutInflater.from(CommentActivity.this)
+                            .inflate(R.layout.layout_comment_child, null);
+                    mChildDialog.setContentView(view);
+                    mBehavior = BottomSheetBehavior.from((View) view.getParent());
+                    mBehavior.setPeekHeight(UiUtil.getScreenHeight() * 4 / 5);
+                    mBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+                mChildDialog.show();
+                mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
 
             @Override
@@ -324,14 +327,6 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
                     })
                     .setNegativeButton(getString(R.string.no), null)
                     .create();
-        }
-    }
-
-    private void showChildLayout() {
-        if (behavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
-            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        } else {
-            behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
     }
 

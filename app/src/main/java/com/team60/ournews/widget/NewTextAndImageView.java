@@ -71,8 +71,10 @@ public class NewTextAndImageView extends LinearLayout {
     }
 
     public void setContent(String content) throws JSONException {
-        this.content = content;
-        startLoadContent();
+        if (this.content == null) {
+            this.content = content;
+            startLoadContent();
+        }
     }
 
     private void startLoadContent() throws JSONException {
