@@ -21,6 +21,8 @@ import com.team60.ournews.util.MyUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jiguang.analytics.android.api.JAnalyticsInterface;
+import cn.jiguang.analytics.android.api.RegisterEvent;
 
 public class RegisterActivity extends BaseActivity implements RegisterView {
 
@@ -60,14 +62,14 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
 
     @Override
     public void init(Bundle savedInstanceState) {
-        mPresenter = new RegisterPresenterImpl(this);
+        mPresenter = new RegisterPresenterImpl(this, this);
 
         mToolBar.setTitle(getString(R.string.register));
         setSupportActionBar(mToolBar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        MyUtil.openKeyBord(mLoginNameText);
+        MyUtil.openKeyBord(this, mLoginNameText);
     }
 
     @Override
@@ -75,7 +77,7 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
         mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyUtil.closeKeyBord(mLoginNameText);
+                MyUtil.closeKeyBord(RegisterActivity.this, mLoginNameText);
                 finish();
             }
         });
@@ -84,7 +86,7 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
             @Override
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    MyUtil.closeKeyBord(mPasswordText);
+                    MyUtil.closeKeyBord(RegisterActivity.this, mPasswordText);
                     register();
                     return true;
                 }
@@ -129,11 +131,11 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
             mPresenter.register(loginName, password);
         }
         if (mLoginNameText.isFocusable())
-            MyUtil.closeKeyBord(mLoginNameText);
+            MyUtil.closeKeyBord(this, mLoginNameText);
         if (mPasswordText.isFocusable())
-            MyUtil.closeKeyBord(mPasswordText);
+            MyUtil.closeKeyBord(this, mPasswordText);
         if (mPasswordText2.isFocusable())
-            MyUtil.closeKeyBord(mPasswordText);
+            MyUtil.closeKeyBord(this, mPasswordText);
     }
 
     @Override
@@ -149,6 +151,8 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
 
     @Override
     public void registerSuccess() {
+        RegisterEvent registerEvent = new RegisterEvent("native", true);
+        JAnalyticsInterface.onEvent(this, registerEvent);
         Intent intent = new Intent();
         intent.putExtra("loginName", mLoginNameText.getText().toString());
         intent.putExtra("password", mPasswordText.getText().toString());
@@ -159,5 +163,7 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
     @Override
     public void registerError(String message) {
         showSnackBar(message);
+        RegisterEvent registerEvent = new RegisterEvent("native", false);
+        JAnalyticsInterface.onEvent(this, registerEvent);
     }
 }

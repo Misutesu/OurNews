@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jiguang.analytics.android.api.JAnalyticsInterface;
 
 public class LoginActivity extends BaseActivity implements LoginView {
 
@@ -61,14 +62,14 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     public void init(Bundle savedInstanceState) {
-        mPresenter = new LoginPresenterImpl(this);
+        mPresenter = new LoginPresenterImpl(this, this);
 
         mToolBar.setTitle(getString(R.string.login));
         setSupportActionBar(mToolBar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        MyUtil.openKeyBord(mLoginNameText);
+        MyUtil.openKeyBord(this, mLoginNameText);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyUtil.closeKeyBord(mLoginNameText);
+                MyUtil.closeKeyBord(LoginActivity.this, mLoginNameText);
                 finish();
             }
         });
@@ -85,9 +86,9 @@ public class LoginActivity extends BaseActivity implements LoginView {
             @Override
             public void onClick(View view) {
                 if (mLoginNameText.isFocusable())
-                    MyUtil.closeKeyBord(mLoginNameText);
+                    MyUtil.closeKeyBord(LoginActivity.this, mLoginNameText);
                 if (mPasswordText.isFocusable())
-                    MyUtil.closeKeyBord(mPasswordText);
+                    MyUtil.closeKeyBord(LoginActivity.this, mPasswordText);
                 startActivityForResult(new Intent(LoginActivity.this, RegisterActivity.class), RegisterActivity.CODE_REGISTER);
             }
         });
@@ -96,7 +97,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             @Override
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    MyUtil.closeKeyBord(mPasswordText);
+                    MyUtil.closeKeyBord(LoginActivity.this, mPasswordText);
                     login();
                     return true;
                 }
@@ -146,9 +147,9 @@ public class LoginActivity extends BaseActivity implements LoginView {
             mPresenter.login(loginName, password);
         }
         if (mLoginNameText.isFocusable())
-            MyUtil.closeKeyBord(mLoginNameText);
+            MyUtil.closeKeyBord(this, mLoginNameText);
         if (mPasswordText.isFocusable())
-            MyUtil.closeKeyBord(mPasswordText);
+            MyUtil.closeKeyBord(this, mPasswordText);
     }
 
     @Override
@@ -167,10 +168,14 @@ public class LoginActivity extends BaseActivity implements LoginView {
         EventBus.getDefault().post(new LoginEvent());
         setResult(CODE_LOGIN);
         finish();
+        cn.jiguang.analytics.android.api.LoginEvent loginEvent = new cn.jiguang.analytics.android.api.LoginEvent("native", true);
+        JAnalyticsInterface.onEvent(this, loginEvent);
     }
 
     @Override
     public void loginError(String message) {
         showSnackBar(message);
+        cn.jiguang.analytics.android.api.LoginEvent loginEvent = new cn.jiguang.analytics.android.api.LoginEvent("native", false);
+        JAnalyticsInterface.onEvent(this, loginEvent);
     }
 }

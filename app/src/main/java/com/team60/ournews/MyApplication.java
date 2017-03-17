@@ -2,11 +2,11 @@ package com.team60.ournews;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 
 import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.module.bean.User;
 import com.team60.ournews.util.PushUtil;
+import com.team60.ournews.util.ThemeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +17,7 @@ import java.util.List;
 
 public class MyApplication extends Application {
 
-    private static Context mApplication;
-
     private static List<Activity> activityList;
-
-    public static Context getContext() {
-        return mApplication;
-    }
 
     public static void addActivity(Activity activity) {
         if (activityList == null)
@@ -43,8 +37,9 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        mApplication = this;
         FrescoLoader.init(this);
-        PushUtil.newInstance().initPush(this);
+        User.init(this);
+        ThemeUtil.init(this);
+        PushUtil.init(this);
     }
 }

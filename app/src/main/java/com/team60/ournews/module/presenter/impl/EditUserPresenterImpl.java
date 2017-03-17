@@ -1,8 +1,8 @@
 package com.team60.ournews.module.presenter.impl;
 
+import android.content.Context;
 import android.graphics.BitmapFactory;
 
-import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.module.bean.User;
 import com.team60.ournews.module.connection.RetrofitUtil;
@@ -27,10 +27,12 @@ import okhttp3.RequestBody;
 
 public class EditUserPresenterImpl implements EditUserPresenter {
 
+    private Context mContext;
     private EditUserView mView;
 
-    public EditUserPresenterImpl(EditUserView mView) {
-        this.mView = mView;
+    public EditUserPresenterImpl(Context context, EditUserView view) {
+        mContext = context;
+        mView = view;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class EditUserPresenterImpl implements EditUserPresenter {
             File file = new File(photo);
             if (!file.exists()) {
                 mView.saveEnd();
-                mView.saveError(MyApplication.getContext().getString(R.string.photo_file_error));
+                mView.saveError(mContext.getString(R.string.photo_file_error));
             } else {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
@@ -67,7 +69,7 @@ public class EditUserPresenterImpl implements EditUserPresenter {
                             public void onError(Throwable e) {
                                 e.printStackTrace();
                                 onComplete();
-                                mView.saveError(MyApplication.getContext().getString(R.string.internet_error));
+                                mView.saveError(mContext.getString(R.string.internet_error));
                             }
 
                             @Override
@@ -107,7 +109,7 @@ public class EditUserPresenterImpl implements EditUserPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onComplete();
-                        mView.saveError(MyApplication.getContext().getString(R.string.internet_error));
+                        mView.saveError(mContext.getString(R.string.internet_error));
                     }
 
                     @Override

@@ -57,6 +57,8 @@ import org.json.JSONException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jiguang.analytics.android.api.BrowseEvent;
+import cn.jiguang.analytics.android.api.JAnalyticsInterface;
 
 public class NewActivity extends BaseActivity implements NewView {
 
@@ -119,6 +121,8 @@ public class NewActivity extends BaseActivity implements NewView {
     private boolean isImgAnimEnd = false;
     private boolean isLoadEnd = false;
 
+    private long readTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,6 +155,9 @@ public class NewActivity extends BaseActivity implements NewView {
 
     @Override
     protected void onDestroy() {
+        long time = (System.currentTimeMillis() - readTime) / 1000;
+        BrowseEvent browseEvent = new BrowseEvent(String.valueOf(n.getId()), n.getTitle(), "new", time);
+        JAnalyticsInterface.onEvent(this, browseEvent);
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -162,9 +169,11 @@ public class NewActivity extends BaseActivity implements NewView {
 
     @Override
     public void init(Bundle savedInstanceState) {
+        readTime = System.currentTimeMillis();
+
         EventBus.getDefault().register(this);
 
-        mPresenter = new NewPresenterImpl(this);
+        mPresenter = new NewPresenterImpl(this, this);
 
         mToolBar.setTitle("");
         setSupportActionBar(mToolBar);

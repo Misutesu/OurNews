@@ -46,7 +46,7 @@ public class InputActivity extends BaseActivity {
         } else {
             text = "";
         }
-        MyUtil.openKeyBord(mInputEdit);
+        MyUtil.openKeyBord(this, mInputEdit);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class InputActivity extends BaseActivity {
         mInputLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyUtil.closeKeyBord(mInputEdit);
+                MyUtil.closeKeyBord(InputActivity.this, mInputEdit);
                 finish();
             }
         });
@@ -68,7 +68,7 @@ public class InputActivity extends BaseActivity {
                     intent.putExtra("newText", newText);
                     setResult(CODE_EDIT, intent);
                 }
-                MyUtil.closeKeyBord(mInputEdit);
+                MyUtil.closeKeyBord(InputActivity.this, mInputEdit);
                 finish();
             }
         });

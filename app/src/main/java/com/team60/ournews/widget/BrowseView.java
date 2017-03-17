@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
-import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.listener.MyObjectAnimatorListener;
 import com.team60.ournews.module.bean.New;
@@ -34,7 +33,7 @@ public class BrowseView extends LinearLayout {
 
     private final int TWO_CLICK_TIME_INTERVAL = 4000;
 
-    private Context context;
+    private Context mContext;
     private ImageView mTypeImg;
     private TextView mTypeText;
     private LinearLayout mMoreLayout;
@@ -107,7 +106,7 @@ public class BrowseView extends LinearLayout {
         if (isRefresh) {
             rotateAnimation.cancel();
             isRefresh = false;
-            mRefreshText.setText(MyApplication.getContext().getString(R.string.change_a_lot));
+            mRefreshText.setText(mContext.getString(R.string.change_a_lot));
         }
     }
 
@@ -144,7 +143,7 @@ public class BrowseView extends LinearLayout {
     private void init(Context context) {
         setOrientation(VERTICAL);
 
-        this.context = context;
+        this.mContext = context;
         rotateAnimation.setDuration(5000);
         rotateAnimation.setRepeatMode(Animation.RESTART);
         rotateAnimation.setRepeatCount(Animation.INFINITE);
@@ -195,12 +194,12 @@ public class BrowseView extends LinearLayout {
             public void onClick(View v) {
                 if (onActionListener != null && BrowseView.this.news != null && !isRefresh && !isRefreshAll) {
                     if (System.currentTimeMillis() - lastClickTime < TWO_CLICK_TIME_INTERVAL) {
-                        onActionListener.onTwoClickTooClose(MyApplication.getContext().getString(R.string.click_two_too_close));
+                        onActionListener.onTwoClickTooClose(mContext.getString(R.string.click_two_too_close));
                     } else {
                         lastClickTime = System.currentTimeMillis();
                         onActionListener.onRefreshClick();
                         mRefreshImg.startAnimation(rotateAnimation);
-                        mRefreshText.setText(MyApplication.getContext().getString(R.string.is_refreshing));
+                        mRefreshText.setText(mContext.getString(R.string.is_refreshing));
                     }
                 }
             }

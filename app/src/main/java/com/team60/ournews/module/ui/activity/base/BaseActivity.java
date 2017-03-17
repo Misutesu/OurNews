@@ -29,6 +29,7 @@ import com.team60.ournews.util.UiUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
+import cn.jiguang.analytics.android.api.JAnalyticsInterface;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -48,6 +49,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     private AlertDialog mTokenErrorDialog;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        JAnalyticsInterface.onPageStart(this, this.getClass().getCanonicalName());
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         MyApplication.addActivity(this);
         super.onCreate(savedInstanceState);
@@ -56,12 +63,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
         if (!getClass().getName().equals(FirstActivity.class.getName())) {
             checkLogin();
-            if (ThemeUtil.isNightMode()) {
+            if (ThemeUtil.newInstance().isNightMode()) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 setTheme(R.style.NightTheme);
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                int styleId = ThemeUtil.getStyle();
+                int styleId = ThemeUtil.newInstance().getStyle();
                 if (styleId != -1)
                     setTheme(styleId);
             }
@@ -74,6 +81,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         super.onDestroy();
         if (mDisposable != null)
             mDisposable.clear();
+        JAnalyticsInterface.onPageEnd(this,this.getClass().getCanonicalName());
     }
 
     public void addSubscription(@NonNull Disposable disposable) {

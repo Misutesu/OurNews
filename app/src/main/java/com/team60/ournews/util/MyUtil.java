@@ -12,7 +12,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.mistesu.frescoloader.FrescoLoader;
-import com.team60.ournews.MyApplication;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.listener.DownListener;
 import com.team60.ournews.module.connection.RetrofitUtil;
@@ -38,8 +37,8 @@ public class MyUtil {
             Log.d(object.getClass().getName(), message);
     }
 
-    public static SharedPreferences getSharedPreferences(String name) {
-        return MyApplication.getContext().getSharedPreferences(name, Context.MODE_PRIVATE);
+    public static SharedPreferences getSharedPreferences(Context context, String name) {
+        return context.getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 
     public static boolean isLoginName(String loginName) {
@@ -56,16 +55,16 @@ public class MyUtil {
         return false;
     }
 
-    public static void openKeyBord(EditText mEditText) {
-        InputMethodManager imm = (InputMethodManager) MyApplication.getContext()
+    public static void openKeyBord(Context context, EditText mEditText) {
+        InputMethodManager imm = (InputMethodManager) context
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(mEditText, InputMethodManager.RESULT_SHOWN);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
                 InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
-    public static void closeKeyBord(EditText mEditText) {
-        InputMethodManager imm = (InputMethodManager) MyApplication.getContext()
+    public static void closeKeyBord(Context context, EditText mEditText) {
+        InputMethodManager imm = (InputMethodManager) context
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
     }
@@ -85,13 +84,13 @@ public class MyUtil {
                     File appDir = new File(saveFile, fileName);
                     if (!appDir.exists()) {
                         if (appDir.mkdirs()) {
-                            callSystemUpdate(copyFileToOtherFolder(file, saveFile, System.currentTimeMillis() + ".png"));
+                            callSystemUpdate(context, copyFileToOtherFolder(file, saveFile, System.currentTimeMillis() + ".png"));
                             flowable.onNext(1);
                         } else {
                             flowable.onError(new IOException());
                         }
                     } else {
-                        callSystemUpdate(copyFileToOtherFolder(file, saveFile, System.currentTimeMillis() + ".png"));
+                        callSystemUpdate(context, copyFileToOtherFolder(file, saveFile, System.currentTimeMillis() + ".png"));
                         flowable.onNext(1);
                     }
                 } else {
@@ -141,12 +140,12 @@ public class MyUtil {
         return currentFile;
     }
 
-    public static void callSystemUpdate(File file) throws FileNotFoundException {
+    public static void callSystemUpdate(Context context, File file) throws FileNotFoundException {
         if (file == null || !file.exists())
             throw new FileNotFoundException();
-        MediaStore.Images.Media.insertImage(MyApplication.getContext().getContentResolver(),
+        MediaStore.Images.Media.insertImage(context.getContentResolver(),
                 file.getAbsolutePath(), file.getName(), null);
-        MyApplication.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                 Uri.fromFile(new File(file.getPath()))));
     }
 }

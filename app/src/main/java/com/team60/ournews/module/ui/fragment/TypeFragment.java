@@ -117,7 +117,7 @@ public class TypeFragment extends BaseFragment implements TypeView {
 
         mSwipeRefresh.setColorSchemeColors(ThemeUtil.getColor(getActivity().getTheme(), R.attr.colorPrimary));
 
-        mPresenter = new TypePresenterImpl(this);
+        mPresenter = new TypePresenterImpl(getContext(), this);
 
         if (news == null)
             news = new ArrayList<>();

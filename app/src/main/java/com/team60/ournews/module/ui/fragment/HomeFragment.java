@@ -115,7 +115,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void init() {
-        mPresenter = new HomePresenterImpl(this);
+        mPresenter = new HomePresenterImpl(getContext(), this);
 
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtil.getColor(getActivity().getTheme(), R.attr.colorPrimary));
 

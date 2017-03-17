@@ -2,7 +2,6 @@ package com.team60.ournews.module.presenter.impl;
 
 import android.content.Context;
 
-import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.bean.New;
@@ -58,7 +57,7 @@ public class CenterPresenterImpl implements CenterPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onComplete();
-                        mView.onGetNewsError(MyApplication.getContext().getString(R.string.internet_error), page);
+                        mView.onGetNewsError(mContext.getString(R.string.internet_error), page);
                     }
 
                     @Override

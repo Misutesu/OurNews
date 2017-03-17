@@ -76,7 +76,7 @@ public class WriteCommentActivity extends BaseActivity implements WriteCommentVi
     public void init(Bundle savedInstanceState) {
         n = getIntent().getParcelableExtra(New.class.getName());
 
-        mPresenter = new WriteCommentPresenterImpl(this);
+        mPresenter = new WriteCommentPresenterImpl(this, this);
 
         inAnimation.setDuration(400);
         outAnimation.setDuration(400);
@@ -122,7 +122,7 @@ public class WriteCommentActivity extends BaseActivity implements WriteCommentVi
             @Override
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    MyUtil.closeKeyBord(mContentText);
+                    MyUtil.closeKeyBord(WriteCommentActivity.this,mContentText);
                     sendContent();
                     return true;
                 }
@@ -133,7 +133,7 @@ public class WriteCommentActivity extends BaseActivity implements WriteCommentVi
         mSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyUtil.closeKeyBord(mContentText);
+                MyUtil.closeKeyBord(WriteCommentActivity.this,mContentText);
                 sendContent();
             }
         });

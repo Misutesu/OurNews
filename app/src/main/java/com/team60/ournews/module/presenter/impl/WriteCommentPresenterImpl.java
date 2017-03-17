@@ -1,6 +1,7 @@
 package com.team60.ournews.module.presenter.impl;
 
-import com.team60.ournews.MyApplication;
+import android.content.Context;
+
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.connection.RetrofitUtil;
@@ -20,10 +21,12 @@ import io.reactivex.subscribers.DisposableSubscriber;
 
 public class WriteCommentPresenterImpl implements WriteCommentPresenter {
 
+    private Context mContext;
     private WriteCommentView mView;
 
-    public WriteCommentPresenterImpl(WriteCommentView mView) {
-        this.mView = mView;
+    public WriteCommentPresenterImpl(Context context, WriteCommentView view) {
+        mContext = context;
+        mView = view;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class WriteCommentPresenterImpl implements WriteCommentPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onComplete();
-                        mView.sendCommentError(MyApplication.getContext().getString(R.string.internet_error));
+                        mView.sendCommentError(mContext.getString(R.string.internet_error));
                     }
 
                     @Override

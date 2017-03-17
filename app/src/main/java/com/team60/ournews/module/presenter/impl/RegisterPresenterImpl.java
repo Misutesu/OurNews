@@ -1,6 +1,7 @@
 package com.team60.ournews.module.presenter.impl;
 
-import com.team60.ournews.MyApplication;
+import android.content.Context;
+
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.connection.RetrofitUtil;
@@ -20,10 +21,12 @@ import io.reactivex.subscribers.DisposableSubscriber;
 
 public class RegisterPresenterImpl implements RegisterPresenter {
 
+    private Context mContext;
     private RegisterView mView;
 
-    public RegisterPresenterImpl(RegisterView mView) {
-        this.mView = mView;
+    public RegisterPresenterImpl(Context context, RegisterView view) {
+        mContext = context;
+        mView = view;
     }
 
     @Override
@@ -42,7 +45,7 @@ public class RegisterPresenterImpl implements RegisterPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onComplete();
-                        mView.registerError(MyApplication.getContext().getString(R.string.internet_error));
+                        mView.registerError(mContext.getString(R.string.internet_error));
                     }
 
                     @Override

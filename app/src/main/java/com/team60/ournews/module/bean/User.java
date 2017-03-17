@@ -1,5 +1,6 @@
 package com.team60.ournews.module.bean;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
@@ -22,11 +23,17 @@ public class User {
     private static User user = new User();
     private static SharedPreferences sharedPreferences;
 
+    public static void init(Context context) {
+        if (sharedPreferences == null) {
+            synchronized (User.class) {
+                sharedPreferences = MyUtil.getSharedPreferences(context, Constants.SHARED_PREFERENCES_USER);
+            }
+        }
+    }
+
     public static User newInstance() {
         if (sharedPreferences == null)
-            synchronized (User.class) {
-                sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_USER);
-            }
+            throw new UnsupportedOperationException("No Init User");
         return user;
     }
 

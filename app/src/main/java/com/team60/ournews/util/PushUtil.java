@@ -7,6 +7,7 @@ import com.team60.ournews.common.Constants;
 
 import java.util.Set;
 
+import cn.jiguang.analytics.android.api.JAnalyticsInterface;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 
@@ -25,23 +26,28 @@ public class PushUtil {
     private PushUtil() {
     }
 
-    public static PushUtil newInstance() {
+    public static void init(Context context) {
         if (pushUtil == null) {
             synchronized (PushUtil.class) {
-                if (pushUtil == null)
+                if (pushUtil == null) {
                     pushUtil = new PushUtil();
+                    JPushInterface.setDebugMode(Constants.IS_DEBUG_MODE);
+                    JAnalyticsInterface.setDebugMode(Constants.IS_DEBUG_MODE);
+                    JPushInterface.init(context);
+                    JAnalyticsInterface.init(context);
+                }
             }
         }
+    }
+
+    public static PushUtil newInstance() {
+        if (pushUtil == null)
+            throw new UnsupportedOperationException("No Init PushUtil");
         return pushUtil;
     }
 
-    public void initPush(Context context) {
-        if (Constants.IS_DEBUG_MODE) JPushInterface.setDebugMode(true);
-        JPushInterface.init(context);
-    }
-
     public void setAlias(final Context context, String alias) {
-        final SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_PUSH);
+        final SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(context, Constants.SHARED_PREFERENCES_PUSH);
         if (!isStartSetAlias && !sharedPreferences.getBoolean("isSetAlias", false)) {
             isStartSetAlias = true;
             JPushInterface.setAlias(context, alias, new TagAliasCallback() {
@@ -65,7 +71,7 @@ public class PushUtil {
 
     public void logout(final Context context) {
         isLogout = true;
-        final SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_PUSH);
+        final SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(context, Constants.SHARED_PREFERENCES_PUSH);
         if (sharedPreferences.getBoolean("isSetAlias", false))
             JPushInterface.setAlias(context, "", new TagAliasCallback() {
                 @Override

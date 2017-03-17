@@ -145,8 +145,7 @@ public class MainActivity extends BaseActivity {
             mDrawerLayout.setClipToPadding(false);
         }
 
-        if (ThemeUtil.isNightMode())
-            mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
+        if (ThemeUtil.newInstance().isNightMode()) mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
 
         initViewPager();
     }
@@ -178,10 +177,10 @@ public class MainActivity extends BaseActivity {
         mHeaderNightModeImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ThemeUtil.isNightMode()) {
-                    ThemeUtil.setNightMode(false);
+                if (ThemeUtil.newInstance().isNightMode()) {
+                    ThemeUtil.newInstance().setNightMode(false);
                 } else {
-                    ThemeUtil.setNightMode(true);
+                    ThemeUtil.newInstance().setNightMode(true);
                 }
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                     mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -299,8 +298,8 @@ public class MainActivity extends BaseActivity {
             mThemeAdapter.setOnItemClickListener(new ThemeSelectRecyclerViewAdapter.OnItemClickListener() {
                 @Override
                 public void onClick(final Theme theme, final int position) {
-                    if (theme.getThemeId() != ThemeUtil.getStyle()) {
-                        if (ThemeUtil.isNightMode()) {
+                    if (theme.getThemeId() != ThemeUtil.newInstance().getStyle()) {
+                        if (ThemeUtil.newInstance().isNightMode()) {
                             if (mThemeHintDialog == null)
                                 mThemeHintDialog = ThemeUtil.getThemeDialogBuilder(MainActivity.this)
                                         .setTitle(getString(R.string.hint))
@@ -308,8 +307,8 @@ public class MainActivity extends BaseActivity {
                                         .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                ThemeUtil.setStyle(position);
-                                                ThemeUtil.setNightMode(false);
+                                                ThemeUtil.newInstance().setStyle(position);
+                                                ThemeUtil.newInstance().setNightMode(false);
                                                 if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                                                     mDrawerLayout.closeDrawer(GravityCompat.START);
                                                 }
@@ -320,7 +319,7 @@ public class MainActivity extends BaseActivity {
                                         .create();
                             mThemeHintDialog.show();
                         } else {
-                            ThemeUtil.setStyle(position);
+                            ThemeUtil.newInstance().setStyle(position);
                             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                                 mDrawerLayout.closeDrawer(GravityCompat.START);
                             }

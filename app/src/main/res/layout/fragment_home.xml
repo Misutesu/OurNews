@@ -1,9 +1,9 @@
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_home_swipe_refresh_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.team60.ournews.module.ui.fragment.HomeFragment">
+                                              xmlns:tools="http://schemas.android.com/tools"
+                                              android:id="@+id/fragment_home_swipe_refresh_layout"
+                                              android:layout_width="match_parent"
+                                              android:layout_height="match_parent"
+                                              tools:context="com.team60.ournews.module.ui.fragment.HomeFragment">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -23,37 +23,41 @@
                 <com.team60.ournews.widget.AdvertisementView
                     android:id="@+id/fragment_home_advertisement_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="4dp"
-                    android:background="@drawable/elevation_tool_bar" />
+                    android:background="@drawable/elevation_tool_bar"/>
 
                 <com.team60.ournews.widget.BrowseView
                     android:id="@+id/fragment_home_comic_browse_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
                 <com.team60.ournews.widget.BrowseView
                     android:id="@+id/fragment_home_game_browse_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
                 <com.team60.ournews.widget.BrowseView
                     android:id="@+id/fragment_home_society_browse_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
                 <com.team60.ournews.widget.BrowseView
                     android:id="@+id/fragment_home_play_browse_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
                 <com.team60.ournews.widget.BrowseView
                     android:id="@+id/fragment_home_technology_browse_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"/>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 
@@ -63,9 +67,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textColor="@color/white"
             android:layout_margin="16dp"
             android:text="@string/get_home_news_error"
-            android:visibility="gone" />
+            android:textColor="@color/white"
+            android:visibility="gone"/>
     </FrameLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

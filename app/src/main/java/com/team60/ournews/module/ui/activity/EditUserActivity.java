@@ -114,7 +114,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
 
     @Override
     public void init(Bundle savedInstanceState) {
-        mPresenter = new EditUserPresenterImpl(this);
+        mPresenter = new EditUserPresenterImpl(this, this);
 
         mToolBar.setTitle(getString(R.string.edit_info));
         setSupportActionBar(mToolBar);

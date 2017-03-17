@@ -17,11 +17,16 @@ import com.team60.ournews.common.Constants;
 public class ThemeUtil {
     private static final int[] styles = new int[9];
 
+    private static ThemeUtil themeUtil;
+
     private static SharedPreferences sharedPreferences;
+
+    private ThemeUtil() {
+    }
 
     public static AlertDialog.Builder getThemeDialogBuilder(Context context) {
         AlertDialog.Builder builder;
-        if (ThemeUtil.isNightMode()) {
+        if (ThemeUtil.newInstance().isNightMode()) {
             builder = new AlertDialog.Builder(context, R.style.NightDialogTheme);
         } else {
             builder = new AlertDialog.Builder(context);
@@ -35,44 +40,49 @@ public class ThemeUtil {
         return typedValue.data;
     }
 
-    private static void init() {
+    public static void init(Context context) {
         if (sharedPreferences == null)
             synchronized (ThemeUtil.class) {
-                sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_THEME);
-                styles[0] = -1;
-                styles[1] = R.style.BlueBlackTheme;
-                styles[2] = R.style.GreenTheme;
-                styles[3] = R.style.GreenBlackTheme;
-                styles[4] = R.style.YellowTheme;
-                styles[5] = R.style.RedTheme;
-                styles[6] = R.style.PinkTheme;
-                styles[7] = R.style.BrownTheme;
-                styles[8] = R.style.BlackTheme;
+                if (sharedPreferences == null) {
+                    sharedPreferences = MyUtil.getSharedPreferences(context, Constants.SHARED_PREFERENCES_THEME);
+                    styles[0] = -1;
+                    styles[1] = R.style.BlueBlackTheme;
+                    styles[2] = R.style.GreenTheme;
+                    styles[3] = R.style.GreenBlackTheme;
+                    styles[4] = R.style.YellowTheme;
+                    styles[5] = R.style.RedTheme;
+                    styles[6] = R.style.PinkTheme;
+                    styles[7] = R.style.BrownTheme;
+                    styles[8] = R.style.BlackTheme;
+                }
             }
     }
 
-    public static int getStyleNum() {
-        init();
+    public static ThemeUtil newInstance() {
+        if (sharedPreferences == null)
+            throw new UnsupportedOperationException("No Init ThemeUtil");
+        if (themeUtil == null)
+            themeUtil = new ThemeUtil();
+        return themeUtil;
+    }
+
+    public int getStyleNum() {
         return sharedPreferences.getInt(Resources.Theme.class.getName(), 0);
     }
 
-    public static int getStyle() {
-        init();
+    public int getStyle() {
         return styles[sharedPreferences.getInt(Resources.Theme.class.getName(), 0)];
     }
 
-    public static void setStyle(int num) {
-        init();
+    public void setStyle(int num) {
         sharedPreferences.edit().putInt(Resources.Theme.class.getName(), num).apply();
     }
 
-    public static boolean isNightMode() {
-        init();
+    public boolean isNightMode() {
         return sharedPreferences.getBoolean("isNight", false);
     }
 
-    public static void setNightMode(boolean type) {
-        init();
+    public void setNightMode(boolean type) {
         sharedPreferences.edit().putBoolean("isNight", type).apply();
     }
 }

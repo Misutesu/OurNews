@@ -17,7 +17,6 @@ public class MyBottomSheetDialog extends BottomSheetDialog {
     public MyBottomSheetDialog(@NonNull Context context) {
         super(context);
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

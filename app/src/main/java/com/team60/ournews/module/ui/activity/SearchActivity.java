@@ -88,7 +88,7 @@ public class SearchActivity extends BaseActivity {
                     layoutParams.rightMargin, layoutParams.bottomMargin);
         }
 
-        sharedPreferences = MyUtil.getSharedPreferences(Constants.SHARED_PREFERENCES_HISTORY);
+        sharedPreferences = MyUtil.getSharedPreferences(this, Constants.SHARED_PREFERENCES_HISTORY);
 
         if (histories == null)
             histories = new ArrayList<>();
@@ -170,7 +170,7 @@ public class SearchActivity extends BaseActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                    MyUtil.closeKeyBord(mSearchEdit);
+                    MyUtil.closeKeyBord(SearchActivity.this, mSearchEdit);
                     startSearchResultActivity(mSearchEdit.getText().toString(), true);
                     return true;
                 }
@@ -248,7 +248,7 @@ public class SearchActivity extends BaseActivity {
                 }
             }
 
-            MyUtil.closeKeyBord(mSearchEdit);
+            MyUtil.closeKeyBord(this, mSearchEdit);
             Intent intent = new Intent(SearchActivity.this, SearchResultActivity.class);
             intent.putExtra("searchText", searchText);
 
@@ -282,7 +282,7 @@ public class SearchActivity extends BaseActivity {
 
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                MyUtil.openKeyBord(mSearchEdit);
+                                MyUtil.openKeyBord(SearchActivity.this, mSearchEdit);
                                 mSearchEdit.requestFocus();
                             }
                         });
@@ -291,7 +291,7 @@ public class SearchActivity extends BaseActivity {
                 });
             } else {
                 mCardView.setVisibility(View.VISIBLE);
-                MyUtil.openKeyBord(mSearchEdit);
+                MyUtil.openKeyBord(this, mSearchEdit);
                 mSearchEdit.requestFocus();
             }
         } else {
@@ -304,14 +304,14 @@ public class SearchActivity extends BaseActivity {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         mCardView.setVisibility(View.INVISIBLE);
-                        MyUtil.closeKeyBord(mSearchEdit);
+                        MyUtil.closeKeyBord(SearchActivity.this, mSearchEdit);
                         finish();
                         overridePendingTransition(0, 0);
                     }
                 });
                 anim.start();
             } else {
-                MyUtil.closeKeyBord(mSearchEdit);
+                MyUtil.closeKeyBord(this, mSearchEdit);
                 finish();
             }
         }

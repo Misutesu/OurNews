@@ -90,7 +90,7 @@ public class SearchResultActivity extends BaseActivity implements SearchResultVi
 
     @Override
     public void init(Bundle savedInstanceState) {
-        mPresenter = new SearchResultPresenterImpl(this);
+        mPresenter = new SearchResultPresenterImpl(this, this);
 
         searchStr = getIntent().getStringExtra("searchText");
 

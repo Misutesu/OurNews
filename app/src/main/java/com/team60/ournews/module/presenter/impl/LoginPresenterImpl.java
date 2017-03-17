@@ -1,6 +1,7 @@
 package com.team60.ournews.module.presenter.impl;
 
-import com.team60.ournews.MyApplication;
+import android.content.Context;
+
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.bean.User;
@@ -21,10 +22,12 @@ import io.reactivex.subscribers.DisposableSubscriber;
 
 public class LoginPresenterImpl implements LoginPresenter {
 
+    private Context mContext;
     private LoginView mView;
 
-    public LoginPresenterImpl(LoginView loginView) {
-        mView = loginView;
+    public LoginPresenterImpl(Context context, LoginView view) {
+        mContext = context;
+        mView = view;
     }
 
     @Override
@@ -48,7 +51,7 @@ public class LoginPresenterImpl implements LoginPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onComplete();
-                        mView.loginError(MyApplication.getContext().getString(R.string.internet_error));
+                        mView.loginError(mContext.getString(R.string.internet_error));
                     }
 
                     @Override

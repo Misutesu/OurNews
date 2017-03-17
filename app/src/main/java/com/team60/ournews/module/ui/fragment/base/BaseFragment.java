@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.team60.ournews.module.bean.User;
 
+import cn.jiguang.analytics.android.api.JAnalyticsInterface;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
@@ -19,10 +20,17 @@ public abstract class BaseFragment extends Fragment {
     private CompositeDisposable mSubscription;
 
     @Override
+    public void onStart() {
+        super.onStart();
+        JAnalyticsInterface.onPageStart(getContext(), this.getClass().getCanonicalName());
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (mSubscription != null)
             mSubscription.clear();
+        JAnalyticsInterface.onPageEnd(getContext(), this.getClass().getCanonicalName());
     }
 
     public void addSubscription(@NonNull Disposable disposable) {

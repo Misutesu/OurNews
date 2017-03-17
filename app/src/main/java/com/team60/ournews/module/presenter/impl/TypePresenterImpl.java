@@ -1,6 +1,7 @@
 package com.team60.ournews.module.presenter.impl;
 
-import com.team60.ournews.MyApplication;
+import android.content.Context;
+
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.bean.New;
@@ -23,9 +24,11 @@ import io.reactivex.subscribers.DisposableSubscriber;
 
 public class TypePresenterImpl implements TypePresenter {
 
+    private Context mContext;
     private TypeView mView;
 
-    public TypePresenterImpl(TypeView view) {
+    public TypePresenterImpl(Context context, TypeView view) {
+        mContext = context;
         mView = view;
     }
 
@@ -49,7 +52,7 @@ public class TypePresenterImpl implements TypePresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onComplete();
-                        mView.getNewListError(MyApplication.getContext().getString(R.string.internet_error), page);
+                        mView.getNewListError(mContext.getString(R.string.internet_error), page);
                     }
 
                     @Override

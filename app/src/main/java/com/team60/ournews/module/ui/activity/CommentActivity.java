@@ -8,9 +8,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +30,9 @@ import com.team60.ournews.event.LoginEvent;
 import com.team60.ournews.listener.MyObjectAnimatorListener;
 import com.team60.ournews.listener.MyTransitionListener;
 import com.team60.ournews.module.adapter.CommentActivityRecyclerViewAdapter;
+import com.team60.ournews.module.adapter.CommentChildActivityRecyclerViewAdapter;
 import com.team60.ournews.module.bean.Comment;
+import com.team60.ournews.module.bean.CommentChild;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.bean.OtherUser;
 import com.team60.ournews.module.bean.User;
@@ -53,6 +55,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jiguang.analytics.android.api.BrowseEvent;
+import cn.jiguang.analytics.android.api.JAnalyticsInterface;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
@@ -81,14 +85,22 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     private List<Comment> comments;
     private CommentActivityRecyclerViewAdapter mAdapter;
 
+    private NestedScrollView mScrollView;
+    private RecyclerView mChildRecyclerView;
+    private List<CommentChild> mChildList;
+    private CommentChildActivityRecyclerViewAdapter mChildAdapter;
+
     private CommentPresenter mPresenter;
 
     private AlertDialog mLoginDialog;
 
-    private BottomSheetDialog mChildDialog;
+    private MyBottomSheetDialog mChildDialog;
     private BottomSheetBehavior mBehavior;
 
     private New n;
+
+    private Comment mCommentTemp;
+
     private int page = 1;
     private int sort = 1;
 
@@ -97,6 +109,7 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
 
     private boolean isShow = true;
 
+    private long readTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +138,18 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     }
 
     @Override
+    protected void onDestroy() {
+        long time = (System.currentTimeMillis() - readTime) / 1000;
+        BrowseEvent browseEvent = new BrowseEvent(String.valueOf(n.getId()), n.getTitle(), "comment", time);
+        JAnalyticsInterface.onEvent(this, browseEvent);
+        super.onDestroy();
+    }
+
+    @Override
     public void init(Bundle savedInstanceState) {
-        mPresenter = new CommentPresenterImpl(this);
+        readTime = System.currentTimeMillis();
+
+        mPresenter = new CommentPresenterImpl(this, this);
 
         n = getIntent().getParcelableExtra(New.class.getName());
 
@@ -172,17 +195,9 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
 
             @Override
             public void onLayoutClick(Comment comment) {
-                if (mChildDialog == null) {
-                    mChildDialog = new MyBottomSheetDialog(CommentActivity.this);
-                    View view = LayoutInflater.from(CommentActivity.this)
-                            .inflate(R.layout.layout_comment_child, null);
-                    mChildDialog.setContentView(view);
-                    mBehavior = BottomSheetBehavior.from((View) view.getParent());
-                    mBehavior.setPeekHeight(UiUtil.getScreenHeight() * 4 / 5);
-                    mBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                }
-                mChildDialog.show();
+                getChildComment(comment);
                 mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mChildDialog.show();
             }
 
             @Override
@@ -328,6 +343,27 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
                     .setNegativeButton(getString(R.string.no), null)
                     .create();
         }
+    }
+
+    private void getChildComment(Comment comment) {
+        if (mChildDialog == null) {
+            mChildDialog = new MyBottomSheetDialog(CommentActivity.this);
+            View view = LayoutInflater.from(CommentActivity.this)
+                    .inflate(R.layout.layout_comment_child, null);
+            mChildDialog.setContentView(view);
+            mBehavior = BottomSheetBehavior.from((View) view.getParent());
+            mBehavior.setPeekHeight(UiUtil.getScreenHeight() * 4 / 5);
+
+            mScrollView = (NestedScrollView) view.findViewById(R.id.layout_comment_child_scroll_view);
+            mChildRecyclerView = (RecyclerView) view.findViewById(R.id.layout_comment_child_recycler_view);
+            mChildRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            mChildList = new ArrayList<>();
+            mChildAdapter = new CommentChildActivityRecyclerViewAdapter(this, mChildList);
+        }
+        if (mChildList.size() == 0 || (mCommentTemp != null && mCommentTemp.getId() != comment.getId())) {
+            mChildList.clear();
+        }
+        mCommentTemp = comment;
     }
 
     @Override

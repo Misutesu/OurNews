@@ -1,6 +1,7 @@
 package com.team60.ournews.module.presenter.impl;
 
-import com.team60.ournews.MyApplication;
+import android.content.Context;
+
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.bean.New;
@@ -23,9 +24,11 @@ import io.reactivex.subscribers.DisposableSubscriber;
 
 public class SearchResultPresenterImpl implements SearchResultPresenter {
 
+    private Context mContext;
     private SearchResultView mView;
 
-    public SearchResultPresenterImpl(SearchResultView view) {
+    public SearchResultPresenterImpl(Context context, SearchResultView view) {
+        mContext = context;
         mView = view;
     }
 
@@ -49,7 +52,7 @@ public class SearchResultPresenterImpl implements SearchResultPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onComplete();
-                        mView.searchError(MyApplication.getContext().getString(R.string.internet_error));
+                        mView.searchError(mContext.getString(R.string.internet_error));
                     }
 
                     @Override

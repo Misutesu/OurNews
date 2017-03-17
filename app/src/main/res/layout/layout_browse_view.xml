@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:app="http://schemas.android.com/apk/res-auto"
+       xmlns:tools="http://schemas.android.com/tools"
        android:id="@+id/linear_layout"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:orientation="vertical">
+       android:orientation="vertical"
+       tools:ignore="NewApi">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -42,7 +44,7 @@
             android:layout_centerVertical="true"
             android:clickable="true"
             android:clipChildren="false"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -68,10 +70,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginStart="12dp"
         android:orientation="horizontal">
 
         <android.support.v7.widget.CardView
@@ -80,11 +78,13 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
             android:layout_marginEnd="6dp"
+            android:layout_marginLeft="12dp"
             android:layout_marginRight="6dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="6dp"
             android:layout_weight="1"
             android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             app:cardBackgroundColor="?attr/itemBackgroundColor"
             app:cardCornerRadius="2dp"
             app:cardPreventCornerOverlap="true">
@@ -121,12 +121,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
+            android:layout_marginEnd="12dp"
             android:layout_marginLeft="6dp"
+            android:layout_marginRight="12dp"
             android:layout_marginStart="6dp"
             android:layout_marginTop="6dp"
             android:layout_weight="1"
             android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             app:cardBackgroundColor="?attr/itemBackgroundColor"
             app:cardCornerRadius="2dp"
             app:cardPreventCornerOverlap="true">
@@ -162,10 +164,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginStart="12dp"
         android:orientation="horizontal">
 
         <android.support.v7.widget.CardView
@@ -174,11 +172,13 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="6dp"
+            android:layout_marginLeft="12dp"
             android:layout_marginRight="6dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="6dp"
             android:layout_weight="1"
             android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             app:cardBackgroundColor="?attr/itemBackgroundColor"
             app:cardCornerRadius="2dp"
             app:cardPreventCornerOverlap="true">
@@ -215,12 +215,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:layout_marginEnd="12dp"
             android:layout_marginLeft="6dp"
+            android:layout_marginRight="12dp"
             android:layout_marginStart="6dp"
             android:layout_marginTop="6dp"
             android:layout_weight="1"
             android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             app:cardBackgroundColor="?attr/itemBackgroundColor"
             app:cardCornerRadius="2dp"
             app:cardPreventCornerOverlap="true">
@@ -255,12 +257,12 @@
 
     <LinearLayout
         android:id="@+id/browse_view_refresh_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_gravity="center_horizontal"
         android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:gravity="center_vertical"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:gravity="center"
         android:orientation="horizontal"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"

@@ -1,5 +1,7 @@
 package com.team60.ournews.module.presenter.impl;
 
+import android.content.Context;
+
 import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.module.bean.New;
@@ -23,10 +25,12 @@ import io.reactivex.subscribers.DisposableSubscriber;
 
 public class NewPresenterImpl implements NewPresenter {
 
+    private Context mContext;
     private NewView mView;
 
-    public NewPresenterImpl(NewView mView) {
-        this.mView = mView;
+    public NewPresenterImpl(Context context, NewView view) {
+        mContext = context;
+        mView = view;
     }
 
     @Override
@@ -53,7 +57,7 @@ public class NewPresenterImpl implements NewPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onComplete();
-                        mView.getNewContentError(MyApplication.getContext().getString(R.string.internet_error));
+                        mView.getNewContentError(mContext.getString(R.string.internet_error));
                     }
 
                     @Override
@@ -69,7 +73,7 @@ public class NewPresenterImpl implements NewPresenter {
                                 mView.getNewContentSuccess(n);
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                mView.getNewContentError(MyApplication.getContext().getString(R.string.load_new_image_error));
+                                mView.getNewContentError(mContext.getString(R.string.load_new_image_error));
                             }
                         } else {
                             mView.getNewContentError(ErrorUtil.getErrorMessage(result.getErrorCode()));
@@ -97,7 +101,7 @@ public class NewPresenterImpl implements NewPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onComplete();
-                        mView.collectNewError(MyApplication.getContext().getString(R.string.internet_error));
+                        mView.collectNewError(mContext.getString(R.string.internet_error));
                     }
 
                     @Override

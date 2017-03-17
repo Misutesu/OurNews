@@ -34,30 +34,32 @@ public class RetrofitUtil {
     public static ApiStore newInstance() {
         if (apiStore == null) {
             synchronized (RetrofitUtil.class) {
-                OkHttpClient.Builder client = new OkHttpClient.Builder()
-                        .addInterceptor(new LoggingInterceptor())
-                        .connectTimeout(6, TimeUnit.SECONDS)
-                        .retryOnConnectionFailure(true);
+                if (apiStore == null) {
+                    OkHttpClient.Builder client = new OkHttpClient.Builder()
+                            .addInterceptor(new LoggingInterceptor())
+                            .connectTimeout(6, TimeUnit.SECONDS)
+                            .retryOnConnectionFailure(true);
 
-                if (Constants.IS_DEBUG_MODE) {
-                    HttpLoggingInterceptor logging = new HttpLoggingInterceptor(
-                            new HttpLoggingInterceptor.Logger() {
-                                @Override
-                                public void log(String message) {
-                                    if (TextUtils.isEmpty(message)) return;
-                                    HttpLoggingInterceptor.Logger.DEFAULT.log("收到响应: " + message);
-                                }
-                            });
-                    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-                    client.addInterceptor(logging);
+                    if (Constants.IS_DEBUG_MODE) {
+                        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(
+                                new HttpLoggingInterceptor.Logger() {
+                                    @Override
+                                    public void log(String message) {
+                                        if (TextUtils.isEmpty(message)) return;
+                                        HttpLoggingInterceptor.Logger.DEFAULT.log("Get Response " + message);
+                                    }
+                                });
+                        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+                        client.addInterceptor(logging);
+                    }
+
+                    apiStore = new Retrofit.Builder().baseUrl(BASE_URL)
+                            .client(client.build())
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                            .build()
+                            .create(ApiStore.class);
                 }
-
-                apiStore = new Retrofit.Builder().baseUrl(BASE_URL)
-                        .client(client.build())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                        .build()
-                        .create(ApiStore.class);
             }
         }
         return apiStore;
@@ -68,7 +70,7 @@ public class RetrofitUtil {
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
             if (Constants.IS_DEBUG_MODE) {
-                HttpLoggingInterceptor.Logger.DEFAULT.log(String.format("发送请求 %s on %s%n%s",
+                HttpLoggingInterceptor.Logger.DEFAULT.log(String.format("Send Request %s on %s%n%s",
                         request.url(), chain.connection(), request.headers()));
             }
             return chain.proceed(request);

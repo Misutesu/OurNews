@@ -1,6 +1,7 @@
 package com.team60.ournews.module.presenter.impl;
 
-import com.team60.ournews.MyApplication;
+import android.content.Context;
+
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.bean.Comment;
@@ -26,10 +27,12 @@ import io.reactivex.subscribers.DisposableSubscriber;
 
 public class CommentPresenterImpl implements CommentPresenter {
 
+    private Context mContext;
     private CommentVIew mView;
 
-    public CommentPresenterImpl(CommentVIew mView) {
-        this.mView = mView;
+    public CommentPresenterImpl(Context context, CommentVIew view) {
+        mContext = context;
+        mView = view;
     }
 
     @Override
@@ -57,7 +60,7 @@ public class CommentPresenterImpl implements CommentPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         onComplete();
-                        mView.getCommentsError(MyApplication.getContext().getString(R.string.internet_error), page);
+                        mView.getCommentsError(mContext.getString(R.string.internet_error), page);
                     }
 
                     @Override
