@@ -79,8 +79,6 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     Button mRetryBtn;
     @BindView(R.id.activity_comment_no_comment_text)
     TextView mNoCommentText;
-    @BindView(R.id.activity_comment_child_layout)
-    CoordinatorLayout mChildLayout;
 
     private List<Comment> comments;
     private CommentActivityRecyclerViewAdapter mAdapter;

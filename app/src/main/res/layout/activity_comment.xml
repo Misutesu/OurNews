@@ -104,6 +104,4 @@
                 android:textSize="16sp"/>
         </LinearLayout>
     </LinearLayout>
-
-    <include layout="@layout/layout_comment_child"/>
 </android.support.design.widget.CoordinatorLayout>
