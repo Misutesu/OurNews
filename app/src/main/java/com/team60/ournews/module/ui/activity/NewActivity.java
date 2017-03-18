@@ -35,6 +35,7 @@ import com.mistesu.frescoloader.FrescoLoader;
 import com.mistesu.frescoloader.OnDownloadListener;
 import com.team60.ournews.R;
 import com.team60.ournews.event.LoginEvent;
+import com.team60.ournews.event.LoginForNewEvent;
 import com.team60.ournews.listener.MyObjectAnimatorListener;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.bean.User;
@@ -141,7 +142,7 @@ public class NewActivity extends BaseActivity implements NewView {
             init(savedInstanceState);
             setListener();
             showNewInfo();
-//            getNewContent();
+            getNewContent();
         }
     }
 
@@ -616,7 +617,7 @@ public class NewActivity extends BaseActivity implements NewView {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
-    public void onLoginEvent(LoginEvent event) {
+    public void onLoginEvent(LoginForNewEvent event) {
         getNewContent();
     }
 }

@@ -7,23 +7,14 @@
     <Button
         android:id="@+id/layout_like_button"
         style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="48dp"
+        android:layout_width="72dp"
         android:layout_height="36dp"/>
-
-    <ImageView
-        android:layout_width="12dp"
-        android:layout_height="12dp"
-        android:layout_gravity="center_vertical|right|end"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:translationZ="36dp"
-        app:srcCompat="@drawable/like"/>
 
     <TextView
         android:id="@+id/layout_like_button_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:textColor="@color/white"

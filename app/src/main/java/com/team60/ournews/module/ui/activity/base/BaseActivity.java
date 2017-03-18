@@ -49,8 +49,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     private AlertDialog mTokenErrorDialog;
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         JAnalyticsInterface.onPageStart(this, this.getClass().getCanonicalName());
     }
 
@@ -77,11 +77,16 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        JAnalyticsInterface.onPageEnd(this,this.getClass().getCanonicalName());
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mDisposable != null)
             mDisposable.clear();
-        JAnalyticsInterface.onPageEnd(this,this.getClass().getCanonicalName());
     }
 
     public void addSubscription(@NonNull Disposable disposable) {

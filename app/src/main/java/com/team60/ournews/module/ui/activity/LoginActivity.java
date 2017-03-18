@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import com.team60.ournews.R;
 import com.team60.ournews.event.LoginEvent;
+import com.team60.ournews.event.LoginForNewEvent;
 import com.team60.ournews.module.presenter.LoginPresenter;
 import com.team60.ournews.module.presenter.impl.LoginPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
@@ -166,10 +167,11 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     public void loginSuccess() {
         EventBus.getDefault().post(new LoginEvent());
-        setResult(CODE_LOGIN);
-        finish();
+        EventBus.getDefault().post(new LoginForNewEvent());
         cn.jiguang.analytics.android.api.LoginEvent loginEvent = new cn.jiguang.analytics.android.api.LoginEvent("native", true);
         JAnalyticsInterface.onEvent(this, loginEvent);
+        setResult(CODE_LOGIN);
+        finish();
     }
 
     @Override

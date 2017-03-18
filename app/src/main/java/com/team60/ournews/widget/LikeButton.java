@@ -79,11 +79,11 @@ public class LikeButton extends FrameLayout {
     }
 
     public void noLike() {
-        mText.setText("+1");
+        mText.setText("点赞");
     }
 
     public void hasLike() {
-        mText.setText(" √");
+        mText.setText("取消点赞");
     }
 
     public void startLoad() {

@@ -20,9 +20,13 @@ public abstract class BaseFragment extends Fragment {
     private CompositeDisposable mSubscription;
 
     @Override
-    public void onStart() {
-        super.onStart();
-        JAnalyticsInterface.onPageStart(getContext(), this.getClass().getCanonicalName());
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            JAnalyticsInterface.onPageStart(getContext(), this.getClass().getCanonicalName());
+        }else{
+            JAnalyticsInterface.onPageEnd(getContext(), this.getClass().getCanonicalName());
+        }
     }
 
     @Override
@@ -30,7 +34,6 @@ public abstract class BaseFragment extends Fragment {
         super.onDestroyView();
         if (mSubscription != null)
             mSubscription.clear();
-        JAnalyticsInterface.onPageEnd(getContext(), this.getClass().getCanonicalName());
     }
 
     public void addSubscription(@NonNull Disposable disposable) {
