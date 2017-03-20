@@ -15,16 +15,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:textSize="12sp"/>
 
     <ProgressBar
         android:id="@+id/layout_like_button_progress"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_gravity="center"
         android:alpha="0"
         android:theme="@style/WhiteStyle"/>
 </merge>

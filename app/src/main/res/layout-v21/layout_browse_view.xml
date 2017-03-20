@@ -42,7 +42,7 @@
             android:layout_centerVertical="true"
             android:clickable="true"
             android:clipChildren="false"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -82,7 +82,7 @@
             android:layout_marginTop="6dp"
             android:layout_weight="1"
             android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             app:cardBackgroundColor="?attr/itemBackgroundColor"
             app:cardCornerRadius="2dp"
             app:cardPreventCornerOverlap="true">
@@ -126,7 +126,7 @@
             android:layout_marginTop="6dp"
             android:layout_weight="1"
             android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             app:cardBackgroundColor="?attr/itemBackgroundColor"
             app:cardCornerRadius="2dp"
             app:cardPreventCornerOverlap="true">
@@ -176,7 +176,7 @@
             android:layout_marginTop="6dp"
             android:layout_weight="1"
             android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             app:cardBackgroundColor="?attr/itemBackgroundColor"
             app:cardCornerRadius="2dp"
             app:cardPreventCornerOverlap="true">
@@ -220,7 +220,7 @@
             android:layout_marginTop="6dp"
             android:layout_weight="1"
             android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             app:cardBackgroundColor="?attr/itemBackgroundColor"
             app:cardCornerRadius="2dp"
             app:cardPreventCornerOverlap="true">
@@ -259,7 +259,7 @@
         android:layout_height="36dp"
         android:layout_gravity="center_horizontal"
         android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingEnd="16dp"

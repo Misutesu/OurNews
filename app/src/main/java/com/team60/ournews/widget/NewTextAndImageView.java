@@ -162,7 +162,7 @@ public class NewTextAndImageView extends LinearLayout {
                     list = new ArrayList<>();
                 int length = str.indexOf("<json>");
                 if (length != 0) {
-                    list.add(str.substring(0, length - 1));
+                    list.add(str.substring(0, str.indexOf("<json>") - 1));
                 }
                 list.add(DIFFERENCE_STRING + str.substring(str.indexOf("<json>") + 6, str.indexOf("</json>")));
                 str = str.substring(str.indexOf("</json>") + 7, str.length());

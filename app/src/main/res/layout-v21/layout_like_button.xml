@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content">
+       xmlns:app="http://schemas.android.com/apk/res-auto"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content">
 
     <Button
         android:id="@+id/layout_like_button"
@@ -15,20 +15,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
         android:textColor="@color/white"
+        android:textSize="12sp"
         android:translationZ="36dp"/>
 
     <ProgressBar
-        android:alpha="0"
         android:id="@+id/layout_like_button_progress"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_gravity="center"
+        android:alpha="0"
         android:theme="@style/WhiteStyle"
         android:translationZ="36dp"/>
 </merge>

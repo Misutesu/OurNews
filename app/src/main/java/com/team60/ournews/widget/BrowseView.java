@@ -21,6 +21,7 @@ import com.team60.ournews.R;
 import com.team60.ournews.listener.MyObjectAnimatorListener;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.util.MyUtil;
+import com.team60.ournews.util.UiUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,8 +150,7 @@ public class BrowseView extends LinearLayout {
         rotateAnimation.setRepeatCount(Animation.INFINITE);
         rotateAnimation.setInterpolator(new LinearInterpolator());
 
-        if (this.news == null)
-            this.news = new ArrayList<>();
+        if (news == null) news = new ArrayList<>();
 
         View view = LayoutInflater.from(context).inflate(R.layout.layout_browse_view, this, true);
 
@@ -211,7 +211,10 @@ public class BrowseView extends LinearLayout {
             for (int i = 0; i < 4; i++) {
                 final int finalI = i;
                 final New n = news.get(i);
-                FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover())).into(mCoverImages.get(i));
+                FrescoLoader
+                        .load(MyUtil.getPhotoUrl(n.getCover()))
+                        .setCircleRound(UiUtil.dip2px(2), 0, UiUtil.dip2px(2), 0)
+                        .into(mCoverImages.get(i));
                 mTitleTexts.get(i).setText(n.getTitle());
                 mCardViews.get(i).setOnClickListener(new OnClickListener() {
                     @Override

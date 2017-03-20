@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.event.LoginEvent;
 import com.team60.ournews.module.bean.User;
@@ -56,7 +55,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        MyApplication.addActivity(this);
         super.onCreate(savedInstanceState);
 
         UiUtil.initialize(this);
@@ -79,7 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     @Override
     protected void onPause() {
         super.onPause();
-        JAnalyticsInterface.onPageEnd(this,this.getClass().getCanonicalName());
+        JAnalyticsInterface.onPageEnd(this, this.getClass().getCanonicalName());
     }
 
     @Override

@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.event.LoginEvent;
+import com.team60.ournews.event.LoginForNewEvent;
 import com.team60.ournews.listener.MyObjectAnimatorListener;
 import com.team60.ournews.listener.MyTransitionListener;
 import com.team60.ournews.module.adapter.CommentActivityRecyclerViewAdapter;
@@ -49,6 +50,8 @@ import com.team60.ournews.widget.LikeButton;
 import com.team60.ournews.widget.MyBottomSheetDialog;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -291,8 +294,7 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
 
     private void startGetComments() {
         isLoad = true;
-        if (mProgressBar.getVisibility() == View.GONE)
-            mProgressBar.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
         long uid = -1;
         if (User.isLogin()) {
             uid = user.getId();
@@ -455,6 +457,13 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
+    public void onLoginEvent(LoginForNewEvent event) {
+        comments.clear();
+        mAdapter.notifyItemRangeRemoved(1, comments.size());
+        startGetComments();
+    }
+
     private class MyRecyclerViewOnScroll extends RecyclerView.OnScrollListener {
 
         private int firstItem;
@@ -469,8 +478,7 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
                 firstItem = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
                 lastItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-                if (lastItem != -1)
-                    lastItem = linearLayoutManager.findLastVisibleItemPosition();
+                if (lastItem != -1) lastItem = linearLayoutManager.findLastVisibleItemPosition();
             }
             if (!isLoad && hasMore
                     && (lastItem == totalItemCount - 1) && (dx > 0 || dy > 0)) {
