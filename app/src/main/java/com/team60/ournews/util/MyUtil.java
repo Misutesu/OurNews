@@ -42,17 +42,11 @@ public class MyUtil {
     }
 
     public static boolean isLoginName(String loginName) {
-        if (loginName != null)
-            if (loginName.length() > 5 && loginName.length() < 13)
-                return true;
-        return false;
+        return loginName != null && loginName.length() > 5 && loginName.length() < 13;
     }
 
     public static boolean isPassword(String password) {
-        if (password != null)
-            if (password.length() > 5 && password.length() < 13)
-                return true;
-        return false;
+        return password != null&&password.length() > 5 && password.length() < 13;
     }
 
     public static void openKeyBord(Context context, EditText mEditText) {
