@@ -2,7 +2,6 @@ package com.team60.ournews.module.presenter.impl;
 
 import android.content.Context;
 
-import com.team60.ournews.MyApplication;
 import com.team60.ournews.R;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.connection.RetrofitUtil;
@@ -66,9 +65,6 @@ public class NewPresenterImpl implements NewPresenter {
                             New n = new New();
                             n.setContent(result.getData().getContent());
                             n.setIsCollection(result.getData().getIsCollected());
-                            n.setCommentNum(result.getData().getCommentNum());
-                            n.setHistoryNum(result.getData().getHistoryNum());
-                            n.setCollectionNum(result.getData().getCollectionNum());
                             try {
                                 mView.getNewContentSuccess(n);
                             } catch (JSONException e) {

@@ -19,21 +19,10 @@ public class New implements Parcelable {
     private int commentNum;
     private int historyNum;
     private int collectionNum;
+    private ManagerUser managerUser;
 
     public New() {
     }
-
-    public static final Creator<New> CREATOR = new Creator<New>() {
-        @Override
-        public New createFromParcel(Parcel in) {
-            return new New(in);
-        }
-
-        @Override
-        public New[] newArray(int size) {
-            return new New[size];
-        }
-    };
 
     public long getId() {
         return id;
@@ -123,6 +112,14 @@ public class New implements Parcelable {
         this.collectionNum = collectionNum;
     }
 
+    public ManagerUser getManagerUser() {
+        return managerUser;
+    }
+
+    public void setManagerUser(ManagerUser managerUser) {
+        this.managerUser = managerUser;
+    }
+
     protected New(Parcel in) {
         id = in.readLong();
         title = in.readString();
@@ -135,6 +132,7 @@ public class New implements Parcelable {
         commentNum = in.readInt();
         historyNum = in.readInt();
         collectionNum = in.readInt();
+        managerUser = in.readParcelable(ManagerUser.class.getClassLoader());
     }
 
     @Override
@@ -150,10 +148,23 @@ public class New implements Parcelable {
         dest.writeInt(commentNum);
         dest.writeInt(historyNum);
         dest.writeInt(collectionNum);
+        dest.writeParcelable(managerUser, flags);
     }
 
     @Override
     public int describeContents() {
         return 0;
     }
+
+    public static final Creator<New> CREATOR = new Creator<New>() {
+        @Override
+        public New createFromParcel(Parcel in) {
+            return new New(in);
+        }
+
+        @Override
+        public New[] newArray(int size) {
+            return new New[size];
+        }
+    };
 }

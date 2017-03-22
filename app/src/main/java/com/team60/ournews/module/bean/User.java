@@ -17,6 +17,8 @@ public class User {
     private String loginName;
     private String nickName;
     private int sex = -1;
+    private String sign;
+    private int birthday = -1;
     private String photo;
     private String token;
 
@@ -33,7 +35,7 @@ public class User {
 
     public static User newInstance() {
         if (sharedPreferences == null)
-            throw new UnsupportedOperationException("No Init User");
+            throw new UnsupportedOperationException("Cannot Init User");
         return user;
     }
 
@@ -42,7 +44,9 @@ public class User {
         user.setId(0);
         user.setLoginName(null);
         user.setNickName(null);
-        user.setSex(0);
+        user.setSex(-1);
+        user.setSign(null);
+        user.setBirthday(-1);
         user.setPhoto(null);
         user.setToken(null);
     }
@@ -96,6 +100,28 @@ public class User {
     public void setSex(int sex) {
         if (sharedPreferences.edit().putInt("sex", sex).commit())
             this.sex = sex;
+    }
+
+    public String getSign() {
+        if (TextUtils.isEmpty(sign))
+            sign = sharedPreferences.getString("sign", "");
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        if (sharedPreferences.edit().putString("sign", sign).commit())
+            this.sign = sign;
+    }
+
+    public int getBirthday() {
+        if (birthday == -1)
+            birthday = sharedPreferences.getInt("birthday", -1);
+        return birthday;
+    }
+
+    public void setBirthday(int birthday) {
+        if (sharedPreferences.edit().putInt("birthday", birthday).commit())
+            this.birthday = birthday;
     }
 
     public String getPhoto() {

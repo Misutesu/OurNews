@@ -4,10 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Misutesu on 2016/12/29 0029.
+ * Created by wujiaquan on 2017/3/22.
  */
 
-public class OtherUser implements Parcelable {
+public class ManagerUser implements Parcelable{
     private long id;
     private String nickName;
     private int sex;
@@ -15,7 +15,7 @@ public class OtherUser implements Parcelable {
     private int birthday;
     private String photo;
 
-    public OtherUser() {
+    public ManagerUser() {
     }
 
     public long getId() {
@@ -66,7 +66,7 @@ public class OtherUser implements Parcelable {
         this.photo = photo;
     }
 
-    protected OtherUser(Parcel in) {
+    protected ManagerUser(Parcel in) {
         id = in.readLong();
         nickName = in.readString();
         sex = in.readInt();
@@ -90,15 +90,15 @@ public class OtherUser implements Parcelable {
         return 0;
     }
 
-    public static final Creator<OtherUser> CREATOR = new Creator<OtherUser>() {
+    public static final Creator<ManagerUser> CREATOR = new Creator<ManagerUser>() {
         @Override
-        public OtherUser createFromParcel(Parcel in) {
-            return new OtherUser(in);
+        public ManagerUser createFromParcel(Parcel in) {
+            return new ManagerUser(in);
         }
 
         @Override
-        public OtherUser[] newArray(int size) {
-            return new OtherUser[size];
+        public ManagerUser[] newArray(int size) {
+            return new ManagerUser[size];
         }
     };
 }

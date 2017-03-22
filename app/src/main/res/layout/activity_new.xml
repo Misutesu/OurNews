@@ -22,6 +22,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/activity_new_app_bar_layout"
         android:layout_width="match_parent"
+        android:alpha="0"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         app:elevation="0dp">

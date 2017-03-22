@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -19,7 +18,6 @@ import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.bean.OtherUser;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.ThemeUtil;
-import com.team60.ournews.util.UiUtil;
 import com.team60.ournews.widget.CommentChildLayout;
 import com.team60.ournews.widget.LikeButton;
 
@@ -90,7 +88,7 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == HEADER_TYPE) {
-            return new HeaderViewHolder(LayoutInflater.from(context).inflate(R.layout.item_comment_header, parent, false), n);
+            return new HeaderViewHolder(LayoutInflater.from(context).inflate(R.layout.item_comment_header, parent, false));
         } else if (viewType == FOOTER_TYPE) {
             return new FooterViewHolder(LayoutInflater.from(context).inflate(R.layout.item_comment_foorter, parent, false));
         }
@@ -101,11 +99,11 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HeaderViewHolder) {
             ((HeaderViewHolder) holder).mCardView.setOnClickListener(mOnClickListener);
+            ((HeaderViewHolder) holder).mTitleText.setText(n.getTitle());
         } else if (holder instanceof FooterViewHolder) {
             mProgressBar = ((FooterViewHolder) holder).mProgressBar;
         } else if (holder instanceof NormalViewHolder) {
-            position--;
-            final Comment comment = comments.get(position);
+            final Comment comment = comments.get(position - 1);
             OtherUser user = comment.getUser();
             NormalViewHolder viewHolder = (NormalViewHolder) holder;
             viewHolder.mUserNameText.setText(user.getNickName());
@@ -142,9 +140,12 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
 
             if (comment.getChildList() != null && comment.getChildList().size() != 0) {
                 if (viewHolder.mCommentChildLayout == null) {
-                    viewHolder.getRecyclerView();
+                    viewHolder.getChildLayout();
                     viewHolder.mCommentChildLayout.setData(comment.getChildList());
                 }
+                viewHolder.showChildLayout();
+            } else {
+                viewHolder.hideChildLayout();
             }
         }
     }
@@ -189,28 +190,14 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_comment_top_view)
-        View mTopView;
-        @BindView(R.id.item_comment_header_background_view)
-        View mTopView1;
         @BindView(R.id.item_comment_header_card_view)
         CardView mCardView;
         @BindView(R.id.item_comment_header_title_text)
         TextView mTitleText;
 
-        public HeaderViewHolder(View itemView, New n) {
+        public HeaderViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            mTitleText.setText(n.getTitle());
-            mCardView.post(new Runnable() {
-                @Override
-                public void run() {
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtil.getStatusBarHeight());
-                    mTopView.setLayoutParams(layoutParams);
-                    RelativeLayout.LayoutParams layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mCardView.getHeight() / 2);
-                    mTopView1.setLayoutParams(layoutParams1);
-                }
-            });
         }
     }
 
@@ -231,6 +218,7 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
         @BindView(R.id.item_comment_like_btn)
         LikeButton mLikeBtn;
 
+        private View mChildView;
         private CommentChildLayout mCommentChildLayout;
 
         public NormalViewHolder(View itemView) {
@@ -238,9 +226,19 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
             ButterKnife.bind(this, itemView);
         }
 
-        public void getRecyclerView() {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_comment_child_layout, mLayout, true);
-            mCommentChildLayout = (CommentChildLayout) view.findViewById(R.id.item_comment_child_layout);
+        public void getChildLayout() {
+            mChildView = LayoutInflater.from(context).inflate(R.layout.item_comment_child_layout, mLayout, true);
+            mCommentChildLayout = (CommentChildLayout) mChildView.findViewById(R.id.item_comment_child_layout);
+        }
+
+        public void showChildLayout() {
+            if (mChildView != null && mChildView.getVisibility() == View.GONE)
+                mChildView.setVisibility(View.VISIBLE);
+        }
+
+        public void hideChildLayout() {
+            if (mChildView != null && mChildView.getVisibility() == View.VISIBLE)
+                mChildView.setVisibility(View.GONE);
         }
     }
 

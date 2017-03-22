@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
+import com.team60.ournews.module.bean.ManagerUser;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.connection.RetrofitUtil;
 import com.team60.ournews.module.model.ListNewResult;
@@ -68,6 +69,17 @@ public class TypePresenterImpl implements TypePresenter {
                                 n.setAbstractContent(bean.getAbstractContent());
                                 n.setCreateTime(bean.getCreateTime());
                                 n.setType(bean.getType());
+                                n.setCommentNum(bean.getCommentNum());
+                                n.setCollectionNum(bean.getCollectionNum());
+                                n.setHistoryNum(bean.getHistoryNum());
+                                ManagerUser managerUser = new ManagerUser();
+                                managerUser.setId(bean.getManager().getId());
+                                managerUser.setNickName(bean.getManager().getNickName());
+                                managerUser.setSex(bean.getManager().getSex());
+                                managerUser.setSign(bean.getManager().getSign());
+                                managerUser.setBirthday(bean.getManager().getBirthday());
+                                managerUser.setPhoto(bean.getManager().getPhoto());
+                                n.setManagerUser(managerUser);
                                 news.add(n);
                             }
                             mView.getNewListSuccess(news, page);

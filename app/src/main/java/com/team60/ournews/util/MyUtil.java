@@ -78,13 +78,13 @@ public class MyUtil {
                     File appDir = new File(saveFile, fileName);
                     if (!appDir.exists()) {
                         if (appDir.mkdirs()) {
-                            callSystemUpdate(context, copyFileToOtherFolder(file, saveFile, System.currentTimeMillis() + ".png"));
+                            callSystemUpdate(context, copyFileToOtherFolder(file, appDir, System.currentTimeMillis() + ".png"));
                             flowable.onNext(1);
                         } else {
                             flowable.onError(new IOException());
                         }
                     } else {
-                        callSystemUpdate(context, copyFileToOtherFolder(file, saveFile, System.currentTimeMillis() + ".png"));
+                        callSystemUpdate(context, copyFileToOtherFolder(file, appDir, System.currentTimeMillis() + ".png"));
                         flowable.onNext(1);
                     }
                 } else {

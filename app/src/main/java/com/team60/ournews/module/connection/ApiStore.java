@@ -33,13 +33,13 @@ public interface ApiStore {
                                     @Query("key") String key);
 
     @POST("login")
-    Flowable<LoginResult> login(@Query("login_name") String loginName
-            , @Query("password") String password
-            , @Query("time") long time);
+    Flowable<LoginResult> login(@Query("login_name") String loginName,
+                                @Query("password") String password,
+                                @Query("time") long time);
 
     @POST("checkLogin")
-    Flowable<CheckLoginResult> checkLogin(@Query("id") long id
-            , @Query("token") String token);
+    Flowable<CheckLoginResult> checkLogin(@Query("id") long id,
+                                          @Query("token") String token);
 
     @POST("changeInfo")
     Flowable<NoDataResult> changeInfo(@Query("id") long id,
@@ -67,17 +67,17 @@ public interface ApiStore {
                                       @Query("sort") int sort);
 
     @POST("getCollections")
-    Flowable<ListNewResult> getCollections(@Query("nid") long id,
+    Flowable<ListNewResult> getCollections(@Query("uid") long id,
                                            @Query("token") String token,
-                                           @Query("uid") long uid,
+                                           @Query("oid") long uid,
                                            @Query("page") int page,
                                            @Query("size") int size,
                                            @Query("sort") int sort);
 
     @POST("getHistory")
-    Flowable<ListNewResult> getHistory(@Query("nid") long id,
+    Flowable<ListNewResult> getHistory(@Query("uid") long id,
                                        @Query("token") String token,
-                                       @Query("uid") long uid,
+                                       @Query("oid") long uid,
                                        @Query("page") int page,
                                        @Query("size") int size,
                                        @Query("sort") int sort);

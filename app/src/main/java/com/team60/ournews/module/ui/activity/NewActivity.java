@@ -288,6 +288,9 @@ public class NewActivity extends BaseActivity implements NewView {
     private void showNewInfo() {
         mCollapsingToolBarLayout.setTitle(n.getTitle());
         mCreateTimeText.setText(n.getCreateTime());
+        mHistoryText.setText(String.valueOf(n.getHistoryNum()));
+        mCollectionText.setText(String.valueOf(n.getCollectionNum()));
+        mCommentNumberText.setText(String.valueOf(n.getCommentNum()));
         FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover()))
                 .into(mBackgroundImg);
 
@@ -451,13 +454,12 @@ public class NewActivity extends BaseActivity implements NewView {
     private AnimatorSet getShowOrHideAnimSet(final boolean isShow) {
         final AnimatorSet showSet = new AnimatorSet();
         if (isShow) {
-            showSet.playTogether(ObjectAnimator.ofFloat(mNewLayout, "alpha", 0f, 1f)
-                    , ObjectAnimator.ofFloat(mAppBarLayout, "alpha", 0f, 1f)
-                    , ObjectAnimator.ofFloat(mNewLayout, "alpha", 0f, 1f)
+            showSet.playTogether(ObjectAnimator.ofFloat(mNewLayout, "alpha", mNewLayout.getAlpha(), 1f)
+                    , ObjectAnimator.ofFloat(mAppBarLayout, "alpha", mAppBarLayout.getAlpha(), 1f)
                     , ObjectAnimator.ofFloat(mBottomLayout, "translationY", mBottomLayout.getTranslationY(), 0f));
         } else {
             mAppBarLayout.setAlpha(0f);
-            showSet.playTogether(ObjectAnimator.ofFloat(mNewLayout, "alpha", 1f, 0f)
+            showSet.playTogether(ObjectAnimator.ofFloat(mNewLayout, "alpha", mNewLayout.getAlpha(), 0f)
                     , ObjectAnimator.ofFloat(mFloatActionBtn, "scaleX", mFloatActionBtn.getScaleX(), 0f)
                     , ObjectAnimator.ofFloat(mFloatActionBtn, "scaleY", mFloatActionBtn.getScaleY(), 0f)
                     , ObjectAnimator.ofFloat(mBottomLayout, "translationY", mBottomLayout.getTranslationY(), UiUtil.dip2px(48)));
@@ -534,28 +536,10 @@ public class NewActivity extends BaseActivity implements NewView {
             showFloatBtn(false);
         }
 
-        ObjectAnimator outAnim = ObjectAnimator.ofFloat(mHistoryCollectionLayout, "alpha", 1f, 0f).setDuration(150);
-        ObjectAnimator inAnim = ObjectAnimator.ofFloat(mHistoryCollectionLayout, "alpha", 0f, 1f).setDuration(150);
-        outAnim.addListener(new MyObjectAnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mHistoryText.setText(String.valueOf(n.getHistoryNum()));
-                mCollectionText.setText(String.valueOf(n.getCollectionNum()));
-            }
-        });
-        AnimatorSet set = new AnimatorSet();
-        set.play(outAnim).before(inAnim);
-        set.start();
-
         mContentView.setContent(n.getContent());
-        mCommentNumberText.setText(String.valueOf(n.getCommentNum()));
-        ObjectAnimator.ofFloat(mCommentNumberText, "alpha", 0f, 1f).setDuration(300).start();
 
         this.n.setContent(n.getContent());
         this.n.setIsCollection(n.getIsCollection());
-        this.n.setCommentNum(n.getCommentNum());
-        this.n.setCollectionNum(n.getCollectionNum());
-        this.n.setHistoryNum(n.getHistoryNum());
     }
 
     @Override

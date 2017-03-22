@@ -133,6 +133,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
                                 user.setLoginName(result.getData().getLoginName());
                                 user.setNickName(result.getData().getNickName());
                                 user.setSex(result.getData().getSex());
+                                user.setSign(result.getData().getSign());
+                                user.setBirthday(result.getData().getBirthday());
                                 user.setPhoto(result.getData().getPhoto());
                             } else {
                                 User.breakLogin();

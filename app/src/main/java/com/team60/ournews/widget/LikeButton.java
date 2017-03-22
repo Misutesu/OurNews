@@ -89,8 +89,8 @@ public class LikeButton extends FrameLayout {
     public void startLoad() {
         isLoad = true;
         AnimatorSet set = new AnimatorSet();
-        set.play(ObjectAnimator.ofFloat(mText, "alpha", mText.getAlpha(), 0f))
-                .before(ObjectAnimator.ofFloat(mProgressBar, "alpha", mProgressBar.getAlpha(), 1f));
+        set.playTogether(ObjectAnimator.ofFloat(mText, "alpha", mText.getAlpha(), 0f),
+                ObjectAnimator.ofFloat(mProgressBar, "alpha", mProgressBar.getAlpha(), 1f));
         set.setDuration(100);
         set.start();
     }
@@ -98,8 +98,8 @@ public class LikeButton extends FrameLayout {
     public void endLoad() {
         isLoad = false;
         AnimatorSet set = new AnimatorSet();
-        set.play(ObjectAnimator.ofFloat(mProgressBar, "alpha", mProgressBar.getAlpha(), 0f))
-                .before(ObjectAnimator.ofFloat(mText, "alpha", mText.getAlpha(), 1f));
+        set.playTogether(ObjectAnimator.ofFloat(mProgressBar, "alpha", mProgressBar.getAlpha(), 0f),
+                ObjectAnimator.ofFloat(mText, "alpha", mText.getAlpha(), 1f));
         set.setDuration(100);
         set.start();
     }

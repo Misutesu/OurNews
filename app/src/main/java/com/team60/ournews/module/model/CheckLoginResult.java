@@ -11,7 +11,7 @@ public class CheckLoginResult {
     /**
      * result : success
      * errorCode : 0
-     * data : {"id":1,"loginName":"Test","nickName":"Test","sex":1,"photo":"NoImage","pushState":1}
+     * data : {"id":1,"loginName":"Misutesu","nickName":"Misutesu","sex":"1","sign":"asdsad","birthday":0,"photo":"NoImage","token":"f7b7c047e84d491890eb70301802eb23"}
      */
 
     private String result;
@@ -46,9 +46,11 @@ public class CheckLoginResult {
     public static class DataBean {
         /**
          * id : 1
-         * loginName : Test
-         * nickName : Test
+         * loginName : Misutesu
+         * nickName : Misutesu
          * sex : 1
+         * sign : asdsad
+         * birthday : 0
          * photo : NoImage
          */
 
@@ -58,6 +60,8 @@ public class CheckLoginResult {
         @SerializedName("nick_name")
         private String nickName;
         private int sex;
+        private String sign;
+        private int birthday;
         private String photo;
 
         public int getId() {
@@ -90,6 +94,22 @@ public class CheckLoginResult {
 
         public void setSex(int sex) {
             this.sex = sex;
+        }
+
+        public String getSign() {
+            return sign;
+        }
+
+        public void setSign(String sign) {
+            this.sign = sign;
+        }
+
+        public int getBirthday() {
+            return birthday;
+        }
+
+        public void setBirthday(int birthday) {
+            this.birthday = birthday;
         }
 
         public String getPhoto() {

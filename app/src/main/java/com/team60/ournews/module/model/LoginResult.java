@@ -11,7 +11,7 @@ public class LoginResult {
     /**
      * result : success
      * errorCode : 0
-     * data : {"id":12,"nickName":"Test","sex":1,"photo":"NoImage","loginName":"Test","token":"5095c4cfad764a6aa5e8262443671ca4","push_state",1}
+     * data : {"id":1,"loginName":"Misutesu","nickName":"Misutesu","sex":"1","sign":"asdsad","birthday":0,"photo":"NoImage","token":"f7b7c047e84d491890eb70301802eb23"}
      */
 
     private String result;
@@ -45,21 +45,25 @@ public class LoginResult {
 
     public static class DataBean {
         /**
-         * id : 12
-         * nick_name : Test
+         * id : 1
+         * loginName : Misutesu
+         * nickName : Misutesu
          * sex : 1
+         * sign : asdsad
+         * birthday : 0
          * photo : NoImage
-         * login_name : Test
-         * token : 5095c4cfad764a6aa5e8262443671ca4
+         * token : f7b7c047e84d491890eb70301802eb23
          */
 
         private int id;
+        @SerializedName("login_name")
+        private String loginName;
         @SerializedName("nick_name")
         private String nickName;
         private int sex;
+        private String sign;
+        private int birthday;
         private String photo;
-        @SerializedName("login_name")
-        private String loginName;
         private String token;
 
         public int getId() {
@@ -68,6 +72,14 @@ public class LoginResult {
 
         public void setId(int id) {
             this.id = id;
+        }
+
+        public String getLoginName() {
+            return loginName;
+        }
+
+        public void setLoginName(String loginName) {
+            this.loginName = loginName;
         }
 
         public String getNickName() {
@@ -86,20 +98,28 @@ public class LoginResult {
             this.sex = sex;
         }
 
+        public String getSign() {
+            return sign;
+        }
+
+        public void setSign(String sign) {
+            this.sign = sign;
+        }
+
+        public int getBirthday() {
+            return birthday;
+        }
+
+        public void setBirthday(int birthday) {
+            this.birthday = birthday;
+        }
+
         public String getPhoto() {
             return photo;
         }
 
         public void setPhoto(String photo) {
             this.photo = photo;
-        }
-
-        public String getLoginName() {
-            return loginName;
-        }
-
-        public void setLoginName(String loginName) {
-            this.loginName = loginName;
         }
 
         public String getToken() {

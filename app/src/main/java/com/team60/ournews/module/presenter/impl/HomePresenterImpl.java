@@ -7,6 +7,7 @@ import android.util.SparseArray;
 import com.google.gson.Gson;
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
+import com.team60.ournews.module.bean.ManagerUser;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.connection.RetrofitUtil;
 import com.team60.ournews.module.model.HomeNewResult;
@@ -85,6 +86,18 @@ public class HomePresenterImpl implements HomePresenter {
                                     n.setCover(bean.getCover());
                                     n.setAbstractContent(bean.getAbstractContent());
                                     n.setCreateTime(bean.getCreateTime());
+                                    n.setType(bean.getType());
+                                    n.setCommentNum(bean.getCommentNum());
+                                    n.setCollectionNum(bean.getCollectionNum());
+                                    n.setHistoryNum(bean.getHistoryNum());
+                                    ManagerUser managerUser = new ManagerUser();
+                                    managerUser.setId(bean.getManager().getId());
+                                    managerUser.setNickName(bean.getManager().getNickName());
+                                    managerUser.setSex(bean.getManager().getSex());
+                                    managerUser.setSign(bean.getManager().getSign());
+                                    managerUser.setBirthday(bean.getManager().getBirthday());
+                                    managerUser.setPhoto(bean.getManager().getPhoto());
+                                    n.setManagerUser(managerUser);
                                     newList.add(n);
                                 }
                                 news.append(beanList.get(i).getType(), newList);
@@ -99,7 +112,7 @@ public class HomePresenterImpl implements HomePresenter {
     }
 
     private HomeNewResult getHomeNewsFromData() {
-        SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(mContext,Constants.SHARED_PREFERENCES_CACHE);
+        SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(mContext, Constants.SHARED_PREFERENCES_CACHE);
         String homeTemp = sharedPreferences.getString("home_temp", null);
         if (homeTemp == null)
             return null;
@@ -107,7 +120,7 @@ public class HomePresenterImpl implements HomePresenter {
     }
 
     private void saveHomeNewsToData(HomeNewResult result) {
-        SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(mContext,Constants.SHARED_PREFERENCES_CACHE);
+        SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(mContext, Constants.SHARED_PREFERENCES_CACHE);
         sharedPreferences.edit().putString("home_temp", new Gson().toJson(result)).apply();
     }
 }
