@@ -173,6 +173,7 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
                     if (comment != null && onItemClickListener != null)
                         onItemClickListener.onLayoutClick(comment);
                     break;
+                default:
             }
         }
     };

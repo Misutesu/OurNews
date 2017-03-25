@@ -78,6 +78,7 @@ public class ThemeSelectRecyclerViewAdapter extends RecyclerView.Adapter {
                     if (theme != null && onItemClickListener != null)
                         onItemClickListener.onClick(theme, position);
                     break;
+                default:
             }
         }
     };

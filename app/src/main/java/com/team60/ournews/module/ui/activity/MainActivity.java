@@ -1,7 +1,9 @@
 package com.team60.ournews.module.ui.activity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -28,11 +30,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.R;
+import com.team60.ournews.event.ChangeStyleEvent;
 import com.team60.ournews.event.ChangeViewPagerPageEvent;
 import com.team60.ournews.event.LoginEvent;
 import com.team60.ournews.event.ShowSnackEvent;
@@ -63,6 +67,7 @@ public class MainActivity extends BaseActivity {
 
     private List<Fragment> fragments;
 
+    private RelativeLayout mHeaderTopLayout;
     private SimpleDraweeView mHeaderUserAvatarImg;
     private TextView mHeaderUserNameText;
     private ImageView mHeaderNightModeImg;
@@ -77,6 +82,8 @@ public class MainActivity extends BaseActivity {
     NavigationView mNavView;
     @BindView(R.id.activity_main_drawer_layout)
     DrawerLayout mDrawerLayout;
+    @BindView(R.id.activity_main_app_bar)
+    AppBarLayout mAppBar;
     @BindView(R.id.activity_main_tool_bar)
     Toolbar mToolBar;
     @BindView(R.id.activity_main_tool_bar_user_layout)
@@ -100,6 +107,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         init(savedInstanceState);
         setListener();
         setUserInfo();
@@ -113,9 +121,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void init(Bundle savedInstanceState) {
-        EventBus.getDefault().register(this);
-
         View mHeaderView = mNavView.getHeaderView(0);
+        mHeaderTopLayout = (RelativeLayout) mHeaderView.findViewById(R.id.header_top_layout);
         mHeaderUserAvatarImg = (SimpleDraweeView) mHeaderView.findViewById(R.id.header_user_avatar_img);
         mHeaderUserNameText = (TextView) mHeaderView.findViewById(R.id.header_user_name_text);
         mHeaderNightModeImg = (ImageView) mHeaderView.findViewById(R.id.header_night_mode_img);
@@ -145,7 +152,8 @@ public class MainActivity extends BaseActivity {
             mDrawerLayout.setClipToPadding(false);
         }
 
-        if (ThemeUtil.newInstance().isNightMode()) mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
+        if (ThemeUtil.newInstance().isNightMode())
+            mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
 
         initViewPager();
     }
@@ -179,13 +187,16 @@ public class MainActivity extends BaseActivity {
             public void onClick(View view) {
                 if (ThemeUtil.newInstance().isNightMode()) {
                     ThemeUtil.newInstance().setNightMode(false);
+                    EventBus.getDefault().post(
+                            getChangeColorEvent(getTheme(), MainActivity.this, ThemeUtil.newInstance().getStyle()));
                 } else {
                     ThemeUtil.newInstance().setNightMode(true);
+                    EventBus.getDefault().post(
+                            getChangeColorEvent(getTheme(), MainActivity.this, R.style.NightTheme));
                 }
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                     mDrawerLayout.closeDrawer(GravityCompat.START);
                 }
-                recreate();
             }
         });
 
@@ -312,7 +323,8 @@ public class MainActivity extends BaseActivity {
                                                 if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                                                     mDrawerLayout.closeDrawer(GravityCompat.START);
                                                 }
-                                                recreate();
+                                                EventBus.getDefault().post(
+                                                        getChangeColorEvent(getTheme(), MainActivity.this, ThemeUtil.newInstance().getStyle()));
                                             }
                                         })
                                         .setNegativeButton(getString(R.string.no), null)
@@ -323,7 +335,8 @@ public class MainActivity extends BaseActivity {
                             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                                 mDrawerLayout.closeDrawer(GravityCompat.START);
                             }
-                            recreate();
+                            EventBus.getDefault().post(
+                                    getChangeColorEvent(getTheme(), MainActivity.this, ThemeUtil.newInstance().getStyle()));
                         }
                     }
                     mThemeDialog.dismiss();
@@ -349,7 +362,6 @@ public class MainActivity extends BaseActivity {
         } else if (mViewPager.getCurrentItem() != 0) {
             mViewPager.setCurrentItem(0);
         } else {
-//            super.onBackPressed();
             Intent launcherIntent = new Intent(Intent.ACTION_MAIN);
             launcherIntent.addCategory(Intent.CATEGORY_HOME);
             startActivity(launcherIntent);
@@ -374,6 +386,76 @@ public class MainActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
     public void onLoginEvent(LoginEvent event) {
         setUserInfo();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
+    public void onChangeStyle(ChangeStyleEvent event) {
+
+        ThemeUtil.changeColor(event.getColorPrimary(), new ThemeUtil.OnColorChangeListener() {
+            @Override
+            public void onColorChange(int color) {
+                mTopView.setBackgroundColor(color);
+                mAppBar.setBackgroundColor(color);
+                mHeaderTopLayout.setBackgroundColor(color);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setNavigationBarColor(color);
+                }
+            }
+        });
+
+        ThemeUtil.changeColor(event.getColorText(), new ThemeUtil.OnColorChangeListener() {
+            @Override
+            public void onColorChange(int color) {
+                ((ImageView) mSelectThemeLayout.findViewById(R.id.header_theme_img)).setColorFilter(color);
+                ((ImageView) mLogoutLayout.findViewById(R.id.header_logout_img)).setColorFilter(color);
+            }
+        });
+
+        ThemeUtil.changeColor(event.getColorText1(), new ThemeUtil.OnColorChangeListener() {
+            @Override
+            public void onColorChange(int color) {
+                ((TextView) mSelectThemeLayout.findViewById(R.id.header_theme_text)).setTextColor(color);
+                ((TextView) mLogoutLayout.findViewById(R.id.header_logout_text)).setTextColor(color);
+            }
+        });
+
+        ThemeUtil.changeColor(event.getColorBackground(), new ThemeUtil.OnColorChangeListener() {
+            @Override
+            public void onColorChange(int color) {
+                ((View) mTopView.getParent()).setBackgroundColor(color);
+                mNavView.setBackgroundColor(color);
+            }
+        });
+    }
+
+    public ChangeStyleEvent getChangeColorEvent(Resources.Theme theme, Activity activity, int style) {
+
+        int startColorPrimary = ThemeUtil.getColor(theme, R.attr.colorPrimary);
+        int startColorIcon = ThemeUtil.getColor(theme, R.attr.iconColor);
+        int startColorText = ThemeUtil.getColor(theme, R.attr.textColor);
+        int startColorText1 = ThemeUtil.getColor(theme, R.attr.textColor1);
+        int startColorText3 = ThemeUtil.getColor(theme, R.attr.textColor3);
+        int startColorBackground = ThemeUtil.getColor(theme, R.attr.windowsBackgroundColor);
+        int startColorItemBackground = ThemeUtil.getColor(theme, R.attr.itemBackgroundColor);
+        activity.setTheme(style);
+        int endColorPrimary = ThemeUtil.getColor(theme, R.attr.colorPrimary);
+        int endColorIcon = ThemeUtil.getColor(theme, R.attr.iconColor);
+        int endColorText = ThemeUtil.getColor(theme, R.attr.textColor);
+        int endColorText1 = ThemeUtil.getColor(theme, R.attr.textColor1);
+        int endColorText3 = ThemeUtil.getColor(theme, R.attr.textColor3);
+        int endColorBackground = ThemeUtil.getColor(theme, R.attr.windowsBackgroundColor);
+        int endColorItemBackground = ThemeUtil.getColor(theme, R.attr.itemBackgroundColor);
+
+        int[] colorPrimary = {startColorPrimary, endColorPrimary};
+        int[] colorBackground = {startColorBackground, endColorBackground};
+        int[] colorItemBackground = {startColorItemBackground, endColorItemBackground};
+        int[] colorIcon = {startColorIcon, endColorIcon};
+        int[] colorText = {startColorText, endColorText};
+        int[] colorText1 = {startColorText1, endColorText1};
+        int[] colorText3 = {startColorText3, endColorText3};
+
+        return new ChangeStyleEvent(colorPrimary, colorBackground,
+                colorItemBackground, colorIcon, colorText, colorText1, colorText3);
     }
 
     @Override

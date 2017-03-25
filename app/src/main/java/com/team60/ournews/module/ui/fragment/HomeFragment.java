@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.team60.ournews.R;
+import com.team60.ournews.event.ChangeStyleEvent;
 import com.team60.ournews.event.ChangeViewPagerPageEvent;
 import com.team60.ournews.event.ShowSnackEvent;
 import com.team60.ournews.module.bean.New;
@@ -26,6 +27,8 @@ import com.team60.ournews.widget.AdvertisementView;
 import com.team60.ournews.widget.BrowseView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +76,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
+        EventBus.getDefault().register(this);
         return view;
     }
 
@@ -111,6 +115,12 @@ public class HomeFragment extends BaseFragment implements HomeView {
     public void onPause() {
         super.onPause();
         mAdvertisementView.stopScroll();
+    }
+
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
     }
 
     @Override
@@ -259,5 +269,42 @@ public class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public void showSnackBar(String message) {
         EventBus.getDefault().post(new ShowSnackEvent(message));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
+    public void onChangeStyle(ChangeStyleEvent event) {
+        mSwipeRefreshLayout.setColorSchemeColors(event.getColorPrimary()[1]);
+        ThemeUtil.changeColor(event.getColorItemBackground(), new ThemeUtil.OnColorChangeListener() {
+            @Override
+            public void onColorChange(int color) {
+                for (BrowseView browseView : mBrowseViews) {
+                    browseView.setItemBackgroundColor(color);
+                }
+            }
+        });
+        ThemeUtil.changeColor(event.getColorIcon(), new ThemeUtil.OnColorChangeListener() {
+            @Override
+            public void onColorChange(int color) {
+                for (BrowseView browseView : mBrowseViews) {
+                    browseView.setIconColor(color);
+                }
+            }
+        });
+        ThemeUtil.changeColor(event.getColorText1(), new ThemeUtil.OnColorChangeListener() {
+            @Override
+            public void onColorChange(int color) {
+                for (BrowseView browseView : mBrowseViews) {
+                    browseView.setTextColor1(color);
+                }
+            }
+        });
+        ThemeUtil.changeColor(event.getColorText3(), new ThemeUtil.OnColorChangeListener() {
+            @Override
+            public void onColorChange(int color) {
+                for (BrowseView browseView : mBrowseViews) {
+                    browseView.setTextColor3(color);
+                }
+            }
+        });
     }
 }

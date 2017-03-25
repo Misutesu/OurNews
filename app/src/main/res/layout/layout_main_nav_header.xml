@@ -6,6 +6,7 @@
               android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/header_top_layout"
         android:layout_width="match_parent"
         android:layout_height="170dp"
         android:background="?attr/colorPrimary">
@@ -68,6 +69,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/header_theme_img"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginLeft="16dp"
@@ -76,6 +78,7 @@
                     app:srcCompat="@drawable/select_theme"/>
 
                 <TextView
+                    android:id="@+id/header_theme_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
@@ -97,6 +100,7 @@
                 android:visibility="gone">
 
                 <ImageView
+                    android:id="@+id/header_logout_img"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginLeft="16dp"
@@ -105,6 +109,7 @@
                     app:srcCompat="@drawable/logout"/>
 
                 <TextView
+                    android:id="@+id/header_logout_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"

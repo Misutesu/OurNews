@@ -91,12 +91,14 @@ public class TypeFragmentRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     public void setLoadMore(boolean isShow) {
-        if (isShow) {
-            if (mProgressBar.getVisibility() == View.INVISIBLE)
-                mProgressBar.setVisibility(View.VISIBLE);
-        } else {
-            if (mProgressBar.getVisibility() == View.VISIBLE)
-                mProgressBar.setVisibility(View.INVISIBLE);
+        if (mProgressBar != null) {
+            if (isShow) {
+                if (mProgressBar.getVisibility() == View.INVISIBLE)
+                    mProgressBar.setVisibility(View.VISIBLE);
+            } else {
+                if (mProgressBar.getVisibility() == View.VISIBLE)
+                    mProgressBar.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -110,6 +112,7 @@ public class TypeFragmentRecyclerViewAdapter extends RecyclerView.Adapter {
                     if (onItemClickListener != null)
                         onItemClickListener.onItemClick(mCoverImg, n);
                     break;
+                default:
             }
         }
     };

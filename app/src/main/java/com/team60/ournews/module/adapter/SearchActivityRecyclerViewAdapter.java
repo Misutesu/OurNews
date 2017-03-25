@@ -101,6 +101,7 @@ public class SearchActivityRecyclerViewAdapter extends RecyclerView.Adapter {
                     if (onItemClickListener != null)
                         onItemClickListener.onClearBtnClick();
                     break;
+                default:
             }
         }
     };

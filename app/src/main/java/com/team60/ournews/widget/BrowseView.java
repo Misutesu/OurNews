@@ -39,6 +39,8 @@ public class BrowseView extends LinearLayout {
     private TextView mTypeText;
     private LinearLayout mMoreLayout;
     private LinearLayout mRefreshLayout;
+    private TextView mMoreText;
+    private ImageView mMoreImg;
     private TextView mRefreshText;
     private ImageView mRefreshImg;
 
@@ -116,7 +118,6 @@ public class BrowseView extends LinearLayout {
             this.news = new ArrayList<>();
         this.news.clear();
         this.news.addAll(news);
-
         if (hasAnim) {
             if (isFirst) {
                 isFirst = false;
@@ -141,6 +142,30 @@ public class BrowseView extends LinearLayout {
         }
     }
 
+    public void setItemBackgroundColor(int colorItemBackground) {
+        for (int i = 0; i < 4; i++) {
+            mCardViews.get(i).setCardBackgroundColor(colorItemBackground);
+        }
+    }
+
+    public void setIconColor(int iconColor) {
+        mTypeImg.setColorFilter(iconColor);
+        mRefreshImg.setColorFilter(iconColor);
+        mMoreImg.setColorFilter(iconColor);
+    }
+
+    public void setTextColor1(int textColor1) {
+        mTypeText.setTextColor(textColor1);
+        for (int i = 0; i < 4; i++) {
+            mTitleTexts.get(i).setTextColor(textColor1);
+        }
+    }
+
+    public void setTextColor3(int textColor3) {
+        mRefreshText.setTextColor(textColor3);
+        mMoreText.setTextColor(textColor3);
+    }
+
     private void init(Context context) {
         setOrientation(VERTICAL);
 
@@ -162,6 +187,8 @@ public class BrowseView extends LinearLayout {
         mTypeText = (TextView) view.findViewById(R.id.browse_view_type_text);
         mMoreLayout = (LinearLayout) view.findViewById(R.id.browse_view_see_more_layout);
         mRefreshLayout = (LinearLayout) view.findViewById(R.id.browse_view_refresh_layout);
+        mMoreText = (TextView) view.findViewById(R.id.browse_view_see_more_text);
+        mMoreImg = (ImageView) view.findViewById(R.id.browse_view_see_more_img);
         mRefreshText = (TextView) view.findViewById(R.id.browse_view_refresh_text);
         mRefreshImg = (ImageView) view.findViewById(R.id.browse_view_refresh_img);
 

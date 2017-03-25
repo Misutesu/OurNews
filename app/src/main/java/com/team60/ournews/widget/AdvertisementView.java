@@ -135,6 +135,7 @@ public class AdvertisementView extends RelativeLayout {
                                 handler.postDelayed(runnable, TIME);
                         }
                         break;
+                    default:
                 }
             }
         });

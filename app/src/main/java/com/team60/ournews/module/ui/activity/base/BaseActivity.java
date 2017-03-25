@@ -67,8 +67,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 int styleId = ThemeUtil.newInstance().getStyle();
-                if (styleId != -1)
-                    setTheme(styleId);
+                setTheme(styleId);
             }
         }
         hideStatusBar();

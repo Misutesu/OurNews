@@ -1,9 +1,12 @@
 package com.team60.ournews.util;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.support.annotation.AttrRes;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 
@@ -20,6 +23,10 @@ public class ThemeUtil {
     private static ThemeUtil themeUtil;
 
     private static SharedPreferences sharedPreferences;
+
+    public interface OnColorChangeListener {
+        void onColorChange(int color);
+    }
 
     private ThemeUtil() {
     }
@@ -40,12 +47,25 @@ public class ThemeUtil {
         return typedValue.data;
     }
 
+    public static void changeColor(int[] colors, @NonNull final OnColorChangeListener onColorChangeListener) {
+        ValueAnimator animator = ValueAnimator
+                .ofObject(new ArgbEvaluator(), colors[0], colors[1])
+                .setDuration(1000);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                onColorChangeListener.onColorChange((int) animation.getAnimatedValue());
+            }
+        });
+        animator.start();
+    }
+
     public static void init(Context context) {
         if (sharedPreferences == null)
             synchronized (ThemeUtil.class) {
                 if (sharedPreferences == null) {
                     sharedPreferences = MyUtil.getSharedPreferences(context, Constants.SHARED_PREFERENCES_THEME);
-                    styles[0] = -1;
+                    styles[0] = R.style.BlueTheme;
                     styles[1] = R.style.BlueBlackTheme;
                     styles[2] = R.style.GreenTheme;
                     styles[3] = R.style.GreenBlackTheme;

@@ -26,6 +26,7 @@
             android:layout_weight="1">
 
             <android.support.design.widget.AppBarLayout
+                android:id="@+id/activity_main_app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:elevation="0dp">

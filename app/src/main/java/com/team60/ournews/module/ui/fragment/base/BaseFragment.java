@@ -22,9 +22,9 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
+        if (isVisibleToUser) {
             JAnalyticsInterface.onPageStart(getContext(), this.getClass().getCanonicalName());
-        }else{
+        } else {
             JAnalyticsInterface.onPageEnd(getContext(), this.getClass().getCanonicalName());
         }
     }

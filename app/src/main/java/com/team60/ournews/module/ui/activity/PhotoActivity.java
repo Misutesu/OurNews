@@ -272,7 +272,7 @@ public class PhotoActivity extends BaseActivity implements BaseView {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 pointFEnd = new PointF(0, ((UiUtil.getScreenHeight() - mLayoutHeight) / 2) + UiUtil.getStatusBarHeight());
             } else {
-                pointFEnd = new PointF(0, (UiUtil.getScreenHeight() - mLayoutHeight) / 2);
+                pointFEnd = new PointF(0, (float) (UiUtil.getScreenHeight() - mLayoutHeight) / 2);
             }
 
             Integer[] endSize = {UiUtil.getScreenWidth(), mLayoutHeight};

@@ -275,6 +275,7 @@ public class UserActivity extends BaseActivity implements UserView {
             case R.id.activity_user_history_text:
                 mViewPager.setCurrentItem(1);
                 break;
+            default:
         }
     }
 

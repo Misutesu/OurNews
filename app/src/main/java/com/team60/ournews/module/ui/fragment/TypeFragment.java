@@ -12,9 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
+import com.team60.ournews.event.ChangeStyleEvent;
 import com.team60.ournews.event.ShowSnackEvent;
 import com.team60.ournews.module.adapter.TypeFragmentRecyclerViewAdapter;
 import com.team60.ournews.module.bean.New;
@@ -26,7 +30,11 @@ import com.team60.ournews.util.SkipUtil;
 import com.team60.ournews.util.ThemeUtil;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +93,7 @@ public class TypeFragment extends BaseFragment implements TypeView {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_type, container, false);
         ButterKnife.bind(this, view);
+        EventBus.getDefault().register(this);
         return view;
     }
 
@@ -108,6 +117,12 @@ public class TypeFragment extends BaseFragment implements TypeView {
         } else {
             isUIVisible = false;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
     }
 
     @Override
@@ -222,6 +237,48 @@ public class TypeFragment extends BaseFragment implements TypeView {
     @Override
     public void showSnackBar(String message) {
         EventBus.getDefault().post(new ShowSnackEvent(message));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
+    public void onChangeStyle(ChangeStyleEvent event) {
+        mSwipeRefresh.setColorSchemeColors(event.getColorPrimary()[1]);
+        int childCount = mRecyclerView.getChildCount();
+
+        for (int childIndex = 0; childIndex < childCount; childIndex++) {
+            ViewGroup childView = (ViewGroup) mRecyclerView.getChildAt(childIndex);
+            if (childView instanceof LinearLayout) {
+                final TextView mTitleText = (TextView) childView.findViewById(R.id.item_type_new_title_text);
+                final TextView mTimeText = (TextView) childView.findViewById(R.id.item_type_new_create_time_text);
+                ThemeUtil.changeColor(event.getColorText1(), new ThemeUtil.OnColorChangeListener() {
+                    @Override
+                    public void onColorChange(int color) {
+                        mTitleText.setTextColor(color);
+                    }
+                });
+                ThemeUtil.changeColor(event.getColorText3(), new ThemeUtil.OnColorChangeListener() {
+                    @Override
+                    public void onColorChange(int color) {
+                        mTimeText.setTextColor(color);
+                    }
+                });
+            } else if (childView instanceof RelativeLayout) {
+//                ProgressBar mProgressBar = (ProgressBar) childView.findViewById(R.id.item_comment_footer_progress_bar);
+//                mProgressBar = new ProgressBar(getContext());
+            }
+        }
+
+        Class<RecyclerView> recyclerViewClass = RecyclerView.class;
+        try {
+            Field declaredField = recyclerViewClass.getDeclaredField("mRecycler");
+            declaredField.setAccessible(true);
+            Method declaredMethod = Class.forName(RecyclerView.Recycler.class.getName()).getDeclaredMethod("clear", (Class<?>[]) new Class[0]);
+            declaredMethod.setAccessible(true);
+            declaredMethod.invoke(declaredField.get(mRecyclerView), new Object[0]);
+            RecyclerView.RecycledViewPool recycledViewPool = mRecyclerView.getRecycledViewPool();
+            recycledViewPool.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private class MyRecyclerViewOnScroll extends RecyclerView.OnScrollListener {

@@ -47,6 +47,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/browse_view_see_more_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
@@ -58,6 +59,7 @@
                 android:textSize="12sp"/>
 
             <ImageView
+                android:id="@+id/browse_view_see_more_img"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:tint="?attr/iconColor"
