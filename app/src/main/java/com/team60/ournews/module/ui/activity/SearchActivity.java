@@ -90,10 +90,8 @@ public class SearchActivity extends BaseActivity {
 
         sharedPreferences = MyUtil.getSharedPreferences(this, Constants.SHARED_PREFERENCES_HISTORY);
 
-        if (histories == null)
-            histories = new ArrayList<>();
-        else
-            histories.clear();
+        if (histories == null) histories = new ArrayList<>();
+        else histories.clear();
 
         mAdapter = new SearchActivityRecyclerViewAdapter(this, histories);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
