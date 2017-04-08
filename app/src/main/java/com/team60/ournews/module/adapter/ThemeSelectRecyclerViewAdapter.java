@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.team60.ournews.R;
 import com.team60.ournews.module.bean.Theme;
+import com.team60.ournews.util.ThemeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,11 @@ public class ThemeSelectRecyclerViewAdapter extends RecyclerView.Adapter {
         viewHolder.mLayout.setTag(R.id.tag_theme, theme);
         viewHolder.mLayout.setTag(R.id.tag_position, position);
         viewHolder.mLayout.setOnClickListener(mOnClickListener);
+        if (position == ThemeUtil.newInstance().getStyleNum()) {
+            viewHolder.mClickImg.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.mClickImg.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -87,11 +93,13 @@ public class ThemeSelectRecyclerViewAdapter extends RecyclerView.Adapter {
 
         private FrameLayout mLayout;
         private ImageView mImg;
+        private ImageView mClickImg;
 
         public ThemViewHolder(View itemView) {
             super(itemView);
             mLayout = (FrameLayout) itemView.findViewById(R.id.item_theme_layout);
             mImg = (ImageView) itemView.findViewById(R.id.item_theme_img);
+            mClickImg = (ImageView) itemView.findViewById(R.id.item_theme_click);
         }
     }
 }

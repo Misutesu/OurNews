@@ -63,29 +63,14 @@ public class SearchActivityRecyclerViewAdapter extends RecyclerView.Adapter {
         if (holder instanceof NormalViewHolder) {
             NormalViewHolder viewHolder = (NormalViewHolder) holder;
             viewHolder.mText.setText(histories.get(position));
+            viewHolder.mLayout.setTag(position);
+            viewHolder.mLayout.setOnClickListener(mOnClickListener);
         }
     }
 
     @Override
     public int getItemCount() {
         return histories.size() + 1;
-    }
-
-    public class NormalViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.item_search_layout)
-        LinearLayout mLayout;
-        @BindView(R.id.item_search_text)
-        TextView mText;
-
-        public NormalViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            mLayout = (LinearLayout) itemView.findViewById(R.id.item_search_layout);
-            mText = (TextView) itemView.findViewById(R.id.item_search_text);
-            mLayout.setTag(getLayoutPosition());
-            mLayout.setOnClickListener(mOnClickListener);
-        }
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -105,6 +90,21 @@ public class SearchActivityRecyclerViewAdapter extends RecyclerView.Adapter {
             }
         }
     };
+
+    public class NormalViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.item_search_layout)
+        LinearLayout mLayout;
+        @BindView(R.id.item_search_text)
+        TextView mText;
+
+        public NormalViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            mLayout = (LinearLayout) itemView.findViewById(R.id.item_search_layout);
+            mText = (TextView) itemView.findViewById(R.id.item_search_text);
+        }
+    }
 
     public class FooterViewHolder extends RecyclerView.ViewHolder {
 

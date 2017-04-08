@@ -6,7 +6,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.team60.ournews"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0.0"
@@ -70,9 +70,6 @@ dependencies {
     compile 'cn.jiguang.sdk:jpush:3.0.1'
     compile 'cn.jiguang.sdk:janalytics:1.0.0'
     compile 'com.github.Misutesu:FrescoLoader:1.0.7'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.5.1'
 }

@@ -216,6 +216,7 @@ public class NewActivity extends BaseActivity implements NewView {
         mRetryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mRetryBtn.setVisibility(View.GONE);
                 mProgressBar.setVisibility(View.VISIBLE);
                 getNewContent();
             }

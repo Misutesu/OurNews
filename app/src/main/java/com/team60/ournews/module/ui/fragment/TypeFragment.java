@@ -1,9 +1,11 @@
 package com.team60.ournews.module.ui.fragment;
 
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.team60.ournews.R;
@@ -242,8 +243,15 @@ public class TypeFragment extends BaseFragment implements TypeView {
     @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
     public void onChangeStyle(ChangeStyleEvent event) {
         mSwipeRefresh.setColorSchemeColors(event.getColorPrimary()[1]);
-        int childCount = mRecyclerView.getChildCount();
 
+        ThemeUtil.changeColor(event.getColorPrimary(), new ThemeUtil.OnColorChangeListener() {
+            @Override
+            public void onColorChange(int color) {
+                ViewCompat.setBackgroundTintList(mRetryBtn, ColorStateList.valueOf(color));
+            }
+        });
+
+        int childCount = mRecyclerView.getChildCount();
         for (int childIndex = 0; childIndex < childCount; childIndex++) {
             ViewGroup childView = (ViewGroup) mRecyclerView.getChildAt(childIndex);
             if (childView instanceof LinearLayout) {
@@ -261,9 +269,6 @@ public class TypeFragment extends BaseFragment implements TypeView {
                         mTimeText.setTextColor(color);
                     }
                 });
-            } else if (childView instanceof RelativeLayout) {
-//                ProgressBar mProgressBar = (ProgressBar) childView.findViewById(R.id.item_comment_footer_progress_bar);
-//                mProgressBar = new ProgressBar(getContext());
             }
         }
 

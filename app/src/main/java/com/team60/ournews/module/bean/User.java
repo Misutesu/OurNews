@@ -22,20 +22,22 @@ public class User {
     private String photo;
     private String token;
 
-    private static User user = new User();
+    private static User user;
     private static SharedPreferences sharedPreferences;
 
     public static void init(Context context) {
-        if (sharedPreferences == null) {
+        if (user == null) {
             synchronized (User.class) {
-                sharedPreferences = MyUtil.getSharedPreferences(context, Constants.SHARED_PREFERENCES_USER);
+                if (user == null) {
+                    user = new User(context);
+                }
             }
         }
     }
 
     public static User newInstance() {
-        if (sharedPreferences == null)
-            throw new UnsupportedOperationException("Cannot Init User");
+        if (user == null || sharedPreferences == null)
+            throw new UnsupportedOperationException("No Init User");
         return user;
     }
 
@@ -52,15 +54,17 @@ public class User {
     }
 
     public static boolean isLogin() {
-        if (user.getId() != 0 && !TextUtils.isEmpty(user.getLoginName()) && !TextUtils.isEmpty(user.getNickName())
-                && !TextUtils.isEmpty(user.getPhoto()) && !TextUtils.isEmpty(user.getToken()))
-            return true;
-        return false;
+        return user.getId() != 0 && !TextUtils.isEmpty(user.getLoginName())
+                && !TextUtils.isEmpty(user.getNickName()) && !TextUtils.isEmpty(user.getPhoto())
+                && !TextUtils.isEmpty(user.getToken());
+    }
+
+    public User(Context context) {
+        sharedPreferences = MyUtil.getSharedPreferences(context, Constants.SHARED_PREFERENCES_USER);
     }
 
     public long getId() {
-        if (id == 0)
-            id = sharedPreferences.getLong("id", 0);
+        if (id == 0) id = sharedPreferences.getLong("id", 0);
         return id;
     }
 
@@ -70,8 +74,7 @@ public class User {
     }
 
     public String getLoginName() {
-        if (TextUtils.isEmpty(loginName))
-            loginName = sharedPreferences.getString("loginName", "");
+        if (TextUtils.isEmpty(loginName)) loginName = sharedPreferences.getString("loginName", "");
         return loginName;
     }
 
@@ -81,8 +84,7 @@ public class User {
     }
 
     public String getNickName() {
-        if (TextUtils.isEmpty(nickName))
-            nickName = sharedPreferences.getString("nickName", "");
+        if (TextUtils.isEmpty(nickName)) nickName = sharedPreferences.getString("nickName", "");
         return nickName;
     }
 
@@ -92,8 +94,7 @@ public class User {
     }
 
     public int getSex() {
-        if (sex == -1)
-            sex = sharedPreferences.getInt("sex", -1);
+        if (sex == -1) sex = sharedPreferences.getInt("sex", -1);
         return sex;
     }
 
@@ -103,8 +104,7 @@ public class User {
     }
 
     public String getSign() {
-        if (TextUtils.isEmpty(sign))
-            sign = sharedPreferences.getString("sign", "");
+        if (TextUtils.isEmpty(sign)) sign = sharedPreferences.getString("sign", "");
         return sign;
     }
 
@@ -114,8 +114,7 @@ public class User {
     }
 
     public int getBirthday() {
-        if (birthday == -1)
-            birthday = sharedPreferences.getInt("birthday", -1);
+        if (birthday == -1) birthday = sharedPreferences.getInt("birthday", -1);
         return birthday;
     }
 
@@ -125,8 +124,7 @@ public class User {
     }
 
     public String getPhoto() {
-        if (TextUtils.isEmpty(photo))
-            photo = sharedPreferences.getString("photo", "");
+        if (TextUtils.isEmpty(photo)) photo = sharedPreferences.getString("photo", "");
         return photo;
     }
 
@@ -136,8 +134,7 @@ public class User {
     }
 
     public String getToken() {
-        if (TextUtils.isEmpty(token))
-            token = sharedPreferences.getString("token", "");
+        if (TextUtils.isEmpty(token)) token = sharedPreferences.getString("token", "");
         return token;
     }
 

@@ -71,7 +71,7 @@ public class SkipUtil {
         fragment.getActivity().overridePendingTransition(0, 0);
     }
 
-    public static Bundle captureValues(@NonNull View view) {
+    private static Bundle captureValues(@NonNull View view) {
         Bundle b = new Bundle();
         int[] screenLocation = new int[2];
         view.getLocationOnScreen(screenLocation);

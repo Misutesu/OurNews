@@ -154,6 +154,11 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
                             }
                             EventBus.getDefault().post(new LoginEvent());
                         }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(@io.reactivex.annotations.NonNull Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                        }
                     }));
         }
     }

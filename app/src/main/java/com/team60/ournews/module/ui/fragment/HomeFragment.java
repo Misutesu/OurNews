@@ -1,9 +1,11 @@
 package com.team60.ournews.module.ui.fragment;
 
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.SparseArray;
@@ -274,6 +276,12 @@ public class HomeFragment extends BaseFragment implements HomeView {
     @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
     public void onChangeStyle(ChangeStyleEvent event) {
         mSwipeRefreshLayout.setColorSchemeColors(event.getColorPrimary()[1]);
+        ThemeUtil.changeColor(event.getColorPrimary(), new ThemeUtil.OnColorChangeListener() {
+            @Override
+            public void onColorChange(int color) {
+                ViewCompat.setBackgroundTintList(mRetryBtn, ColorStateList.valueOf(color));
+            }
+        });
         ThemeUtil.changeColor(event.getColorItemBackground(), new ThemeUtil.OnColorChangeListener() {
             @Override
             public void onColorChange(int color) {

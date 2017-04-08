@@ -70,13 +70,6 @@ public class RetrofitUtil {
     private static class LoggingInterceptor implements Interceptor {
         @Override
         public Response intercept(Chain chain) throws IOException {
-//            Request request = chain.request();
-//            if (Constants.IS_DEBUG_MODE) {
-//                HttpLoggingInterceptor.Logger.DEFAULT.log(String.format("Send Request %s on %s%n%s",
-//                        request.url(), chain.connection(), request.headers()));
-//            }
-//            return chain.proceed(request);
-
             Request request = chain.request();
             Response response = chain.proceed(request);
             if (Constants.IS_DEBUG_MODE) {

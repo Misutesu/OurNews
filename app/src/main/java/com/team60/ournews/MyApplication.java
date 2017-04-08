@@ -3,7 +3,6 @@ package com.team60.ournews;
 import android.app.Application;
 
 import com.mistesu.frescoloader.FrescoLoader;
-import com.squareup.leakcanary.LeakCanary;
 import com.team60.ournews.module.bean.User;
 import com.team60.ournews.util.PushUtil;
 import com.team60.ournews.util.ThemeUtil;
@@ -17,7 +16,6 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        LeakCanary.install(this);
         FrescoLoader.init(this);
         User.init(this);
         ThemeUtil.init(this);

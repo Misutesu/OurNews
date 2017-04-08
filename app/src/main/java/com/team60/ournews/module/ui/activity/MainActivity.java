@@ -98,6 +98,7 @@ public class MainActivity extends BaseActivity {
     ViewPager mViewPager;
 
     private AlertDialog mThemeDialog;
+    private ThemeSelectRecyclerViewAdapter mThemeAdapter;
 
     private AlertDialog mThemeHintDialog;
     private AlertDialog mLogoutDialog;
@@ -297,7 +298,7 @@ public class MainActivity extends BaseActivity {
         if (mThemeDialog == null) {
             View view = LayoutInflater.from(this).inflate(R.layout.dialog_select_theme, null);
             RecyclerView mThemeRecyclerView = (RecyclerView) view.findViewById(R.id.layout_select_item_recycler_view);
-            ThemeSelectRecyclerViewAdapter mThemeAdapter = new ThemeSelectRecyclerViewAdapter(this);
+            mThemeAdapter = new ThemeSelectRecyclerViewAdapter(this);
             mThemeRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
             mThemeRecyclerView.setHasFixedSize(true);
             mThemeRecyclerView.setAdapter(mThemeAdapter);
@@ -390,7 +391,6 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
     public void onChangeStyle(ChangeStyleEvent event) {
-
         ThemeUtil.changeColor(event.getColorPrimary(), new ThemeUtil.OnColorChangeListener() {
             @Override
             public void onColorChange(int color) {
@@ -426,6 +426,8 @@ public class MainActivity extends BaseActivity {
                 mNavView.setBackgroundColor(color);
             }
         });
+
+        if (mThemeAdapter != null) mThemeAdapter.notifyDataSetChanged();
     }
 
     public ChangeStyleEvent getChangeColorEvent(Resources.Theme theme, Activity activity, int style) {

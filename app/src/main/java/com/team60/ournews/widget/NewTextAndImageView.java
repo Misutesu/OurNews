@@ -29,7 +29,7 @@ import java.util.List;
 
 public class NewTextAndImageView extends LinearLayout {
 
-    private final String DIFFERENCE_STRING = "AozakiShiki";
+    private final String DIFFERENCE_STRING = "AozakiAoko";
 
     private Context context;
 
