@@ -160,8 +160,7 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (comments == null)
-            comments = new ArrayList<>();
+        if (comments == null) comments = new ArrayList<>();
         mAdapter = new CommentActivityRecyclerViewAdapter(this, n, comments);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
