@@ -29,6 +29,7 @@ import com.team60.ournews.common.Constants;
 import com.team60.ournews.event.LoginEvent;
 import com.team60.ournews.event.LoginForNewEvent;
 import com.team60.ournews.listener.MyObjectAnimatorListener;
+import com.team60.ournews.listener.MyRecyclerViewOnScrollListener;
 import com.team60.ournews.listener.MyTransitionListener;
 import com.team60.ournews.module.adapter.CommentActivityRecyclerViewAdapter;
 import com.team60.ournews.module.adapter.CommentChildActivityRecyclerViewAdapter;
@@ -266,7 +267,23 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
             }
         });
 
-        mRecyclerView.addOnScrollListener(new MyRecyclerViewOnScroll());
+        mRecyclerView.addOnScrollListener(new MyRecyclerViewOnScrollListener(new MyRecyclerViewOnScrollListener.OnScrollBottomListener() {
+            @Override
+            public void onScrollBottom() {
+                if (!isLoad && hasMore) {
+                    startLoadMore();
+                }
+            }
+        }, new MyRecyclerViewOnScrollListener.OnScrollListener() {
+            @Override
+            public void onScrollY(int dy) {
+                if (dy > 0) {
+                    showOrHideBottomLayout(false);
+                } else if (dy < 0) {
+                    showOrHideBottomLayout(true);
+                }
+            }
+        }));
 
         mRetryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -462,34 +479,5 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
         comments.clear();
         mAdapter.notifyItemRangeRemoved(1, comments.size());
         startGetComments();
-    }
-
-    private class MyRecyclerViewOnScroll extends RecyclerView.OnScrollListener {
-
-        private int firstItem;
-        private int lastItem;
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-            int totalItemCount = layoutManager.getItemCount();
-            if (layoutManager instanceof LinearLayoutManager) {
-                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
-                firstItem = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
-                lastItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-                if (lastItem != -1) lastItem = linearLayoutManager.findLastVisibleItemPosition();
-            }
-            if (!isLoad && hasMore
-                    && (lastItem == totalItemCount - 1) && (dx > 0 || dy > 0)) {
-                startLoadMore();
-            }
-
-            if (dy > 0) {
-                showOrHideBottomLayout(false);
-            } else if (dy < 0) {
-                showOrHideBottomLayout(true);
-            }
-        }
     }
 }

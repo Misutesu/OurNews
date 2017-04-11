@@ -21,6 +21,7 @@ import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.event.ChangeStyleEvent;
 import com.team60.ournews.event.ShowSnackEvent;
+import com.team60.ournews.listener.MyRecyclerViewOnScrollListener;
 import com.team60.ournews.module.adapter.TypeFragmentRecyclerViewAdapter;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.presenter.TypePresenter;
@@ -145,7 +146,6 @@ public class TypeFragment extends BaseFragment implements TypeView {
 
     @Override
     public void setListener() {
-        mRecyclerView.addOnScrollListener(new TypeFragment.MyRecyclerViewOnScroll());
 
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -160,6 +160,15 @@ public class TypeFragment extends BaseFragment implements TypeView {
                 SkipUtil.startNewActivity(getActivity(), n, view);
             }
         });
+
+        mRecyclerView.addOnScrollListener(new MyRecyclerViewOnScrollListener(new MyRecyclerViewOnScrollListener.OnScrollBottomListener() {
+            @Override
+            public void onScrollBottom() {
+                if (!isLoad && hasMore) {
+                    startLoadMore();
+                }
+            }
+        }));
 
         mRetryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -283,30 +292,6 @@ public class TypeFragment extends BaseFragment implements TypeView {
             recycledViewPool.clear();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private class MyRecyclerViewOnScroll extends RecyclerView.OnScrollListener {
-
-        private int firstItem;
-        private int lastItem;
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-            int totalItemCount = layoutManager.getItemCount();
-            if (layoutManager instanceof LinearLayoutManager) {
-                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
-                firstItem = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
-                lastItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-                if (lastItem != -1)
-                    lastItem = linearLayoutManager.findLastVisibleItemPosition();
-            }
-            if (!isLoad && hasMore
-                    && (lastItem == totalItemCount - 1) && (dx > 0 || dy > 0)) {
-                startLoadMore();
-            }
         }
     }
 }
