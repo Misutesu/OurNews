@@ -128,8 +128,7 @@ public class CenterFragment extends BaseFragment implements CenterView {
 
         mSwipeRefresh.setColorSchemeColors(ThemeUtil.getColor(getActivity().getTheme(), R.attr.colorPrimary));
 
-        if (news == null)
-            news = new ArrayList<>();
+        if (news == null) news = new ArrayList<>();
         mAdapter = new TypeFragmentRecyclerViewAdapter(getContext(), news);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

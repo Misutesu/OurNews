@@ -117,6 +117,7 @@ public class NewActivity extends BaseActivity implements NewView {
 
     private AlertDialog mLoginDialog;
 
+    private boolean isShow;
     private boolean isShowBottom = true;
     private boolean isAnimEnd = false;
     private boolean isImgAnimEnd = false;
@@ -295,18 +296,25 @@ public class NewActivity extends BaseActivity implements NewView {
         FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover()))
                 .into(mBackgroundImg);
 
-        FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover()))
-                .setOnDownloadListener(new OnDownloadListener() {
-                    @Override
-                    public void onDownloadEnd(boolean success) {
-                        if (success) {
-                            showStartAnim();
-                        } else {
-                            getShowOrHideAnimSet(true).start();
+        if (!isShow) {
+            FrescoLoader.load(MyUtil.getPhotoUrl(n.getCover()))
+                    .setOnDownloadListener(new OnDownloadListener() {
+                        @Override
+                        public void onDownloadEnd(boolean success) {
+                            if (success) {
+                                showStartAnim();
+                            } else {
+                                getShowOrHideAnimSet(true).start();
+                            }
                         }
-                    }
-                })
-                .into(mAnimImg);
+                    })
+                    .into(mAnimImg);
+        } else {
+            mNewLayout.setAlpha(1f);
+            mAppBarLayout.setAlpha(1f);
+            mBottomLayout.setTranslationY(0f);
+            mAnimLayout.setAlpha(0f);
+        }
     }
 
     private void showStartAnim() {
@@ -369,14 +377,14 @@ public class NewActivity extends BaseActivity implements NewView {
 
             isImgAnimEnd = true;
             AnimatorSet floatBtnAnim = showFloatBtn(true);
-            if (floatBtnAnim != null)
-                builder.with(floatBtnAnim);
+            if (floatBtnAnim != null) builder.with(floatBtnAnim);
 
             builder.after(imgSet);
             set.start();
         } else {
             getShowOrHideAnimSet(true).start();
         }
+        isShow = true;
     }
 
     private void showFinishAnim() {
