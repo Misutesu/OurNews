@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_write_comment_coordinator_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.team60.ournews.module.ui.activity.WriteCommentActivity">
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:id="@+id/activity_write_comment_coordinator_layout"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 tools:context="com.team60.ournews.module.ui.activity.WriteCommentActivity">
 
     <com.team60.ournews.widget.ResizeLayout
         android:id="@+id/activity_write_comment_layout"
@@ -18,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/activity_write_comment_content_layout"
@@ -30,7 +31,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
-                android:background="@drawable/elevation_down" />
+                android:background="@drawable/elevation_down"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="12dp"
                     android:textColor="?attr/textColor1"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"/>
 
                 <EditText
                     android:id="@+id/activity_write_comment_content_text"
@@ -60,7 +61,7 @@
                     android:maxLength="200"
                     android:minHeight="120dp"
                     android:padding="8dp"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -74,8 +75,9 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:text="@string/no"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"/>
 
                     <Button
                         android:id="@+id/activity_write_comment_send_btn"
@@ -84,8 +86,9 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:text="@string/send"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"/>
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>

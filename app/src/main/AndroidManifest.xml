@@ -12,8 +12,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/FirstStyle">
-        <activity
-            android:name=".module.ui.activity.FirstActivity">
+        <activity android:name=".module.ui.activity.FirstActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -52,8 +51,13 @@
             android:enabled="true">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/>
+
                 <category android:name="com.team60.ournews"/>
             </intent-filter>
         </receiver>
+
+        <activity android:name=".module.ui.activity.WellComeActivity">
+        </activity>
     </application>
+
 </manifest>

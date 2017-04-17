@@ -14,13 +14,13 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         ndk {
-            abiFilters "armeabi","armeabi-v7a","armeabi-v8a","x86","x86_64"
+            abiFilters "armeabi", "armeabi-v7a", "armeabi-v8a", "x86", "x86_64"
         }
 
         manifestPlaceholders = [
-                JPUSH_PKGNAME : applicationId,
+                JPUSH_PKGNAME: applicationId,
                 JPUSH_APPKEY : "205c085cd3834658de4534b0",
-                JPUSH_CHANNEL : "developer-default",
+                JPUSH_CHANNEL: "developer-default",
         ]
     }
     buildTypes {

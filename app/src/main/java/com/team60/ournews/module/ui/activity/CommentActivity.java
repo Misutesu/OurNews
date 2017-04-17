@@ -12,6 +12,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +20,6 @@ import android.transition.Explode;
 import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -80,7 +80,7 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     @BindView(R.id.activity_comment_progress_bar)
     ProgressBar mProgressBar;
     @BindView(R.id.activity_comment_retry_btn)
-    Button mRetryBtn;
+    AppCompatButton mRetryBtn;
     @BindView(R.id.activity_comment_no_comment_text)
     TextView mNoCommentText;
 
