@@ -106,10 +106,11 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         getTakePhoto().onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CODE_NICK_NAME)
+        if (requestCode == CODE_NICK_NAME) {
             if (resultCode == InputActivity.CODE_EDIT) {
                 mNickNameText.setText(data.getStringExtra("newText"));
             }
+        }
     }
 
     @Override
@@ -118,8 +119,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
 
         mToolBar.setTitle(getString(R.string.edit_info));
         setSupportActionBar(mToolBar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -241,7 +241,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
         } else {
             uri = FrescoLoader.getUri(R.drawable.user_default_avatar);
         }
-        FrescoLoader.load(Uri.parse("res:// /" + R.drawable.user_default_avatar))
+        FrescoLoader.load(uri)
                 .setCircle()
                 .setBorder(4, Color.WHITE)
                 .into(mAvatarImg);
@@ -288,7 +288,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
                             .resize(128, 64)
                             .setPostprocessor(new BlurPostprocessor(EditUserActivity.this))
                             .clearImgCache()
-                            .into(mAvatarImg);
+                            .into(mAvatarBackgroundImg);
                     isSelectPhoto = true;
                     return;
                 }
