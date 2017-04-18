@@ -3,6 +3,7 @@ package com.team60.ournews.module.ui.activity;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
@@ -20,6 +21,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -61,6 +63,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.team60.ournews.common.Constants.SHARED_PREFERENCES_VERSION;
+
 public class MainActivity extends BaseActivity {
 
     public final String[] titles = {"推荐", "ACG", "游戏", "社会", "娱乐", "科技"};
@@ -69,7 +73,7 @@ public class MainActivity extends BaseActivity {
 
     private RelativeLayout mHeaderTopLayout;
     private SimpleDraweeView mHeaderUserAvatarImg;
-    private TextView mHeaderUserNameText;
+    private AppCompatTextView mHeaderUserNameText;
     private ImageView mHeaderNightModeImg;
     private LinearLayout mSelectThemeLayout;
     private LinearLayout mLogoutLayout;
@@ -91,7 +95,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.activity_main_user_avatar_img)
     SimpleDraweeView mUserAvatarImg;
     @BindView(R.id.activity_main_user_name_text)
-    TextView mUserNameText;
+    AppCompatTextView mUserNameText;
     @BindView(R.id.activity_main_tab_layout)
     TabLayout mTabLayout;
     @BindView(R.id.activity_main_view_pager)
@@ -125,7 +129,7 @@ public class MainActivity extends BaseActivity {
         View mHeaderView = mNavView.getHeaderView(0);
         mHeaderTopLayout = (RelativeLayout) mHeaderView.findViewById(R.id.header_top_layout);
         mHeaderUserAvatarImg = (SimpleDraweeView) mHeaderView.findViewById(R.id.header_user_avatar_img);
-        mHeaderUserNameText = (TextView) mHeaderView.findViewById(R.id.header_user_name_text);
+        mHeaderUserNameText = (AppCompatTextView) mHeaderView.findViewById(R.id.header_user_name_text);
         mHeaderNightModeImg = (ImageView) mHeaderView.findViewById(R.id.header_night_mode_img);
         mSelectThemeLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_theme_select_layout);
         mLogoutLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_logout_layout);
@@ -157,6 +161,8 @@ public class MainActivity extends BaseActivity {
             mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
 
         initViewPager();
+
+        showWellCome();
     }
 
 
@@ -260,6 +266,16 @@ public class MainActivity extends BaseActivity {
         });
 
         mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    private void showWellCome() {
+        SharedPreferences versionSP = MyUtil.getSharedPreferences(this, SHARED_PREFERENCES_VERSION);
+        int nowVersionCode = MyUtil.getVersionCode(this);
+        int oldVersionCode = versionSP.getInt("versionCode", -2);
+        if (nowVersionCode != oldVersionCode) {
+            versionSP.edit().putInt("versionCode", nowVersionCode).apply();
+            startActivity(new Intent(MainActivity.this, WellComeActivity.class));
+        }
     }
 
     private void setUserInfo() {

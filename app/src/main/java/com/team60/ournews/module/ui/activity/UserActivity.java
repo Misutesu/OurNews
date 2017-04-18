@@ -11,10 +11,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
@@ -50,25 +50,25 @@ public class UserActivity extends BaseActivity implements UserView {
     @BindView(R.id.activity_user_background_img)
     SimpleDraweeView mBackgroundImg;
     @BindView(R.id.activity_user_name_text)
-    TextView mUserNameText;
+    AppCompatTextView mUserNameText;
     @BindView(R.id.activity_user_description_text)
-    TextView mUserDescriptionText;
+    AppCompatTextView mUserDescriptionText;
     @BindView(R.id.activity_user_avatar_img)
     SimpleDraweeView mUserAvatarImg;
     @BindView(R.id.activity_user_edit_btn)
-    Button mUserEditBtn;
+    AppCompatButton mUserEditBtn;
     @BindView(R.id.activity_user_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.activity_user_tool_bar)
     Toolbar mToolBar;
     @BindView(R.id.activity_user_title_text)
-    TextView mTitleText;
+    AppCompatTextView mTitleText;
     @BindView(R.id.activity_user_app_bar_layout)
     AppBarLayout mAppBarLayout;
     @BindView(R.id.activity_user_collection_text)
-    TextView mCollectionText;
+    AppCompatTextView mCollectionText;
     @BindView(R.id.activity_user_history_text)
-    TextView mHistoryText;
+    AppCompatTextView mHistoryText;
     @BindView(R.id.activity_user_view_pager)
     ViewPager mViewPager;
 

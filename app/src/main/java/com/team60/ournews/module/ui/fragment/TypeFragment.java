@@ -7,13 +7,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -53,7 +53,7 @@ public class TypeFragment extends BaseFragment implements TypeView {
     @BindView(R.id.fragment_type_swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefresh;
     @BindView(R.id.fragment_type_retry_btn)
-    Button mRetryBtn;
+    AppCompatButton mRetryBtn;
 
     private TypePresenter mPresenter;
 
@@ -136,8 +136,7 @@ public class TypeFragment extends BaseFragment implements TypeView {
 
         mPresenter = new TypePresenterImpl(getContext(), this);
 
-        if (news == null)
-            news = new ArrayList<>();
+        if (news == null) news = new ArrayList<>();
         mAdapter = new TypeFragmentRecyclerViewAdapter(getContext(), news);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -146,7 +145,6 @@ public class TypeFragment extends BaseFragment implements TypeView {
 
     @Override
     public void setListener() {
-
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

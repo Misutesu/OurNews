@@ -2,10 +2,10 @@
 <resources>
     <color name="colorPrimaryBlue">#2196F3</color>
     <color name="colorPrimaryBlueBlack">#673AB7</color>
-    <color name="colorPrimaryGreen">#00c54b</color>
+    <color name="colorPrimaryGreen">#00b45d</color>
     <color name="colorPrimaryGreenBlack">#009688</color>
     <color name="colorPrimaryYellow">#FFEB3B</color>
-    <color name="colorPrimaryRed">#F44336</color>
+    <color name="colorPrimaryRed">#f47536</color>
     <color name="colorPrimaryPink">#F96F6F</color>
     <color name="colorPrimaryBrown">#795548</color>
 

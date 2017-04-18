@@ -49,7 +49,7 @@
                             android:layout_width="36dp"
                             android:layout_height="36dp"/>
 
-                        <TextView
+                        <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/activity_main_user_name_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

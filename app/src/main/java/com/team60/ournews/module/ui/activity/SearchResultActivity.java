@@ -6,6 +6,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,9 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
@@ -46,9 +46,9 @@ public class SearchResultActivity extends BaseActivity implements SearchResultVi
     @BindView(R.id.activity_search_result_recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.activity_search_result_no_search_text)
-    TextView mNoSearchText;
+    AppCompatTextView mNoSearchText;
     @BindView(R.id.activity_search_result_retry_btn)
-    Button mRetryBtn;
+    AppCompatButton mRetryBtn;
     @BindView(R.id.activity_search_result_progress_bar)
     ProgressBar mProgressBar;
 

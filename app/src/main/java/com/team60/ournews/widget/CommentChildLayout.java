@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
@@ -93,11 +93,11 @@ public class CommentChildLayout extends LinearLayout {
         @BindView(R.id.item_comment_child_img)
         SimpleDraweeView mImg;
         @BindView(R.id.item_comment_child_name_text)
-        TextView mNameText;
+        AppCompatTextView mNameText;
         @BindView(R.id.item_comment_child_time_text)
-        TextView mTimeText;
+        AppCompatTextView mTimeText;
         @BindView(R.id.item_comment_child_content_text)
-        TextView mContentText;
+        AppCompatTextView mContentText;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

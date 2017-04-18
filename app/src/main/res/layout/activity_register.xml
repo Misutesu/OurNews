@@ -36,7 +36,7 @@
             app:counterMaxLength="12"
             android:layout_marginTop="32dp">
 
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
                 android:maxLength="12"
                 android:id="@+id/activity_register_login_name_text"
                 android:layout_width="match_parent"
@@ -59,7 +59,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp">
 
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
                 android:maxLength="16"
                 android:id="@+id/activity_register_password_text"
                 android:layout_width="match_parent"
@@ -81,7 +81,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp">
 
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
                 android:maxLength="16"
                 android:id="@+id/activity_register_password_text_2"
                 android:layout_width="match_parent"
@@ -91,7 +91,7 @@
                 android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/activity_register_btn"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"

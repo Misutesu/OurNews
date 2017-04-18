@@ -18,7 +18,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/header_user_name_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                     android:tint="?attr/iconColor"
                     app:srcCompat="@drawable/select_theme"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/header_theme_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
                     android:tint="?attr/iconColor"
                     app:srcCompat="@drawable/logout"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/header_logout_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

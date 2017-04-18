@@ -5,14 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.AutoCompleteTextView;
 
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
@@ -45,9 +45,9 @@ public class CenterFragment extends BaseFragment implements CenterView {
     @BindView(R.id.user_fragment_swipe_refresh)
     SwipeRefreshLayout mSwipeRefresh;
     @BindView(R.id.fragment_center_retry_btn)
-    Button mRetryBtn;
+    AppCompatButton mRetryBtn;
     @BindView(R.id.fragment_center_no_data_text)
-    TextView mNoDataText;
+    AutoCompleteTextView mNoDataText;
 
     private CenterPresenter mPresenter;
 

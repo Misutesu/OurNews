@@ -10,11 +10,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jph.takephoto.app.TakePhoto;
@@ -60,19 +60,19 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
     @BindView(R.id.activity_edit_user_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.activity_edit_user_login_name_text)
-    TextView mLoginNameText;
+    AppCompatTextView mLoginNameText;
     @BindView(R.id.activity_edit_user_name_car_view)
     CardView mLoginNameCarView;
     @BindView(R.id.activity_edit_user_nick_name_text)
-    TextView mNickNameText;
+    AppCompatTextView mNickNameText;
     @BindView(R.id.activity_edit_nick_name_car_view)
     CardView mNickNameCarView;
     @BindView(R.id.activity_edit_sex_name_text)
-    TextView mSexNameText;
+    AppCompatTextView mSexNameText;
     @BindView(R.id.activity_edit_sex_car_view)
     CardView mSexCarView;
     @BindView(R.id.activity_edit_save_btn)
-    Button mSaveBtn;
+    AppCompatButton mSaveBtn;
 
     private EditUserPresenter mPresenter;
 

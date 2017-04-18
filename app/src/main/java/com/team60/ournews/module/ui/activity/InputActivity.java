@@ -2,9 +2,9 @@ package com.team60.ournews.module.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.team60.ournews.R;
@@ -19,9 +19,9 @@ public class InputActivity extends BaseActivity {
     public final static int CODE_EDIT = 105;
 
     @BindView(R.id.activity_input_edit)
-    EditText mInputEdit;
+    AppCompatEditText mInputEdit;
     @BindView(R.id.activity_input_btn)
-    Button mInputBtn;
+    AppCompatButton mInputBtn;
     @BindView(R.id.activity_input_layout)
     RelativeLayout mInputLayout;
 

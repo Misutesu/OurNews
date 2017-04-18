@@ -5,17 +5,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.team60.ournews.R;
 import com.team60.ournews.module.bean.New;
@@ -36,13 +36,13 @@ public class WriteCommentActivity extends BaseActivity implements WriteCommentVi
     public static final int CODE_SEND = 107;
 
     @BindView(R.id.activity_write_comment_user_name_text)
-    TextView mUserNameText;
+    AppCompatTextView mUserNameText;
     @BindView(R.id.activity_write_comment_content_text)
-    EditText mContentText;
+    AppCompatEditText mContentText;
     @BindView(R.id.activity_write_comment_cancel_btn)
-    Button mCancelBtn;
+    AppCompatButton mCancelBtn;
     @BindView(R.id.activity_write_comment_send_btn)
-    Button mSendBtn;
+    AppCompatButton mSendBtn;
     @BindView(R.id.activity_write_comment_layout)
     ResizeLayout mCommentLayout;
     @BindView(R.id.activity_write_comment_coordinator_layout)

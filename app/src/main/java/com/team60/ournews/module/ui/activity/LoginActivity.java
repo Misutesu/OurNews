@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
 import com.team60.ournews.R;
 import com.team60.ournews.event.LoginEvent;
@@ -38,15 +38,15 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @BindView(R.id.activity_login_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.activity_login_login_name_text)
-    EditText mLoginNameText;
+    AppCompatEditText mLoginNameText;
     @BindView(R.id.activity_login_password_text)
-    EditText mPasswordText;
+    AppCompatEditText mPasswordText;
     @BindView(R.id.activity_login_tool_bar)
     Toolbar mToolBar;
     @BindView(R.id.activity_login_register_btn)
-    Button mRegisterBtn;
+    AppCompatButton mRegisterBtn;
     @BindView(R.id.activity_login_login_btn)
-    Button mLoginBtn;
+    AppCompatButton mLoginBtn;
 
     private LoginPresenter mPresenter;
 

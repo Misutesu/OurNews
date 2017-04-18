@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -82,7 +83,7 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     @BindView(R.id.activity_comment_retry_btn)
     AppCompatButton mRetryBtn;
     @BindView(R.id.activity_comment_no_comment_text)
-    TextView mNoCommentText;
+    AppCompatTextView mNoCommentText;
 
     private List<Comment> comments;
     private CommentActivityRecyclerViewAdapter mAdapter;

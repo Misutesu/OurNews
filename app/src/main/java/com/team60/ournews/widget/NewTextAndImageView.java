@@ -2,12 +2,12 @@ package com.team60.ournews.widget;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
@@ -129,7 +129,7 @@ public class NewTextAndImageView extends LinearLayout {
                             .into(simpleDraweeView);
                 }
             } else {
-                TextView textView = new TextView(context);
+                AppCompatTextView textView = new AppCompatTextView(context);
                 textView.setTextColor(ThemeUtil.getColor(context.getTheme(), R.attr.textColor2));
                 textView.setTextSize(18);
                 textView.setLineSpacing(0, 1.2f);

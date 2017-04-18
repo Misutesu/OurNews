@@ -26,5 +26,5 @@ public class Constants {
 
     public static final String SHARED_PREFERENCES_PUSH = "push_shared_preferences";
 
-    public static final String SHARED_PREFERENCES_CODE = "code_shared_preferences";
+    public static final String SHARED_PREFERENCES_VERSION = "version_shared_preferences";
 }

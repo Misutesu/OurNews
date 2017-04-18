@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +19,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,7 +45,7 @@ public class SearchActivity extends BaseActivity {
     @BindView(R.id.activity_search_back_btn)
     ImageView mBackBtn;
     @BindView(R.id.activity_search_edit)
-    EditText mSearchEdit;
+    AppCompatEditText mSearchEdit;
     @BindView(R.id.activity_search_clear_btn)
     ImageView mClearBtn;
     @BindView(R.id.activity_search_search_btn)

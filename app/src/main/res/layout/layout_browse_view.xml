@@ -21,7 +21,7 @@
             android:layout_centerVertical="true"
             android:tint="?attr/iconColor"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/browse_view_type_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/browse_view_see_more_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="120dp"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/item_home_title_text_1"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
@@ -143,7 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/item_home_title_text_2"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
@@ -193,7 +193,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/item_home_title_text_3"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
@@ -237,7 +237,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/item_home_title_text_4"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
@@ -269,7 +269,7 @@
         android:paddingRight="16dp"
         android:paddingStart="16dp">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/browse_view_refresh_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

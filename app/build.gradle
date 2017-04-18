@@ -69,7 +69,7 @@ dependencies {
     compile 'cn.jiguang.sdk:jcore:1.1.1'
     compile 'cn.jiguang.sdk:jpush:3.0.3'
     compile 'cn.jiguang.sdk:janalytics:1.1.0'
-    compile 'com.github.Misutesu:FrescoLoader:1.0.7'
+    compile 'com.github.Misutesu:FrescoLoader:1.1.1'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.5.1'
 }

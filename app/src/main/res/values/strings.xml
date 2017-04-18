@@ -114,4 +114,6 @@
     <string name="temp">-</string>
     <string name="spot">·</string>
     <string name="reply">回复</string>
+    <string name="skip">跳过</string>
+    <string name="start">开始</string>
 </resources>

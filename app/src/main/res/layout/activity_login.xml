@@ -36,7 +36,7 @@
             app:counterEnabled="true"
             app:counterMaxLength="12">
 
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
                 android:maxLength="12"
                 android:id="@+id/activity_login_login_name_text"
                 android:layout_width="match_parent"
@@ -59,7 +59,7 @@
             app:counterMaxLength="16"
             android:layout_marginTop="16dp">
 
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
                 android:maxLength="16"
                 android:id="@+id/activity_login_password_text"
                 android:layout_width="match_parent"
@@ -79,7 +79,7 @@
             android:layout_marginTop="16dp"
             android:orientation="horizontal">
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/activity_login_register_btn"
                 style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="0dp"
@@ -89,7 +89,7 @@
                 android:layout_weight="1"
                 android:text="@string/register"/>
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/activity_login_login_btn"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"

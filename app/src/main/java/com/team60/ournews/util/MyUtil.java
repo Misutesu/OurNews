@@ -3,16 +3,16 @@ package com.team60.ournews.util;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.mistesu.frescoloader.FrescoLoader;
-import com.team60.ournews.common.Constants;
 import com.team60.ournews.listener.DownListener;
 import com.team60.ournews.module.connection.RetrofitUtil;
 
@@ -32,11 +32,6 @@ import io.reactivex.subscribers.DisposableSubscriber;
 
 public class MyUtil {
 
-    public static void sendLog(Object object, String message) {
-        if (Constants.IS_DEBUG_MODE)
-            Log.d(object.getClass().getName(), message);
-    }
-
     public static SharedPreferences getSharedPreferences(Context context, String name) {
         return context.getSharedPreferences(name, Context.MODE_PRIVATE);
     }
@@ -46,7 +41,7 @@ public class MyUtil {
     }
 
     public static boolean isPassword(String password) {
-        return password != null&&password.length() > 5 && password.length() < 13;
+        return password != null && password.length() > 5 && password.length() < 13;
     }
 
     public static void openKeyBord(Context context, EditText mEditText) {
@@ -115,6 +110,19 @@ public class MyUtil {
 
                     }
                 });
+    }
+
+    public static int getVersionCode(@NonNull Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        PackageInfo packageInfo;
+        int versionCode = -1;
+        try {
+            packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+            versionCode = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
     }
 
     public static File copyFileToOtherFolder(@NonNull File file, @NonNull File saveFolder

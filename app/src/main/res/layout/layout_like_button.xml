@@ -4,13 +4,13 @@
        android:layout_width="wrap_content"
        android:layout_height="wrap_content">
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/layout_like_button"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="72dp"
         android:layout_height="36dp"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/layout_like_button_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

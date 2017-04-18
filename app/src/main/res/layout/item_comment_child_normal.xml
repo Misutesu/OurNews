@@ -16,7 +16,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/item_comment_child_name_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,14 +25,14 @@
             android:textStyle="bold"/>
     </LinearLayout>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/item_comment_child_content_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="?attr/textColor2"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/item_comment_child_time_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

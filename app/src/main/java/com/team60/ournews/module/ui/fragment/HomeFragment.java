@@ -8,11 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.AppCompatButton;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.team60.ournews.R;
 import com.team60.ournews.event.ChangeStyleEvent;
@@ -60,7 +60,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
     @BindView(R.id.fragment_home_scroll_layout)
     NestedScrollView mScrollLayout;
     @BindView(R.id.fragment_home_retry_btn)
-    Button mRetryBtn;
+    AppCompatButton mRetryBtn;
 
     private HomePresenter mPresenter;
 

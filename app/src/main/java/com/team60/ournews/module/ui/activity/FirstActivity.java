@@ -10,6 +10,7 @@ public class FirstActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hideNavigationBar();
         init(savedInstanceState);
     }
 

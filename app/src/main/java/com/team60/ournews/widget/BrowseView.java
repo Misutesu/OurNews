@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -13,7 +14,6 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.mistesu.frescoloader.FrescoLoader;
@@ -36,18 +36,18 @@ public class BrowseView extends LinearLayout {
 
     private Context mContext;
     private ImageView mTypeImg;
-    private TextView mTypeText;
+    private AppCompatTextView mTypeText;
     private LinearLayout mMoreLayout;
     private LinearLayout mRefreshLayout;
-    private TextView mMoreText;
+    private AppCompatTextView mMoreText;
     private ImageView mMoreImg;
-    private TextView mRefreshText;
+    private AppCompatTextView mRefreshText;
     private ImageView mRefreshImg;
 
     private List<New> news;
     private List<CardView> mCardViews;
     private List<SimpleDraweeView> mCoverImages;
-    private List<TextView> mTitleTexts;
+    private List<AppCompatTextView> mTitleTexts;
 
     private RotateAnimation rotateAnimation = new RotateAnimation(0, 3600
             , Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -184,12 +184,12 @@ public class BrowseView extends LinearLayout {
         mTitleTexts = new ArrayList<>();
 
         mTypeImg = (ImageView) view.findViewById(R.id.browse_view_type_img);
-        mTypeText = (TextView) view.findViewById(R.id.browse_view_type_text);
+        mTypeText = (AppCompatTextView) view.findViewById(R.id.browse_view_type_text);
         mMoreLayout = (LinearLayout) view.findViewById(R.id.browse_view_see_more_layout);
         mRefreshLayout = (LinearLayout) view.findViewById(R.id.browse_view_refresh_layout);
-        mMoreText = (TextView) view.findViewById(R.id.browse_view_see_more_text);
+        mMoreText = (AppCompatTextView) view.findViewById(R.id.browse_view_see_more_text);
         mMoreImg = (ImageView) view.findViewById(R.id.browse_view_see_more_img);
-        mRefreshText = (TextView) view.findViewById(R.id.browse_view_refresh_text);
+        mRefreshText = (AppCompatTextView) view.findViewById(R.id.browse_view_refresh_text);
         mRefreshImg = (ImageView) view.findViewById(R.id.browse_view_refresh_img);
 
         mCardViews.add((CardView) view.findViewById(R.id.item_home_card_view_1));
@@ -202,10 +202,10 @@ public class BrowseView extends LinearLayout {
         mCoverImages.add((SimpleDraweeView) view.findViewById(R.id.item_home_cover_img_3));
         mCoverImages.add((SimpleDraweeView) view.findViewById(R.id.item_home_cover_img_4));
 
-        mTitleTexts.add((TextView) view.findViewById(R.id.item_home_title_text_1));
-        mTitleTexts.add((TextView) view.findViewById(R.id.item_home_title_text_2));
-        mTitleTexts.add((TextView) view.findViewById(R.id.item_home_title_text_3));
-        mTitleTexts.add((TextView) view.findViewById(R.id.item_home_title_text_4));
+        mTitleTexts.add((AppCompatTextView) view.findViewById(R.id.item_home_title_text_1));
+        mTitleTexts.add((AppCompatTextView) view.findViewById(R.id.item_home_title_text_2));
+        mTitleTexts.add((AppCompatTextView) view.findViewById(R.id.item_home_title_text_3));
+        mTitleTexts.add((AppCompatTextView) view.findViewById(R.id.item_home_title_text_4));
 
         mMoreLayout.setOnClickListener(new OnClickListener() {
             @Override

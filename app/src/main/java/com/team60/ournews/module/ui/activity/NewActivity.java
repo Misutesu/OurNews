@@ -18,16 +18,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -76,11 +76,11 @@ public class NewActivity extends BaseActivity implements NewView {
     @BindView(R.id.activity_new_collapsing_tool_bar_layout)
     CollapsingToolbarLayout mCollapsingToolBarLayout;
     @BindView(R.id.activity_new_create_time_text)
-    TextView mCreateTimeText;
+    AppCompatTextView mCreateTimeText;
     @BindView(R.id.activity_new_progress_bar)
     ProgressBar mProgressBar;
     @BindView(R.id.activity_new_retry_btn)
-    Button mRetryBtn;
+    AppCompatButton mRetryBtn;
     @BindView(R.id.activity_new_content_view)
     NewTextAndImageView mContentView;
     @BindView(R.id.activity_new_nested_scroll_view)
@@ -92,7 +92,7 @@ public class NewActivity extends BaseActivity implements NewView {
     @BindView(R.id.activity_new_write_comment_layout)
     LinearLayout mWriteCommentLayout;
     @BindView(R.id.activity_new_comment_number_text)
-    TextView mCommentNumberText;
+    AppCompatTextView mCommentNumberText;
     @BindView(R.id.activity_new_comment_layout)
     LinearLayout mCommentLayout;
     @BindView(R.id.activity_new_anim_layout)
@@ -104,9 +104,9 @@ public class NewActivity extends BaseActivity implements NewView {
     @BindView(R.id.activity_new_float_action_btn)
     FloatingActionButton mFloatActionBtn;
     @BindView(R.id.activity_new_history_text)
-    TextView mHistoryText;
+    AppCompatTextView mHistoryText;
     @BindView(R.id.activity_new_collection_text)
-    TextView mCollectionText;
+    AppCompatTextView mCollectionText;
     @BindView(R.id.activity_new_history_collection_layout)
     LinearLayout mHistoryCollectionLayout;
 

@@ -40,7 +40,7 @@
                     android:tint="?attr/iconColor"
                     app:srcCompat="@drawable/back_btn"/>
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/activity_search_edit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

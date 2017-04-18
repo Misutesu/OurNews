@@ -9,13 +9,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.annotation.StyleRes;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.team60.ournews.R;
 
@@ -25,8 +25,8 @@ import com.team60.ournews.R;
 
 public class LikeButton extends FrameLayout {
 
-    private Button mButton;
-    private TextView mText;
+    private AppCompatButton mButton;
+    private AppCompatTextView mText;
     private ProgressBar mProgressBar;
 
     private boolean isLoad;
@@ -60,8 +60,8 @@ public class LikeButton extends FrameLayout {
 
     private void init(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.layout_like_button, this, true);
-        mButton = (Button) view.findViewById(R.id.layout_like_button);
-        mText = (TextView) view.findViewById(R.id.layout_like_button_text);
+        mButton = (AppCompatButton) view.findViewById(R.id.layout_like_button);
+        mText = (AppCompatTextView) view.findViewById(R.id.layout_like_button_text);
         mProgressBar = (ProgressBar) view.findViewById(R.id.layout_like_button_progress);
 
         mButton.setOnClickListener(new OnClickListener() {

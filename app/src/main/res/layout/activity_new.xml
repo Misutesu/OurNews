@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/activity_new_create_time_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -112,14 +112,14 @@
                     android:paddingStart="12dp"
                     android:paddingTop="8dp">
 
-                    <TextView
+                    <android.support.v7.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/see_history"
                         android:textColor="?attr/textColor3"
                         android:textSize="12sp"/>
 
-                    <TextView
+                    <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/activity_new_history_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
                         android:textColor="?attr/textColor3"
                         android:textSize="12sp"/>
 
-                    <TextView
+                    <android.support.v7.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
@@ -140,14 +140,14 @@
                         android:textColor="?attr/textColor3"
                         android:textSize="12sp"/>
 
-                    <TextView
+                    <android.support.v7.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/collection"
                         android:textColor="?attr/textColor3"
                         android:textSize="12sp"/>
 
-                    <TextView
+                    <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/activity_new_collection_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -174,7 +174,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="120dp"/>
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/activity_new_retry_btn"
                     style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="match_parent"
@@ -242,7 +242,7 @@
                     android:tint="@color/white"
                     app:srcCompat="@drawable/edit"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
@@ -269,7 +269,7 @@
                     android:tint="@color/white"
                     app:srcCompat="@drawable/comment"/>
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/activity_new_comment_number_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
