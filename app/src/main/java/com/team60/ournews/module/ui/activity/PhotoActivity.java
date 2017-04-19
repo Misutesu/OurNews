@@ -82,6 +82,10 @@ public class PhotoActivity extends BaseActivity implements BaseView {
         setContentView(R.layout.activity_photo);
         ButterKnife.bind(this);
 
+        if (savedInstanceState != null) {
+            mStartValues = null;
+        }
+
         hideNavigationBar();
 
         init(savedInstanceState);

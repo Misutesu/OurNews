@@ -22,6 +22,7 @@ import com.team60.ournews.module.model.CheckLoginResult;
 import com.team60.ournews.module.ui.activity.FirstActivity;
 import com.team60.ournews.module.ui.activity.LoginActivity;
 import com.team60.ournews.module.view.base.BaseView;
+import com.team60.ournews.util.ActivityManager;
 import com.team60.ournews.util.PushUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
@@ -56,7 +57,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        ActivityManager.newInstance().addActivity(this);
         UiUtil.initialize(this);
 
         if (!getClass().getName().equals(FirstActivity.class.getName())) {
@@ -81,9 +82,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (mDisposable != null)
             mDisposable.clear();
+        ActivityManager.newInstance().removeActivity(this);
+        super.onDestroy();
     }
 
     public void addSubscription(@NonNull Disposable disposable) {
@@ -135,6 +137,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
                                 user.setSign(result.getData().getSign());
                                 user.setBirthday(result.getData().getBirthday());
                                 user.setPhoto(result.getData().getPhoto());
+                                EventBus.getDefault().post(new LoginEvent());
                             } else {
                                 User.breakLogin();
                                 PushUtil.newInstance().logout(BaseActivity.this);
@@ -145,19 +148,21 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
                                             .setPositiveButton(R.string.go_to_login, new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    startActivity(new Intent(BaseActivity.this, LoginActivity.class));
+                                                    dialog.dismiss();
+                                                    startActivity(new Intent(BaseActivity.this, LoginActivity.class)
+                                                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                                 }
                                             })
+                                            .setCancelable(false)
                                             .create();
                                 }
                                 mTokenErrorDialog.show();
                             }
-                            EventBus.getDefault().post(new LoginEvent());
                         }
                     }, new Consumer<Throwable>() {
                         @Override
-                        public void accept(@io.reactivex.annotations.NonNull Throwable throwable) throws Exception {
-                            throwable.printStackTrace();
+                        public void accept(@io.reactivex.annotations.NonNull Throwable t) throws Exception {
+                            t.printStackTrace();
                         }
                     }));
         }

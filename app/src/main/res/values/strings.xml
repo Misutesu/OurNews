@@ -51,11 +51,13 @@
     <string name="loginName">用户名</string>
     <string name="nickName">昵称</string>
     <string name="sex">性别</string>
+    <string name="birthday">生日</string>
     <string name="save">保存</string>
     <string name="select_sex">选择性别</string>
     <string name="man">男</string>
     <string name="woman">女</string>
     <string name="unknown">未知</string>
+    <string name="please_select">请选择</string>
     <string name="no_change">没有修改数据,无需保存</string>
     <string name="change_avatar">更改头像</string>
     <string name="is_saving">正在保存</string>
@@ -105,6 +107,7 @@
     <string name="no_search">没有搜索结果</string>
     <string name="search_retry">获取失败,请重新获取</string>
     <string name="my_collection">我的收藏</string>
+    <string name="other_user_collection">他的收藏</string>
     <string name="my_history">浏览历史</string>
 
     <string name="no_collection">暂无收藏</string>

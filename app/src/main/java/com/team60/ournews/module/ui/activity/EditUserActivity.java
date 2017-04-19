@@ -1,5 +1,6 @@
 package com.team60.ournews.module.ui.activity;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.DatePicker;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jph.takephoto.app.TakePhoto;
@@ -37,6 +39,7 @@ import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.ThemeUtil;
 
 import java.io.File;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,6 +74,10 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
     AppCompatTextView mSexNameText;
     @BindView(R.id.activity_edit_sex_car_view)
     CardView mSexCarView;
+    @BindView(R.id.activity_edit_birthday_text)
+    AppCompatTextView mBirthdayText;
+    @BindView(R.id.activity_edit_birthday_view)
+    CardView mBirthdayCardView;
     @BindView(R.id.activity_edit_save_btn)
     AppCompatButton mSaveBtn;
 
@@ -78,6 +85,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
 
     private AlertDialog mPhotoDialog;
     private AlertDialog mSexDialog;
+    private DatePickerDialog mDateDialog;
     private ProgressDialog mProgressDialog;
 
     private TakePhoto takePhoto;
@@ -194,6 +202,48 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
             }
         });
 
+        mBirthdayCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int year;
+                int month;
+                int day;
+                String birthday = mBirthdayText.getText().toString();
+                if (!birthday.equals(getString(R.string.please_select))) {
+                    birthday = birthday.replace("-", "");
+                    year = Integer.valueOf(birthday.substring(0, 4));
+                    month = Integer.valueOf(birthday.substring(4, 6));
+                    day = Integer.valueOf(birthday.substring(6, 8));
+                } else {
+                    Calendar now = Calendar.getInstance();
+                    year = now.get(Calendar.YEAR);
+                    month = now.get(Calendar.MONTH) + 1;
+                    day = now.get(Calendar.DAY_OF_MONTH);
+                }
+                DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int day) {
+                        month++;
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(year).append("-");
+                        if (month < 10) stringBuilder.append("0");
+                        stringBuilder.append(month);
+                        stringBuilder.append("-");
+                        if (day < 10) stringBuilder.append("0");
+                        stringBuilder.append(day);
+                        mBirthdayText.setText(stringBuilder.toString());
+                    }
+                };
+                if (ThemeUtil.newInstance().isNightMode()) {
+                    mDateDialog = new DatePickerDialog(EditUserActivity.this, R.style.NightDialogTheme
+                            , onDateSetListener, year, month - 1, day);
+                } else {
+                    mDateDialog = new DatePickerDialog(EditUserActivity.this, onDateSetListener, year, month - 1, day);
+                }
+                mDateDialog.show();
+            }
+        });
+
         mSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -204,30 +254,34 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
                     sex = 2;
                 }
                 String nickName = mNickNameText.getText().toString();
+
+                String birthday = mBirthdayText.getText().toString().replace("-", "");
+
                 if (!isSelectPhoto && nickName.equals(user.getNickName())
-                        && sex == user.getSex()) {
+                        && sex == user.getSex() && birthday.equals(String.valueOf(user.getBirthday()))) {
                     showSnackBar(getString(R.string.no_change));
                 } else {
                     if (mProgressDialog == null) {
-                        mProgressDialog = new ProgressDialog(EditUserActivity.this);
+                        if (ThemeUtil.newInstance().isNightMode()) {
+                            mProgressDialog = new ProgressDialog(EditUserActivity.this, R.style.NightDialogTheme);
+                        } else {
+                            mProgressDialog = new ProgressDialog(EditUserActivity.this);
+                        }
                         mProgressDialog.setMessage(getString(R.string.is_saving));
                         mProgressDialog.setCancelable(false);
                     }
 
-                    if (sex == user.getSex())
-                        sex = -1;
-                    if (nickName.equals(user.getNickName()))
-                        nickName = "";
+                    if (sex == user.getSex()) sex = -1;
+                    if (nickName.equals(user.getNickName())) nickName = "";
+
                     String path = "";
                     if (isSelectPhoto) {
-                        StringBuffer temp = new StringBuffer();
-                        temp.append(getCacheDir()).append(File.separator)
-                                .append("takephoto_cache").append(File.separator)
-                                .append("cache.png");
-                        path = temp.toString();
+                        path = getCacheDir().getAbsolutePath() + File.separator +
+                                "takephoto_cache" + File.separator +
+                                "cache.png";
                     }
 
-                    mPresenter.saveInfo(user.getId(), user.getToken(), nickName, sex, path);
+                    mPresenter.saveInfo(user.getId(), user.getToken(), nickName, sex, birthday, path);
                     mProgressDialog.show();
                 }
             }
@@ -253,6 +307,14 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
 
         mLoginNameText.setText(user.getLoginName());
         mNickNameText.setText(user.getNickName());
+        String birthday;
+        if (user.getBirthday() == 0 || String.valueOf(user.getBirthday()).length() != 8) {
+            birthday = getString(R.string.please_select);
+        } else {
+            birthday = String.valueOf(user.getBirthday());
+            birthday = birthday.substring(0, 4) + "-" + birthday.substring(4, 6) + "-" + birthday.substring(6, 8);
+        }
+        mBirthdayText.setText(birthday);
         switch (user.getSex()) {
             case 1:
                 mSexNameText.setText(getString(R.string.man));

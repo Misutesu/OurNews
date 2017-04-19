@@ -131,6 +131,7 @@ public class NewActivity extends BaseActivity implements NewView {
         getWindow().setBackgroundDrawableResource(R.color.all_transparent);
         setContentView(R.layout.activity_new);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
 
         Intent intent = getIntent();
         n = intent.getParcelableExtra(New.class.getName());
@@ -140,6 +141,9 @@ public class NewActivity extends BaseActivity implements NewView {
             showToast(getString(R.string.open_new_error));
             finish();
         } else {
+            if (savedInstanceState != null) {
+                mStartValues = null;
+            }
             init(savedInstanceState);
             setListener();
             showNewInfo();
@@ -157,10 +161,10 @@ public class NewActivity extends BaseActivity implements NewView {
 
     @Override
     protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
         long time = (System.currentTimeMillis() - readTime) / 1000;
         BrowseEvent browseEvent = new BrowseEvent(String.valueOf(n.getId()), n.getTitle(), "new", time);
         JAnalyticsInterface.onEvent(this, browseEvent);
-        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
@@ -172,8 +176,6 @@ public class NewActivity extends BaseActivity implements NewView {
     @Override
     public void init(Bundle savedInstanceState) {
         readTime = System.currentTimeMillis();
-
-        EventBus.getDefault().register(this);
 
         mPresenter = new NewPresenterImpl(this, this);
 

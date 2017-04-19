@@ -118,8 +118,8 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
-
         ButterKnife.bind(this);
+        EventBus.getDefault().unregister(this);
         init(savedInstanceState);
         setListener();
 
@@ -142,6 +142,7 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
 
     @Override
     protected void onDestroy() {
+        EventBus.getDefault().register(this);
         long time = (System.currentTimeMillis() - readTime) / 1000;
         BrowseEvent browseEvent = new BrowseEvent(String.valueOf(n.getId()), n.getTitle(), "comment", time);
         JAnalyticsInterface.onEvent(this, browseEvent);
@@ -365,6 +366,11 @@ public class CommentActivity extends BaseActivity implements CommentVIew {
     private void getChildComment(Comment comment) {
         if (mChildDialog == null) {
             mChildDialog = new MyBottomSheetDialog(CommentActivity.this);
+            if (ThemeUtil.newInstance().isNightMode()) {
+                mChildDialog = new MyBottomSheetDialog(CommentActivity.this, R.style.NightDialogTheme);
+            } else {
+                mChildDialog = new MyBottomSheetDialog(CommentActivity.this);
+            }
             View view = LayoutInflater.from(CommentActivity.this)
                     .inflate(R.layout.layout_comment_child, null);
             mChildDialog.setContentView(view);

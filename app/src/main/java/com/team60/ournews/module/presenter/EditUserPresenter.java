@@ -5,5 +5,5 @@ package com.team60.ournews.module.presenter;
  */
 
 public interface EditUserPresenter {
-    void saveInfo(long id, String token, String nickName, int sex, String photo);
+    void saveInfo(long id, String token, String nickName, int sex, String birthday, String photo);
 }

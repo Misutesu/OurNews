@@ -18,6 +18,7 @@ import com.team60.ournews.module.presenter.impl.RegisterPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.RegisterView;
 import com.team60.ournews.util.MyUtil;
+import com.team60.ournews.util.ThemeUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -123,7 +124,11 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
             mPassword2InputLayout.setErrorEnabled(false);
 
             if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(RegisterActivity.this);
+                if (ThemeUtil.newInstance().isNightMode()) {
+                    mProgressDialog = new ProgressDialog(RegisterActivity.this, R.style.NightDialogTheme);
+                } else {
+                    mProgressDialog = new ProgressDialog(RegisterActivity.this);
+                }
                 mProgressDialog.setMessage(getString(R.string.is_register));
                 mProgressDialog.setCancelable(false);
             }

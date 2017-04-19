@@ -132,10 +132,10 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
                         .into(viewHolder.mAvatarImg);
             }
 
-            viewHolder.mAvatarImg.setTag(R.id.tag_comment, comment.getUser());
+            viewHolder.mAvatarImg.setTag(R.id.tag_other_user, comment.getUser());
             viewHolder.mAvatarImg.setOnClickListener(mOnClickListener);
 
-            viewHolder.mLayout.setTag(comment);
+            viewHolder.mLayout.setTag(R.id.tag_comment, comment);
             viewHolder.mLayout.setOnClickListener(mOnClickListener);
 
             if (comment.getChildList() != null && comment.getChildList().size() != 0) {
@@ -164,12 +164,12 @@ public class CommentActivityRecyclerViewAdapter extends RecyclerView.Adapter {
                         onItemClickListener.onTitleClick();
                     break;
                 case R.id.item_comment_avatar_img:
-                    OtherUser otherUser = (OtherUser) v.getTag();
+                    OtherUser otherUser = (OtherUser) v.getTag(R.id.tag_other_user);
                     if (otherUser != null && onItemClickListener != null)
                         onItemClickListener.onAvatarClick(otherUser);
                     break;
                 case R.id.item_comment_layout:
-                    Comment comment = (Comment) v.getTag();
+                    Comment comment = (Comment) v.getTag(R.id.tag_comment);
                     if (comment != null && onItemClickListener != null)
                         onItemClickListener.onLayoutClick(comment);
                     break;

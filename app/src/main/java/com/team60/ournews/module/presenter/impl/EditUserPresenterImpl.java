@@ -36,9 +36,10 @@ public class EditUserPresenterImpl implements EditUserPresenter {
     }
 
     @Override
-    public void saveInfo(final long id, final String token, final String nickName, final int sex, String photo) {
+    public void saveInfo(final long id, final String token, final String nickName, final int sex
+            , final String birthday, String photo) {
         if (photo.equals("")) {
-            changeInfo(id, token, nickName, sex, photo);
+            changeInfo(id, token, nickName, sex, birthday, photo);
         } else {
             File file = new File(photo);
             if (!file.exists()) {
@@ -75,7 +76,7 @@ public class EditUserPresenterImpl implements EditUserPresenter {
                             @Override
                             public void onNext(UploadResult result) {
                                 if (result.getResult().equals("success")) {
-                                    changeInfo(id, token, nickName, sex, result.getData().get(0));
+                                    changeInfo(id, token, nickName, sex, birthday, result.getData().get(0));
                                 } else {
                                     mView.saveError(ErrorUtil.getErrorMessage(result.getErrorCode()));
                                 }
@@ -85,14 +86,12 @@ public class EditUserPresenterImpl implements EditUserPresenter {
         }
     }
 
-    private void changeInfo(long id, String token, final String nickName, final int sex, final String photo) {
+    private void changeInfo(long id, String token, final String nickName, final int sex
+            , final String birthday, final String photo) {
         String sexStr;
-        if (sex != -1)
-            sexStr = String.valueOf(sex);
-        else
-            sexStr = "";
-
-        mView.addSubscription(RetrofitUtil.newInstance().changeInfo(id, token, nickName, sexStr, photo)
+        if (sex != -1) sexStr = String.valueOf(sex);
+        else sexStr = "";
+        mView.addSubscription(RetrofitUtil.newInstance().changeInfo(id, token, nickName, sexStr, birthday, photo)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableSubscriber<NoDataResult>() {
                     @Override
@@ -116,12 +115,10 @@ public class EditUserPresenterImpl implements EditUserPresenter {
                     public void onNext(NoDataResult result) {
                         if (result.getResult().equals("success")) {
                             User user = User.newInstance();
-                            if (!nickName.equals(""))
-                                user.setNickName(nickName);
-                            if (sex != -1)
-                                user.setSex(sex);
-                            if (!photo.equals(""))
-                                user.setPhoto(photo);
+                            if (!nickName.equals("")) user.setNickName(nickName);
+                            if (sex != -1) user.setSex(sex);
+                            if (!photo.equals("")) user.setPhoto(photo);
+                            if (!birthday.equals("")) user.setBirthday(Integer.valueOf(birthday));
 
                             mView.saveSuccess();
                         } else {

@@ -83,6 +83,7 @@ public class UserActivity extends BaseActivity implements UserView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         init(savedInstanceState);
         setListener();
         setUserInfo();
@@ -99,8 +100,6 @@ public class UserActivity extends BaseActivity implements UserView {
         mOtherUser = getIntent().getParcelableExtra("otherUser");
         if (mOtherUser != null && User.isLogin() && mOtherUser.getId() == user.getId())
             mOtherUser = null;
-
-        EventBus.getDefault().register(this);
 
         mToolBar.setTitle("");
         setSupportActionBar(mToolBar);
@@ -122,29 +121,6 @@ public class UserActivity extends BaseActivity implements UserView {
             @Override
             public int getCount() {
                 return fragments.size();
-            }
-        });
-
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 0) {
-                    mCollectionText.setTextColor(ThemeUtil.getColor(getTheme(), R.attr.textColor));
-                    mHistoryText.setTextColor(ThemeUtil.getColor(getTheme(), R.attr.textColor2));
-                } else if (position == 1) {
-                    mCollectionText.setTextColor(ThemeUtil.getColor(getTheme(), R.attr.textColor2));
-                    mHistoryText.setTextColor(ThemeUtil.getColor(getTheme(), R.attr.textColor));
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
             }
         });
     }
@@ -186,6 +162,29 @@ public class UserActivity extends BaseActivity implements UserView {
 
                 mUserEditBtn.setScaleX(scaleSize);
                 mUserEditBtn.setScaleY(scaleSize);
+            }
+        });
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    mCollectionText.setTextColor(ThemeUtil.getColor(getTheme(), R.attr.textColor));
+                    mHistoryText.setTextColor(ThemeUtil.getColor(getTheme(), R.attr.textColor2));
+                } else if (position == 1) {
+                    mCollectionText.setTextColor(ThemeUtil.getColor(getTheme(), R.attr.textColor2));
+                    mHistoryText.setTextColor(ThemeUtil.getColor(getTheme(), R.attr.textColor));
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
 
@@ -233,6 +232,7 @@ public class UserActivity extends BaseActivity implements UserView {
                 uri = FrescoLoader.getUri(R.drawable.user_default_avatar);
             }
 
+            mCollectionText.setText(getString(R.string.other_user_collection));
             mUserEditBtn.setVisibility(View.GONE);
         } else {
             userName = user.getNickName();

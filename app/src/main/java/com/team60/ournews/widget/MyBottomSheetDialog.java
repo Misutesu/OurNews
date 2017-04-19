@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,6 +18,11 @@ public class MyBottomSheetDialog extends BottomSheetDialog {
     public MyBottomSheetDialog(@NonNull Context context) {
         super(context);
     }
+
+    public MyBottomSheetDialog(@NonNull Context context, @StyleRes int themeId) {
+        super(context, themeId);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -7,5 +7,6 @@
     <item type="id" name="tag_position"/>
 
     <item type="id" name="tag_comment"/>
+    <item type="id" name="tag_other_user"/>
     <item type="id" name="tag_like_num_text"/>
 </resources>

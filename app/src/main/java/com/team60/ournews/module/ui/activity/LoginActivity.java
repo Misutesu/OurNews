@@ -19,7 +19,9 @@ import com.team60.ournews.module.presenter.LoginPresenter;
 import com.team60.ournews.module.presenter.impl.LoginPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.LoginView;
+import com.team60.ournews.util.ActivityManager;
 import com.team60.ournews.util.MyUtil;
+import com.team60.ournews.util.ThemeUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -125,6 +127,14 @@ public class LoginActivity extends BaseActivity implements LoginView {
             }
     }
 
+    @Override
+    public void finish() {
+        if (!ActivityManager.newInstance().hasActivity()) {
+            startActivity(new Intent(this, MainActivity.class));
+        }
+        super.finish();
+    }
+
     private void login() {
         String loginName = mLoginNameText.getText().toString();
         String password = mPasswordText.getText().toString();
@@ -140,7 +150,11 @@ public class LoginActivity extends BaseActivity implements LoginView {
             mPasswordInputLayout.setErrorEnabled(false);
 
             if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(LoginActivity.this);
+                if (ThemeUtil.newInstance().isNightMode()) {
+                    mProgressDialog = new ProgressDialog(LoginActivity.this, R.style.NightDialogTheme);
+                } else {
+                    mProgressDialog = new ProgressDialog(LoginActivity.this);
+                }
                 mProgressDialog.setMessage(getString(R.string.is_login));
                 mProgressDialog.setCancelable(false);
             }

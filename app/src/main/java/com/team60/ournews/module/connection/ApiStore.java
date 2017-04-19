@@ -46,6 +46,7 @@ public interface ApiStore {
                                       @Query("token") String token,
                                       @Query("nick_name") String nickName,
                                       @Query("sex") String sex,
+                                      @Query("birthday") String birthday,
                                       @Query("photo") String photo);
 
     @POST("getHomeNews")

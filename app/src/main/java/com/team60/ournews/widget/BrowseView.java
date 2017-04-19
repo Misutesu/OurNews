@@ -48,6 +48,9 @@ public class BrowseView extends LinearLayout {
     private List<CardView> mCardViews;
     private List<SimpleDraweeView> mCoverImages;
     private List<AppCompatTextView> mTitleTexts;
+    private List<AppCompatTextView> mHistoryTexts;
+    private List<AppCompatTextView> mLikeTexts;
+    private List<AppCompatTextView> mCommentTexts;
 
     private RotateAnimation rotateAnimation = new RotateAnimation(0, 3600
             , Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -114,8 +117,7 @@ public class BrowseView extends LinearLayout {
     }
 
     public void setData(List<New> news, boolean hasAnim) {
-        if (this.news == null)
-            this.news = new ArrayList<>();
+        if (this.news == null) this.news = new ArrayList<>();
         this.news.clear();
         this.news.addAll(news);
         if (hasAnim) {
@@ -182,6 +184,9 @@ public class BrowseView extends LinearLayout {
         mCardViews = new ArrayList<>();
         mCoverImages = new ArrayList<>();
         mTitleTexts = new ArrayList<>();
+        mHistoryTexts = new ArrayList<>();
+        mLikeTexts = new ArrayList<>();
+        mCommentTexts = new ArrayList<>();
 
         mTypeImg = (ImageView) view.findViewById(R.id.browse_view_type_img);
         mTypeText = (AppCompatTextView) view.findViewById(R.id.browse_view_type_text);
@@ -206,6 +211,21 @@ public class BrowseView extends LinearLayout {
         mTitleTexts.add((AppCompatTextView) view.findViewById(R.id.item_home_title_text_2));
         mTitleTexts.add((AppCompatTextView) view.findViewById(R.id.item_home_title_text_3));
         mTitleTexts.add((AppCompatTextView) view.findViewById(R.id.item_home_title_text_4));
+
+        mHistoryTexts.add((AppCompatTextView) view.findViewById(R.id.item_history_text_1));
+        mHistoryTexts.add((AppCompatTextView) view.findViewById(R.id.item_history_text_2));
+        mHistoryTexts.add((AppCompatTextView) view.findViewById(R.id.item_history_text_3));
+        mHistoryTexts.add((AppCompatTextView) view.findViewById(R.id.item_history_text_4));
+
+        mLikeTexts.add((AppCompatTextView) view.findViewById(R.id.item_like_text_1));
+        mLikeTexts.add((AppCompatTextView) view.findViewById(R.id.item_like_text_2));
+        mLikeTexts.add((AppCompatTextView) view.findViewById(R.id.item_like_text_3));
+        mLikeTexts.add((AppCompatTextView) view.findViewById(R.id.item_like_text_4));
+
+        mCommentTexts.add((AppCompatTextView) view.findViewById(R.id.item_comment_text_1));
+        mCommentTexts.add((AppCompatTextView) view.findViewById(R.id.item_comment_text_2));
+        mCommentTexts.add((AppCompatTextView) view.findViewById(R.id.item_comment_text_3));
+        mCommentTexts.add((AppCompatTextView) view.findViewById(R.id.item_comment_text_4));
 
         mMoreLayout.setOnClickListener(new OnClickListener() {
             @Override
@@ -243,6 +263,9 @@ public class BrowseView extends LinearLayout {
                         .setCircleRound(UiUtil.dip2px(2), 0, UiUtil.dip2px(2), 0)
                         .into(mCoverImages.get(i));
                 mTitleTexts.get(i).setText(n.getTitle());
+                mHistoryTexts.get(i).setText(String.valueOf(n.getHistoryNum()));
+                mLikeTexts.get(i).setText(String.valueOf(n.getCollectionNum()));
+                mCommentTexts.get(i).setText(String.valueOf(n.getCommentNum()));
                 mCardViews.get(i).setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
