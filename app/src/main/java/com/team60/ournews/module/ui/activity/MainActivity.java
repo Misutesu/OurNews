@@ -523,7 +523,7 @@ public class MainActivity extends BaseActivity implements MainView {
                             public void onUpdateClick() {
                                 if (!MyUtil.isServiceRun(getApplicationContext(), UpdateService.class.getName())) {
                                     mUpdateIntent = new Intent(MainActivity.this, UpdateService.class)
-                                            .putExtra("url", result.getData().getFileName());
+                                            .putExtra("name", result.getData().getFileName());
                                     startService(mUpdateIntent);
                                 }
                             }
