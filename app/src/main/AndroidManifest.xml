@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.team60.ournews">
+    package="com.team60.ournews">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MyApplication"
@@ -14,50 +14,52 @@
         android:theme="@style/FirstStyle">
         <activity android:name=".module.ui.activity.FirstActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".module.ui.activity.MainActivity"
-            android:launchMode="singleTask"/>
-        <activity android:name=".module.ui.activity.LoginActivity"/>
-        <activity android:name=".module.ui.activity.RegisterActivity"/>
-        <activity android:name=".module.ui.activity.UserActivity"/>
-        <activity android:name=".module.ui.activity.EditUserActivity"/>
+            android:launchMode="singleTask" />
+        <activity android:name=".module.ui.activity.WellComeActivity" />
+        <activity android:name=".module.ui.activity.LoginActivity" />
+        <activity android:name=".module.ui.activity.RegisterActivity" />
+        <activity android:name=".module.ui.activity.UserActivity" />
+        <activity android:name=".module.ui.activity.EditUserActivity" />
         <activity
             android:name=".module.ui.activity.PhotoActivity"
-            android:theme="@style/AllTransparent"/>
+            android:theme="@style/AllTransparent" />
         <activity
             android:name=".module.ui.activity.InputActivity"
-            android:theme="@style/Transparent"/>
+            android:theme="@style/Transparent" />
         <activity
             android:name=".module.ui.activity.NewActivity"
-            android:theme="@style/Transparent"/>
+            android:theme="@style/Transparent" />
         <activity
             android:name=".module.ui.activity.WriteCommentActivity"
             android:theme="@style/Transparent"
-            android:windowSoftInputMode="adjustUnspecified"/>
-        <activity android:name=".module.ui.activity.CommentActivity"/>
+            android:windowSoftInputMode="adjustUnspecified" />
+        <activity android:name=".module.ui.activity.CommentActivity" />
         <activity
             android:name=".module.ui.activity.SearchActivity"
-            android:theme="@style/Transparent"/>
-        <activity android:name=".module.ui.activity.SearchResultActivity">
-        </activity>
+            android:theme="@style/Transparent" />
+        <activity android:name=".module.ui.activity.SearchResultActivity" />
+
+        <service
+            android:name=".module.service.UpdateService"
+            android:enabled="true"
+            android:exported="true" />
 
         <receiver
             android:name=".module.receiver.PushReceiver"
             android:enabled="true">
             <intent-filter>
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/>
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
 
-                <category android:name="com.team60.ournews"/>
+                <category android:name="com.team60.ournews" />
             </intent-filter>
         </receiver>
-
-        <activity android:name=".module.ui.activity.WellComeActivity">
-        </activity>
     </application>
 
 </manifest>

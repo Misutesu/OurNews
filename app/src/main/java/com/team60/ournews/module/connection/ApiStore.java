@@ -1,6 +1,7 @@
 package com.team60.ournews.module.connection;
 
 import com.team60.ournews.module.model.CheckLoginResult;
+import com.team60.ournews.module.model.CheckUpdateResult;
 import com.team60.ournews.module.model.CommentResult;
 import com.team60.ournews.module.model.ContentResult;
 import com.team60.ournews.module.model.HomeNewResult;
@@ -40,6 +41,10 @@ public interface ApiStore {
     @POST("checkLogin")
     Flowable<CheckLoginResult> checkLogin(@Query("id") long id,
                                           @Query("token") String token);
+
+    @POST("checkUpdate")
+    Flowable<CheckUpdateResult> checkUpdate(@Query("time") long time,
+                                            @Query("key") String key);
 
     @POST("changeInfo")
     Flowable<NoDataResult> changeInfo(@Query("id") long id,

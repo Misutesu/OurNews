@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
+    signingConfigs {
+        sign {
+            keyAlias 'Misutesu'
+            keyPassword '8189252'
+            storeFile file('C:/MyFiles/MyAndroid/OurNews/keystore.jks')
+            storePassword '8189252'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
@@ -36,7 +44,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
     }

@@ -45,13 +45,19 @@ import com.team60.ournews.event.ShowSnackEvent;
 import com.team60.ournews.module.adapter.ThemeSelectRecyclerViewAdapter;
 import com.team60.ournews.module.bean.Theme;
 import com.team60.ournews.module.bean.User;
+import com.team60.ournews.module.model.CheckUpdateResult;
+import com.team60.ournews.module.presenter.MainPresenter;
+import com.team60.ournews.module.presenter.impl.MainPresenterImpl;
+import com.team60.ournews.module.service.UpdateService;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.ui.fragment.HomeFragment;
 import com.team60.ournews.module.ui.fragment.TypeFragment;
+import com.team60.ournews.module.view.MainView;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.PushUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
+import com.team60.ournews.widget.UpdateDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -65,7 +71,7 @@ import butterknife.ButterKnife;
 
 import static com.team60.ournews.common.Constants.SHARED_PREFERENCES_VERSION;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements MainView {
 
     public final String[] titles = {"推荐", "ACG", "游戏", "社会", "娱乐", "科技"};
 
@@ -101,11 +107,15 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.activity_main_view_pager)
     ViewPager mViewPager;
 
-    private AlertDialog mThemeDialog;
+    private MainPresenter mPresenter;
+
     private ThemeSelectRecyclerViewAdapter mThemeAdapter;
 
+    private AlertDialog mThemeDialog;
     private AlertDialog mThemeHintDialog;
     private AlertDialog mLogoutDialog;
+
+    private Intent mUpdateIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,16 +126,20 @@ public class MainActivity extends BaseActivity {
         init(savedInstanceState);
         setListener();
         setUserInfo();
+        mPresenter.checkUpdate();
     }
 
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
+        if (mUpdateIntent != null) stopService(mUpdateIntent);
         super.onDestroy();
     }
 
     @Override
     public void init(Bundle savedInstanceState) {
+        mPresenter = new MainPresenterImpl(this, this);
+
         View mHeaderView = mNavView.getHeaderView(0);
         mHeaderTopLayout = (RelativeLayout) mHeaderView.findViewById(R.id.header_top_layout);
         mHeaderUserAvatarImg = (SimpleDraweeView) mHeaderView.findViewById(R.id.header_user_avatar_img);
@@ -491,6 +505,37 @@ public class MainActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void hasNewVersion(final CheckUpdateResult result) {
+        int nowVersion = MyUtil.getVersionCode(this);
+        if (nowVersion != -1) {
+            final SharedPreferences versionSP = MyUtil.getSharedPreferences(MainActivity.this
+                    , SHARED_PREFERENCES_VERSION);
+            if (nowVersion < result.getData().getNowVersion()
+                    && versionSP.getInt("IgnoreVersion", -1) != result.getData().getNowVersion()) {
+                boolean isForced = nowVersion < result.getData().getMinVersion();
+                UpdateDialog.create(this, isForced)
+                        .setUpdateInfo(result)
+                        .setOnClickListener(new UpdateDialog.OnClickListener() {
+                            @Override
+                            public void onUpdateClick() {
+                                if (!MyUtil.isServiceRun(getApplicationContext(), UpdateService.class.getName())) {
+                                    mUpdateIntent = new Intent(MainActivity.this, UpdateService.class)
+                                            .putExtra("url", result.getData().getFileName());
+                                    startService(mUpdateIntent);
+                                }
+                            }
+
+                            @Override
+                            public void onIgnoreClick() {
+                                versionSP.edit().putInt("IgnoreVersion", result.getData().getNowVersion()).apply();
+                            }
+                        })
+                        .show();
+            }
+        }
     }
 
 //    @Override

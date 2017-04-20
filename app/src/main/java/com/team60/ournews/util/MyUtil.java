@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -149,5 +150,29 @@ public class MyUtil {
                 file.getAbsolutePath(), file.getName(), null);
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                 Uri.fromFile(new File(file.getPath()))));
+    }
+
+    public static boolean isServiceRun(Context context, String serviceName) {
+        android.app.ActivityManager myManager = (android.app.ActivityManager) context.getSystemService(
+                Context.ACTIVITY_SERVICE);
+        ArrayList<android.app.ActivityManager.RunningServiceInfo> runningService
+                = (ArrayList<android.app.ActivityManager.RunningServiceInfo>) myManager
+                .getRunningServices(30);
+        for (int i = 0; i < runningService.size(); i++) {
+            if (runningService.get(i).service.getClassName().equals(serviceName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void installAPK(Context context, File file) {
+        if (file != null && file.exists()) {
+            Uri uri = Uri.fromFile(file);
+            Intent install = new Intent(Intent.ACTION_VIEW);
+            install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            install.setDataAndType(uri, "application/vnd.android.package-archive");
+            context.startActivity(install);
+        }
     }
 }
