@@ -6,7 +6,7 @@ import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.bean.ManagerUser;
 import com.team60.ournews.module.bean.New;
-import com.team60.ournews.module.connection.RetrofitUtil;
+import com.team60.ournews.util.RetrofitUtil;
 import com.team60.ournews.module.model.ListNewResult;
 import com.team60.ournews.module.presenter.TypePresenter;
 import com.team60.ournews.module.view.TypeView;

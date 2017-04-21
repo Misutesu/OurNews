@@ -7,7 +7,7 @@ import com.team60.ournews.common.Constants;
 import com.team60.ournews.module.bean.Comment;
 import com.team60.ournews.module.bean.CommentChild;
 import com.team60.ournews.module.bean.OtherUser;
-import com.team60.ournews.module.connection.RetrofitUtil;
+import com.team60.ournews.util.RetrofitUtil;
 import com.team60.ournews.module.model.CommentResult;
 import com.team60.ournews.module.presenter.CommentPresenter;
 import com.team60.ournews.module.view.CommentVIew;

@@ -39,7 +39,7 @@ import com.team60.ournews.module.bean.CommentChild;
 import com.team60.ournews.module.bean.New;
 import com.team60.ournews.module.bean.OtherUser;
 import com.team60.ournews.module.bean.User;
-import com.team60.ournews.module.connection.RetrofitUtil;
+import com.team60.ournews.util.RetrofitUtil;
 import com.team60.ournews.module.model.NoDataResult;
 import com.team60.ournews.module.presenter.CommentPresenter;
 import com.team60.ournews.module.presenter.impl.CommentPresenterImpl;

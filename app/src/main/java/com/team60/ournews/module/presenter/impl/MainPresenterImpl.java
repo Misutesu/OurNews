@@ -3,7 +3,7 @@ package com.team60.ournews.module.presenter.impl;
 import android.content.Context;
 
 import com.team60.ournews.common.Constants;
-import com.team60.ournews.module.connection.RetrofitUtil;
+import com.team60.ournews.util.RetrofitUtil;
 import com.team60.ournews.module.model.CheckUpdateResult;
 import com.team60.ournews.module.presenter.MainPresenter;
 import com.team60.ournews.module.view.MainView;

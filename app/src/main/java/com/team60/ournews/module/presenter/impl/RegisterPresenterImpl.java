@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
-import com.team60.ournews.module.connection.RetrofitUtil;
+import com.team60.ournews.util.RetrofitUtil;
 import com.team60.ournews.module.model.NoDataResult;
 import com.team60.ournews.module.presenter.RegisterPresenter;
 import com.team60.ournews.module.view.RegisterView;

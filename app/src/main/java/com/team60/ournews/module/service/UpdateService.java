@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.team60.ournews.R;
 import com.team60.ournews.util.MyUtil;
@@ -23,11 +24,11 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-import static com.team60.ournews.module.connection.RetrofitUtil.BASE_URL;
+import static com.team60.ournews.util.RetrofitUtil.BASE_URL;
 
 public class UpdateService extends Service {
 
-    private final int NOTIFY_CODE = 101;
+    private final int NOTIFY_ID = 101;
 
     private NotificationCompat.Builder mBuilder;
 
@@ -42,6 +43,11 @@ public class UpdateService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
     }
 
     @Override
@@ -71,8 +77,9 @@ public class UpdateService extends Service {
                 .setWhen(System.currentTimeMillis())
                 .setProgress(100, 0, true)
                 .setAutoCancel(false);
-        startForeground(NOTIFY_CODE, mBuilder.build());
-        Request request = new Request.Builder().url(BASE_URL + "downloadApk?name=" + name).build();
+        startForeground(NOTIFY_ID, mBuilder.build());
+        Request request = new Request.Builder().header("Accept-Encoding", "identity")
+                .url(BASE_URL + "downloadApk?name=" + name).build();
         OkHttpClient client = OkHttpUtil.getOkHttpClient();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -93,23 +100,26 @@ public class UpdateService extends Service {
                     file = new File(file, "OurNews.apk");
                     if (file.exists()) file.delete();
 
-                    byte[] buf = new byte[1024];
+                    byte[] buf = new byte[2048];
                     int len;
                     long sum = 0;
                     int oldProgress = 0;
-                    is = body.byteStream();
-                    long allLength = body.contentLength();
+                    is = response.body().byteStream();
+                    long allLength = response.body().contentLength();
                     fos = new FileOutputStream(file);
+                    Log.d("TAG", "allLength : " + allLength);
                     while ((len = is.read(buf)) != -1) {
                         if (!isDestroy) {
                             fos.write(buf, 0, len);
                             sum += len;
-                            int progress = (int) (sum * 1.0f / allLength * 100);
+                            Log.d("TAG", "sum : " + sum);
+                            int progress = (int) (((float) sum) / allLength * 100);
                             if (oldProgress != progress) {
                                 oldProgress = progress;
-                                mBuilder.setProgress(100, progress, true)
-                                        .setContentText(getString(R.string.is_download_new_version) + " " + progress + "%");
-                                startForeground(NOTIFY_CODE, mBuilder.build());
+                                Log.d("TAG", "progress : " + progress);
+//                                mBuilder.setProgress(100, progress, true)
+//                                        .setContentText(getString(R.string.is_download_new_version) + " " + progress + "%");
+//                                startForeground(NOTIFY_ID, mBuilder.build());
                             }
                         } else {
                             return;

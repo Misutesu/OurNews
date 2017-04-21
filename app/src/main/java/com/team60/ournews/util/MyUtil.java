@@ -14,7 +14,6 @@ import android.widget.EditText;
 
 import com.mistesu.frescoloader.FrescoLoader;
 import com.team60.ournews.listener.DownListener;
-import com.team60.ournews.module.connection.RetrofitUtil;
 
 import java.io.File;
 import java.io.FileInputStream;

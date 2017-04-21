@@ -17,7 +17,7 @@ import android.view.WindowManager;
 import com.team60.ournews.R;
 import com.team60.ournews.event.LoginEvent;
 import com.team60.ournews.module.bean.User;
-import com.team60.ournews.module.connection.RetrofitUtil;
+import com.team60.ournews.util.RetrofitUtil;
 import com.team60.ournews.module.model.CheckLoginResult;
 import com.team60.ournews.module.ui.activity.FirstActivity;
 import com.team60.ournews.module.ui.activity.LoginActivity;
