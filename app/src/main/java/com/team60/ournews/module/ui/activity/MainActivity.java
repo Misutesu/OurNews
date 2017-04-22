@@ -1,10 +1,12 @@
 package com.team60.ournews.module.ui.activity;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -17,6 +19,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -48,21 +51,24 @@ import com.team60.ournews.module.bean.User;
 import com.team60.ournews.module.model.CheckUpdateResult;
 import com.team60.ournews.module.presenter.MainPresenter;
 import com.team60.ournews.module.presenter.impl.MainPresenterImpl;
-import com.team60.ournews.module.service.UpdateService;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
+import com.team60.ournews.module.ui.dialog.DownloadDialog;
+import com.team60.ournews.module.ui.dialog.UpdateDialog;
 import com.team60.ournews.module.ui.fragment.HomeFragment;
 import com.team60.ournews.module.ui.fragment.TypeFragment;
 import com.team60.ournews.module.view.MainView;
+import com.team60.ournews.util.DownloadManager;
+import com.team60.ournews.util.FileUtil;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.PushUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
-import com.team60.ournews.widget.UpdateDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +78,8 @@ import butterknife.ButterKnife;
 import static com.team60.ournews.common.Constants.SHARED_PREFERENCES_VERSION;
 
 public class MainActivity extends BaseActivity implements MainView {
+
+    private final int NOTIFY_ID = 101;
 
     public final String[] titles = {"推荐", "ACG", "游戏", "社会", "娱乐", "科技"};
 
@@ -111,11 +119,15 @@ public class MainActivity extends BaseActivity implements MainView {
 
     private ThemeSelectRecyclerViewAdapter mThemeAdapter;
 
+    private NotificationManager mManager;
+    private NotificationCompat.Builder mBuilder;
+
     private AlertDialog mThemeDialog;
     private AlertDialog mThemeHintDialog;
     private AlertDialog mLogoutDialog;
+    private DownloadDialog mDownloadDialog;
 
-    private Intent mUpdateIntent;
+    private String mTaskName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,14 +143,17 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected void onDestroy() {
+        DownloadManager.stopAllTask();
+        mManager.cancelAll();
         EventBus.getDefault().unregister(this);
-        if (mUpdateIntent != null) stopService(mUpdateIntent);
         super.onDestroy();
     }
 
     @Override
     public void init(Bundle savedInstanceState) {
         mPresenter = new MainPresenterImpl(this, this);
+
+        mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         View mHeaderView = mNavView.getHeaderView(0);
         mHeaderTopLayout = (RelativeLayout) mHeaderView.findViewById(R.id.header_top_layout);
@@ -460,8 +475,7 @@ public class MainActivity extends BaseActivity implements MainView {
         if (mThemeAdapter != null) mThemeAdapter.notifyDataSetChanged();
     }
 
-    public ChangeStyleEvent getChangeColorEvent(Resources.Theme theme, Activity activity, int style) {
-
+    private ChangeStyleEvent getChangeColorEvent(Resources.Theme theme, Activity activity, int style) {
         int startColorPrimary = ThemeUtil.getColor(theme, R.attr.colorPrimary);
         int startColorIcon = ThemeUtil.getColor(theme, R.attr.iconColor);
         int startColorText = ThemeUtil.getColor(theme, R.attr.textColor);
@@ -485,7 +499,6 @@ public class MainActivity extends BaseActivity implements MainView {
         int[] colorText = {startColorText, endColorText};
         int[] colorText1 = {startColorText1, endColorText1};
         int[] colorText3 = {startColorText3, endColorText3};
-
         return new ChangeStyleEvent(colorPrimary, colorBackground,
                 colorItemBackground, colorIcon, colorText, colorText1, colorText3);
     }
@@ -515,16 +528,14 @@ public class MainActivity extends BaseActivity implements MainView {
                     , SHARED_PREFERENCES_VERSION);
             if (nowVersion < result.getData().getNowVersion()
                     && versionSP.getInt("IgnoreVersion", -1) != result.getData().getNowVersion()) {
-                boolean isForced = nowVersion < result.getData().getMinVersion();
+                final boolean isForced = nowVersion < result.getData().getMinVersion();
                 UpdateDialog.create(this, isForced)
                         .setUpdateInfo(result)
                         .setOnClickListener(new UpdateDialog.OnClickListener() {
                             @Override
                             public void onUpdateClick() {
-                                if (!MyUtil.isServiceRun(getApplicationContext(), UpdateService.class.getName())) {
-                                    mUpdateIntent = new Intent(MainActivity.this, UpdateService.class)
-                                            .putExtra("name", result.getData().getFileName());
-                                    startService(mUpdateIntent);
+                                if (!DownloadManager.isDownload(mTaskName)) {
+                                    downloadNewVersion(result.getData().getFileName(), isForced);
                                 }
                             }
 
@@ -538,12 +549,86 @@ public class MainActivity extends BaseActivity implements MainView {
         }
     }
 
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-//        menu.findItem(R.id.tool_bar_save_img).setVisible(true);
-//        invalidateOptionsMenu();
-//        return super.onPrepareOptionsMenu(menu);
-//    }
+    private void downloadNewVersion(String url, final boolean isForced) {
+        String appName = getString(R.string.app_name);
+        File file = getExternalCacheDir();
+        file = new File(file, appName + File.separator + "NewVersion");
+        if (FileUtil.createDir(file)) {
+            file = new File(file, appName + ".apk");
+            if (FileUtil.deleteFile(file)) {
+                mTaskName = DownloadManager.create(url, file
+                        , new DownloadManager.DownloadManagerListener() {
+                            @Override
+                            public void onStart() {
+                                showDownloadDialog(isForced);
+                            }
+
+                            @Override
+                            public void onProgress(int progress) {
+                                if (mBuilder == null) {
+                                    mDownloadDialog.setProgress(progress);
+                                } else {
+                                    mBuilder.setProgress(100, progress, true)
+                                            .setContentText(getString(R.string.is_download_new_version) + " " + progress + "%");
+                                    mManager.notify(NOTIFY_ID, mBuilder.build());
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable t, File file) {
+                                t.printStackTrace();
+                                FileUtil.deleteFile(file);
+                                showSnackBar(getString(R.string.download_error));
+                            }
+
+                            @Override
+                            public void onSuccess(File file) {
+                                MyUtil.installAPK(MainActivity.this, file);
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                mManager.cancel(NOTIFY_ID);
+                                mDownloadDialog.dismiss();
+                                mBuilder = null;
+                            }
+                        }).start();
+            }
+        }
+    }
+
+    private void showDownloadDialog(boolean isForced) {
+        if (mDownloadDialog == null) {
+            mDownloadDialog = DownloadDialog.create(MainActivity.this);
+            mDownloadDialog.setOnClickListener(new DownloadDialog.OnClickListener() {
+                @Override
+                public void onCancelClick() {
+                    DownloadManager.stopTask(mTaskName);
+                }
+
+                @Override
+                public void onBackgroundClick() {
+                    mDownloadDialog.dismiss();
+                    showNotification();
+                }
+            });
+        }
+        mDownloadDialog.setForced(isForced);
+        mDownloadDialog.show();
+    }
+
+    private void showNotification() {
+        mBuilder = new NotificationCompat.Builder(MainActivity.this)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.is_download_new_version))
+                .setSmallIcon(R.drawable.min_logo)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                .setWhen(System.currentTimeMillis())
+                .setProgress(100, 0, true)
+                .setAutoCancel(false);
+        mManager.notify(NOTIFY_ID, mBuilder.build());
+    }
+
 //    private void checkPermission() {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -554,15 +639,23 @@ public class MainActivity extends BaseActivity implements MainView {
 //            }
 //        }
 //    }
+//
 //    @Override
 //    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 //        if (requestCode == PERMISSION_CODE) {
 //            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                PushUtil.newInstance().initPush(MainActivity.this);
+//
 //            } else {
 //                showSnackBar(getString(R.string.no_write_permission));
 //            }
 //        }
+//    }
+//
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        menu.findItem(R.id.tool_bar_save_img).setVisible(true);
+//        invalidateOptionsMenu();
+//        return super.onPrepareOptionsMenu(menu);
 //    }
 }

@@ -1,7 +1,6 @@
-package com.team60.ournews.widget;
+package com.team60.ournews.module.ui.dialog;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.v7.app.AlertDialog;
@@ -12,7 +11,6 @@ import android.view.View;
 
 import com.team60.ournews.R;
 import com.team60.ournews.module.model.CheckUpdateResult;
-import com.team60.ournews.util.ActivityManager;
 import com.team60.ournews.util.ThemeUtil;
 
 import java.text.NumberFormat;
@@ -68,12 +66,6 @@ public class UpdateDialog extends AlertDialog {
         if (isForced) {
             mIgnoreBtn.setVisibility(View.GONE);
             mUpdateBtn.setText(context.getString(R.string.update_forced));
-            setOnCancelListener(new OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    ActivityManager.newInstance().finishAll();
-                }
-            });
         }
     }
 
@@ -100,11 +92,11 @@ public class UpdateDialog extends AlertDialog {
             switch (v.getId()) {
                 case R.id.dialog_update_update_btn:
                     mOnClickListener.onUpdateClick();
-                    dismiss();
+                    cancel();
                     break;
                 case R.id.dialog_update_ignore_btn:
                     if (!isForced) mOnClickListener.onIgnoreClick();
-                    dismiss();
+                    cancel();
                     break;
             }
         }

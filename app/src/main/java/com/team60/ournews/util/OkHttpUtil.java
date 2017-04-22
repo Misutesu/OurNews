@@ -23,6 +23,8 @@ public class OkHttpUtil {
 
     private static OkHttpClient mClient;
 
+    private static OkHttpClient mDownloadClient;
+
     public static OkHttpClient getOkHttpClient() {
         if (mClient == null) {
             synchronized (OkHttpUtil.class) {
@@ -36,6 +38,17 @@ public class OkHttpUtil {
             }
         }
         return mClient;
+    }
+
+    public static OkHttpClient getOkHttpClientForDownload() {
+        if (mDownloadClient == null) {
+            synchronized (OkHttpUtil.class) {
+                if (mDownloadClient == null) {
+                    mDownloadClient = new OkHttpClient();
+                }
+            }
+        }
+        return mDownloadClient;
     }
 
     private static class LoggingInterceptor implements Interceptor {
