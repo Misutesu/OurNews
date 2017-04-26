@@ -109,14 +109,14 @@ public class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void onResume() {
-        super.onResume();
         mAdvertisementView.startScroll();
+        super.onResume();
     }
 
     @Override
     public void onPause() {
-        super.onPause();
         mAdvertisementView.stopScroll();
+        super.onPause();
     }
 
     @Override

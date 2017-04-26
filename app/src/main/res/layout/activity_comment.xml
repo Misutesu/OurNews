@@ -28,7 +28,7 @@
                 android:id="@+id/activity_comment_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:overScrollMode="never"/>
+                android:overScrollMode="always"/>
 
             <View
                 android:layout_width="match_parent"
