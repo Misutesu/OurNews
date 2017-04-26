@@ -6,7 +6,8 @@ android {
         sign {
             keyAlias 'Misutesu'
             keyPassword '8189252'
-            storeFile file('C:/MyFiles/MyAndroid/OurNews/keystore.jks')
+//            storeFile file('C:/MyFiles/MyAndroid/OurNews/keystore.jks')
+            storeFile file('D:/Wu/GitHub/OurNews/keystore.jks')
             storePassword '8189252'
         }
     }
