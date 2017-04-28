@@ -15,7 +15,6 @@ public class FileUtil {
     }
 
     public static boolean deleteFile(@NonNull File file) {
-        if (file.exists()) return file.delete();
-        return true;
+        return !file.exists() || file.delete();
     }
 }

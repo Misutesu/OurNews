@@ -16,7 +16,6 @@ import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -54,7 +53,7 @@ public class DownloadManager {
         checkInit();
         if (taskName == null) return false;
         DownloadTask task = downloadList.get(taskName);
-        return task != null;
+        return task != null && task.isDownload();
     }
 
     public static void stopTask(String taskName) {
@@ -75,15 +74,15 @@ public class DownloadManager {
         downloadList.clear();
     }
 
-    private static void checkInit() {
-        if (downloadList == null)
-            throw new UnsupportedOperationException("No Init DownloadManager");
-    }
-
     public static DownloadTask create(@Nullable String url, @Nullable File file
             , @Nullable DownloadManagerListener mDownloadManagerListener) {
         checkInit();
         return new DownloadTask(url, file, mDownloadManagerListener);
+    }
+
+    private static void checkInit() {
+        if (downloadList == null)
+            throw new UnsupportedOperationException("No Init DownloadManager");
     }
 
     public static class DownloadTask {
@@ -124,8 +123,8 @@ public class DownloadManager {
                             .header("Accept-Encoding", "identity")
                             .url(url)
                             .build();
-                    OkHttpClient client = OkHttpUtil.getOkHttpClientForDownload();
-                    Response response = client.newCall(request).execute();
+                    Response response = OkHttpUtil.getOkHttpClientForDownload()
+                            .newCall(request).execute();
                     byte[] buf = new byte[2048];
                     int len;
                     long sum = 0;
@@ -179,7 +178,6 @@ public class DownloadManager {
 
                         @Override
                         public void onComplete() {
-                            mDownloadManagerListener.onComplete();
                             if (fos != null) {
                                 try {
                                     fos.flush();
@@ -195,8 +193,14 @@ public class DownloadManager {
                                     e.printStackTrace();
                                 }
                             }
+                            mDownloadManagerListener.onComplete();
+                            mDisposable = null;
                         }
                     });
+        }
+
+        private boolean isDownload() {
+            return mDisposable != null;
         }
     }
 }
