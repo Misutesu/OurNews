@@ -56,15 +56,15 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/dialog_update_description_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginEnd="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginRight="36dp"
+        android:layout_marginStart="36dp"
         android:layout_marginTop="16dp"
-        android:gravity="center_horizontal"
+        android:gravity="left|start"
         android:textColor="?attr/textColor2"
         android:textSize="14sp"
         tools:text="1.第一个版本" />

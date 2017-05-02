@@ -75,7 +75,7 @@ public class UpdateDialog extends AlertDialog {
         numberFormat.setMaximumFractionDigits(2);
         mSizeText.setText(numberFormat.format(size) + " MB");
         mTimeText.setText("[ " + result.getData().getUpdateTime() + " ]");
-        mDescriptionText.setText(result.getData().getDescription());
+        mDescriptionText.setText(result.getData().getDescription().replace("\\", "\n"));
         return this;
     }
 
