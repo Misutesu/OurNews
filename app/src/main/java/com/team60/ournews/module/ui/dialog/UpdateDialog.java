@@ -6,6 +6,7 @@ import android.support.annotation.StyleRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -13,7 +14,7 @@ import com.team60.ournews.R;
 import com.team60.ournews.module.model.CheckUpdateResult;
 import com.team60.ournews.util.ThemeUtil;
 
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
 
 /**
  * Created by Misutesu on 2017/4/20 0020.
@@ -70,10 +71,9 @@ public class UpdateDialog extends AlertDialog {
     }
 
     public UpdateDialog setUpdateInfo(CheckUpdateResult result) {
-        double size = result.getData().getFileSize() / 1024 / 1024;
-        NumberFormat numberFormat = NumberFormat.getNumberInstance();
-        numberFormat.setMaximumFractionDigits(2);
-        mSizeText.setText(numberFormat.format(size) + " MB");
+        double size = (double) (result.getData().getFileSize()) / 1024 / 1024;
+        DecimalFormat df = new DecimalFormat("#.00");
+        mSizeText.setText(df.format(size) + " MB");
         mTimeText.setText("[ " + result.getData().getUpdateTime() + " ]");
         mDescriptionText.setText(result.getData().getDescription().replace("\\", "\n"));
         return this;

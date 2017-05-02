@@ -130,4 +130,6 @@
     <string name="download_background_hint">正在后台下载更新</string>
     <string name="cancel_download_success">已取消更新</string>
     <string name="download_error">下载更新失败</string>
+
+    <string name="click_again_exit">再按一次退出</string>
 </resources>

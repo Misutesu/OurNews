@@ -62,7 +62,7 @@ public class CheckUpdateResult {
         @SerializedName("file_name")
         private String fileName;
         @SerializedName("file_size")
-        private int fileSize;
+        private long fileSize;
         private String description;
 
         public int getNowVersion() {
@@ -97,11 +97,11 @@ public class CheckUpdateResult {
             this.fileName = fileName;
         }
 
-        public int getFileSize() {
+        public long getFileSize() {
             return fileSize;
         }
 
-        public void setFileSize(int fileSize) {
+        public void setFileSize(long fileSize) {
             this.fileSize = fileSize;
         }
 

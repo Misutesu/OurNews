@@ -128,6 +128,7 @@ public class MainActivity extends BaseActivity implements MainView {
     private DownloadDialog mDownloadDialog;
 
     private String mTaskName;
+    private long lastOnBackTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -408,9 +409,16 @@ public class MainActivity extends BaseActivity implements MainView {
         } else if (mViewPager.getCurrentItem() != 0) {
             mViewPager.setCurrentItem(0);
         } else {
-            Intent launcherIntent = new Intent(Intent.ACTION_MAIN);
-            launcherIntent.addCategory(Intent.CATEGORY_HOME);
-            startActivity(launcherIntent);
+            long nowTime = System.currentTimeMillis();
+            if (nowTime - lastOnBackTime >= 2 * 1000) {
+                lastOnBackTime = nowTime;
+                showSnackBar(getString(R.string.click_again_exit));
+            } else {
+                super.onBackPressed();
+            }
+//            Intent launcherIntent = new Intent(Intent.ACTION_MAIN);
+//            launcherIntent.addCategory(Intent.CATEGORY_HOME);
+//            startActivity(launcherIntent);
         }
     }
 
