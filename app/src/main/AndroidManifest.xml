@@ -45,25 +45,25 @@
             android:name=".module.ui.activity.SearchActivity"
             android:theme="@style/Transparent"/>
         <activity android:name=".module.ui.activity.SearchResultActivity"/>
-        <activity
-            android:name=".module.ui.activity.UpdateActivity"
-            android:theme="@style/Transparent"/>
-
-        <service
-            android:name=".module.service.UpdateService"
-            android:enabled="true"
-            android:process=":update"
-            android:exported="true"/>
 
         <receiver
             android:name=".module.receiver.PushReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/>
-
                 <category android:name="com.team60.ournews"/>
             </intent-filter>
         </receiver>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.team60.ournews.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
     </application>
 
 </manifest>

@@ -6,13 +6,16 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.mistesu.frescoloader.FrescoLoader;
+import com.team60.ournews.BuildConfig;
 import com.team60.ournews.listener.DownListener;
 
 import java.io.File;
@@ -168,9 +171,15 @@ public class MyUtil {
         if (file != null && file.exists()) {
             Uri uri = Uri.fromFile(file);
             Intent install = new Intent(Intent.ACTION_VIEW);
-            install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            install.setDataAndType(uri, "application/vnd.android.package-archive");
             try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    install.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    Uri contentUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", file);
+                    install.setDataAndType(contentUri, "application/vnd.android.package-archive");
+                } else {
+                    install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    install.setDataAndType(uri, "application/vnd.android.package-archive");
+                }
                 context.startActivity(install);
             } catch (Exception e) {
                 e.printStackTrace();
