@@ -31,7 +31,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
 public class MyUtil {
-
     public static SharedPreferences getSharedPreferences(Context context, String name) {
         return context.getSharedPreferences(name, Context.MODE_PRIVATE);
     }
@@ -171,7 +170,11 @@ public class MyUtil {
             Intent install = new Intent(Intent.ACTION_VIEW);
             install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             install.setDataAndType(uri, "application/vnd.android.package-archive");
-            context.startActivity(install);
+            try {
+                context.startActivity(install);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

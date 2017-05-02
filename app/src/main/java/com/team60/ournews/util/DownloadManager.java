@@ -57,8 +57,8 @@ public class DownloadManager {
     }
 
     public static void stopTask(String taskName) {
-        checkInit();
         if (taskName == null) return;
+        checkInit();
         DownloadTask task = downloadList.get(taskName);
         if (task != null) {
             task.cancel();
