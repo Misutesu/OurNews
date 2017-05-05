@@ -18,7 +18,7 @@ public class RetrofitUtil {
      */
 
 //    public static final String BASE_URL = "http://192.168.31.57:8080/";
-    public static final String BASE_URL = "http://112.74.52.72:8080/OurNews/";
+    public static final String BASE_URL = "http://112.74.52.72:8080/OurNews/register";
 
     private static ApiStore apiStore;
 
@@ -26,9 +26,14 @@ public class RetrofitUtil {
         if (apiStore == null) {
             synchronized (RetrofitUtil.class) {
                 if (apiStore == null) {
-                    apiStore = new Retrofit.Builder().baseUrl(BASE_URL)
+                    apiStore = new Retrofit.Builder()
+
+                            .baseUrl(BASE_URL)
+
                             .client(OkHttpUtil.getOkHttpClient())
+
                             .addConverterFactory(GsonConverterFactory.create())
+
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                             .build()
                             .create(ApiStore.class);
