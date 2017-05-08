@@ -123,17 +123,17 @@ public interface ApiStore {
 
     @POST("lickComment")
     Flowable<NoDataResult> lickComment(@Query("cid") long cid,
-                                      @Query("uid") long uid,
-                                      @Query("token") String token,
-                                      @Query("type") int type);
+                                       @Query("uid") long uid,
+                                       @Query("token") String token,
+                                       @Query("type") int type);
 
     @POST("sendChildComment")
     Flowable<NoDataResult> sendChildComment(@Query("uid") long uid,
-                                               @Query("cid") long cid,
-                                               @Query("content") String content,
-                                               @Query("time") long time,
-                                               @Query("token") String token,
-                                               @Query("key") String key);
+                                            @Query("cid") long cid,
+                                            @Query("content") String content,
+                                            @Query("time") long time,
+                                            @Query("token") String token,
+                                            @Query("key") String key);
 
     @Multipart
     @POST("uploadImage")

@@ -6,5 +6,6 @@ package com.team60.ournews.listener;
 
 public interface DownListener {
     void success();
+
     void error();
 }

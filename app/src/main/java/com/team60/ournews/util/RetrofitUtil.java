@@ -26,9 +26,14 @@ public class RetrofitUtil {
         if (apiStore == null) {
             synchronized (RetrofitUtil.class) {
                 if (apiStore == null) {
-                    apiStore = new Retrofit.Builder().baseUrl(BASE_URL)
+                    apiStore = new Retrofit.Builder()
+                            //添加请求统一前缀
+                            .baseUrl(BASE_URL)
+                            //添加自己的OkHttp配置
                             .client(OkHttpUtil.getOkHttpClient())
+                            //设置使用Gson解析
                             .addConverterFactory(GsonConverterFactory.create())
+                            //设置支持RxJava
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                             .build()
                             .create(ApiStore.class);
