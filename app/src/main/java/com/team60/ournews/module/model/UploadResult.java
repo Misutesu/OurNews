@@ -13,7 +13,7 @@ public class UploadResult {
     /**
      * result : success
      * errorCode : 0
-     * data : ["aaa.png","bbb.png"]
+     * data : ["User.png","bbb.png"]
      */
 
     private String result;
