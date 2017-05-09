@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!--自定义ToolBar-->
         <com.team60.ournews.widget.CompatToolbar
             android:id="@+id/activity_comment_tool_bar"
             android:layout_width="match_parent"
@@ -46,6 +47,7 @@
         android:textColor="?attr/textColor"
         android:visibility="gone"/>
 
+    <!--加载圈-->
     <ProgressBar
         android:id="@+id/activity_comment_progress_bar"
         android:layout_width="wrap_content"
@@ -66,6 +68,7 @@
         android:textColor="@color/white"
         android:visibility="gone"/>
 
+    <!--以下全是写评论按钮-->
     <LinearLayout
         android:id="@+id/activity_new_bottom_layout"
         android:layout_width="match_parent"

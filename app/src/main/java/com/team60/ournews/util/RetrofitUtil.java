@@ -22,16 +22,20 @@ public class RetrofitUtil {
 
     private static ApiStore apiStore;
 
+    /**
+     * 使用单例模式获取ApiStore对象
+     * @return ApiStore
+     */
     public static ApiStore newInstance() {
         if (apiStore == null) {
             synchronized (RetrofitUtil.class) {
                 if (apiStore == null) {
                     apiStore = new Retrofit.Builder()
-                            //添加请求统一前缀
+                            //添加请求统一前缀URL
                             .baseUrl(BASE_URL)
                             //添加自己的OkHttp配置
                             .client(OkHttpUtil.getOkHttpClient())
-                            //设置使用Gson解析
+                            //设置使用Gson解析JSON数据
                             .addConverterFactory(GsonConverterFactory.create())
                             //设置支持RxJava
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

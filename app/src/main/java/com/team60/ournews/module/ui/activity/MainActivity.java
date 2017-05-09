@@ -187,8 +187,7 @@ public class MainActivity extends BaseActivity implements MainView {
             mDrawerLayout.setClipToPadding(false);
         }
 
-        if (ThemeUtil.newInstance().isNightMode())
-            mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
+        if (ThemeUtil.newInstance().isNightMode()) mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
 
         initViewPager();
 

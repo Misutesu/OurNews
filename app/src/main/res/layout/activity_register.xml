@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!--自定义Toolbar-->
         <com.team60.ournews.widget.CompatToolbar
             android:id="@+id/activity_register_tool_bar"
             android:layout_width="match_parent"
@@ -24,6 +25,7 @@
             android:layout_height="4dp"
             android:background="@drawable/elevation_tool_bar" />
 
+        <!--用户名输入框-->
         <android.support.design.widget.TextInputLayout
             android:id="@+id/activity_register_login_name_input_layout"
             android:layout_width="match_parent"
@@ -47,6 +49,7 @@
                 android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 
+        <!--密码输入框-->
         <android.support.design.widget.TextInputLayout
             android:id="@+id/activity_register_password_input_layout"
             android:layout_width="match_parent"
@@ -69,6 +72,7 @@
                 android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
+        <!--确认密码框-->
         <android.support.design.widget.TextInputLayout
             android:id="@+id/activity_register_password_2_input_layout"
             android:layout_width="match_parent"

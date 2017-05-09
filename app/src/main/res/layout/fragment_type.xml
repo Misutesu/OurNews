@@ -4,6 +4,7 @@
              android:layout_height="match_parent"
              tools:context="com.team60.ournews.module.ui.fragment.TypeFragment">
 
+    <!--上拉刷新控件-->
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/fragment_type_swipe_refresh_layout"
         android:layout_width="match_parent"

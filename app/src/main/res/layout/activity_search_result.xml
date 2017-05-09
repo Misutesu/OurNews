@@ -12,6 +12,7 @@
         android:orientation="vertical"
         tools:context="com.team60.ournews.module.ui.activity.SearchResultActivity">
 
+        <!--自定义ToolBar-->
         <com.team60.ournews.widget.CompatToolbar
             android:id="@+id/activity_search_result_tool_bar"
             android:layout_width="match_parent"

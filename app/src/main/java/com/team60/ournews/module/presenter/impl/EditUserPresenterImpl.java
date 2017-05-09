@@ -38,17 +38,25 @@ public class EditUserPresenterImpl implements EditUserPresenter {
     @Override
     public void saveInfo(final long id, final String token, final String nickName, final int sex
             , final String birthday, String photo) {
+        //如果没有photo参数(表示本次修改用户信息没有修改头像)
+        //则直接修改信息
+        //否则先上传图片
         if (photo.equals("")) {
+            //直接修改信息
             changeInfo(id, token, nickName, sex, birthday, photo);
         } else {
+            //上传图片
             File file = new File(photo);
             if (!file.exists()) {
+                //图片文件不存在
                 mView.saveEnd();
                 mView.saveError(mContext.getString(R.string.photo_file_error));
             } else {
+                //压缩图片
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(photo, options);
+                //创建上传的Request
                 RequestBody requestFile = RequestBody.create(MediaType.parse(options.outMimeType), file);
                 MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
                 RequestBody description = RequestBody.create(MultipartBody.FORM, "Description");
@@ -76,6 +84,7 @@ public class EditUserPresenterImpl implements EditUserPresenter {
                             @Override
                             public void onNext(UploadResult result) {
                                 if (result.getResult().equals("success")) {
+                                    //上传成功开始修改信息
                                     changeInfo(id, token, nickName, sex, birthday, result.getData().get(0));
                                 } else {
                                     mView.saveError(ErrorUtil.getErrorMessage(result.getErrorCode()));

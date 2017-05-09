@@ -64,9 +64,10 @@ public class HomePresenterImpl implements HomePresenter {
                         e.printStackTrace();
                         onComplete();
                         mView.getNewsError(mContext.getString(R.string.internet_error));
+                        //如果网络错误,从本地拉取缓存显示
                         HomeNewResult result = getHomeNewsFromData();
                         if (result != null) {
-                            onNext(getHomeNewsFromData());
+                            onNext(result);
                         }
                     }
 
@@ -103,6 +104,7 @@ public class HomePresenterImpl implements HomePresenter {
                                 news.append(beanList.get(i).getType(), newList);
                             }
                             mView.getNewsSuccess(news, type);
+                            //保存此次请求数据到本地缓存
                             saveHomeNewsToData(result);
                         } else {
                             mView.getNewsError(ErrorUtil.getErrorMessage(result.getErrorCode()));
@@ -111,6 +113,7 @@ public class HomePresenterImpl implements HomePresenter {
                 }));
     }
 
+    //从本地缓存获取数据
     private HomeNewResult getHomeNewsFromData() {
         SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(mContext, Constants.SHARED_PREFERENCES_CACHE);
         String homeTemp = sharedPreferences.getString("home_temp", null);
@@ -119,6 +122,7 @@ public class HomePresenterImpl implements HomePresenter {
         return new Gson().fromJson(homeTemp, HomeNewResult.class);
     }
 
+    //保存此次请求数据到本地缓存
     private void saveHomeNewsToData(HomeNewResult result) {
         SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(mContext, Constants.SHARED_PREFERENCES_CACHE);
         sharedPreferences.edit().putString("home_temp", new Gson().toJson(result)).apply();
