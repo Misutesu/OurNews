@@ -35,7 +35,7 @@ public class RetrofitUtil {
                             .baseUrl(BASE_URL)
                             //添加自己的OkHttp配置
                             .client(OkHttpUtil.getOkHttpClient())
-                            //设置使用Gson解析JSON数据
+                            //设置使用Gson转换器解析JSON数据
                             .addConverterFactory(GsonConverterFactory.create())
                             //设置支持RxJava
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
