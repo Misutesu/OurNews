@@ -5,6 +5,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryBlue</item>
         <item name="colorAccent">@color/colorPrimaryBlue</item>
         <item name="android:windowBackground">@color/colorPrimaryBlue</item>
+        <!--<item name="android:windowBackground">@drawable/splash</item>-->
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="BlueTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
@@ -198,5 +200,9 @@
 
     <style name="ToolBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@color/white</item>
+    </style>
+
+    <style name="BlueBlackButton">
+        <item name="colorButtonNormal">@color/colorPrimaryGreenBlack</item>
     </style>
 </resources>

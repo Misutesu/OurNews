@@ -96,6 +96,7 @@ public class TypeFragment extends BaseFragment implements TypeView {
         View view = inflater.inflate(R.layout.fragment_type, container, false);
         ButterKnife.bind(this, view);
         EventBus.getDefault().register(this);
+        setStatistics(true);
         return view;
     }
 

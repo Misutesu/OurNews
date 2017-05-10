@@ -315,7 +315,7 @@ public class NewActivity extends BaseActivity implements NewView {
             mNewLayout.setAlpha(1f);
             mAppBarLayout.setAlpha(1f);
             mBottomLayout.setTranslationY(0f);
-            mAnimLayout.setAlpha(0f);
+            mAnimLayout.setVisibility(View.GONE);
         }
     }
 

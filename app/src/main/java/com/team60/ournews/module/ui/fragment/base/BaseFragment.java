@@ -24,6 +24,8 @@ public abstract class BaseFragment extends Fragment {
 
     private CompositeDisposable mSubscription;
 
+    private boolean isOpenStatistics = false;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,10 +35,12 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            JAnalyticsInterface.onPageStart(getContext(), this.getClass().getCanonicalName());
-        } else {
-            JAnalyticsInterface.onPageEnd(getContext(), this.getClass().getCanonicalName());
+        if (isOpenStatistics) {
+            if (isVisibleToUser) {
+                JAnalyticsInterface.onPageStart(getContext(), this.getClass().getCanonicalName());
+            } else {
+                JAnalyticsInterface.onPageEnd(getContext(), this.getClass().getCanonicalName());
+            }
         }
     }
 
@@ -51,6 +55,10 @@ public abstract class BaseFragment extends Fragment {
         if (mSubscription == null)
             mSubscription = new CompositeDisposable();
         mSubscription.add(disposable);
+    }
+
+    public void setStatistics(boolean isOpen) {
+        isOpenStatistics = isOpen;
     }
 
     public abstract void init();

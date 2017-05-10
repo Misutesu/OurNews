@@ -3,11 +3,13 @@ package com.team60.ournews.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.team60.ournews.R;
 import com.team60.ournews.common.Constants;
 
 import java.util.Set;
 
 import cn.jiguang.analytics.android.api.JAnalyticsInterface;
+import cn.jpush.android.api.BasicPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 
@@ -35,6 +37,9 @@ public class PushUtil {
                     JAnalyticsInterface.setDebugMode(Constants.IS_DEBUG_MODE);
                     JPushInterface.init(context);
                     JAnalyticsInterface.init(context);
+                    BasicPushNotificationBuilder builder = new BasicPushNotificationBuilder(context);
+                    builder.statusBarDrawable = R.drawable.min_logo;
+                    JPushInterface.setDefaultPushNotificationBuilder(builder);
                 }
             }
         }

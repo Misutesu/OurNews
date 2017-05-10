@@ -96,6 +96,7 @@ public class PhotoActivity extends BaseActivity implements BaseView {
 
     @Override
     public void onBackPressed() {
+//        super.onBackPressed();
         if (!isAnimShow) {
             isAnimShow = true;
             showEndAnim();
@@ -177,11 +178,11 @@ public class PhotoActivity extends BaseActivity implements BaseView {
                             Integer[] startSize
                                     = {mStartValues.getInt(SkipUtil.VIEW_WIDTH), mStartValues.getInt(SkipUtil.VIEW_HEIGHT)};
 
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                pointFEnd = new PointF(0, UiUtil.getStatusBarHeight() + ((UiUtil.getScreenHeight() - mLayoutHeight) / 2));
-                            } else {
-                                pointFEnd = new PointF(0, (UiUtil.getScreenHeight() - mLayoutHeight) / 2);
-                            }
+//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                                pointFEnd = new PointF(0, UiUtil.getStatusBarHeight() + ((UiUtil.getScreenHeight() - mLayoutHeight) / 2));
+//                            } else {
+                            pointFEnd = new PointF(0, (UiUtil.getScreenHeight() - mLayoutHeight) / 2);
+//                            }
 
                             Integer[] endSize = {UiUtil.getScreenWidth(), mLayoutHeight};
 
@@ -262,94 +263,96 @@ public class PhotoActivity extends BaseActivity implements BaseView {
     }
 
     private void showEndAnim() {
-        if (mStartValues != null && imgWidth > 0 && imgHeight > 0) {
-            int mLayoutHeight = UiUtil.getScreenWidth() * imgHeight / imgWidth;
-
-            float deltaX = mStartValues.getInt(SkipUtil.VIEW_X);
-            float deltaY = mStartValues.getInt(SkipUtil.VIEW_Y);
-
-            PointF pointFEnd;
-
-            Integer[] startSize
-                    = {mStartValues.getInt(SkipUtil.VIEW_WIDTH), mStartValues.getInt(SkipUtil.VIEW_HEIGHT)};
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                pointFEnd = new PointF(0, ((UiUtil.getScreenHeight() - mLayoutHeight) / 2) + UiUtil.getStatusBarHeight());
-            } else {
-                pointFEnd = new PointF(0, (float) (UiUtil.getScreenHeight() - mLayoutHeight) / 2);
+//        if (mStartValues != null && imgWidth > 0 && imgHeight > 0) {
+//            int mLayoutHeight = UiUtil.getScreenWidth() * imgHeight / imgWidth;
+//
+//            float deltaX = mStartValues.getInt(SkipUtil.VIEW_X);
+//            float deltaY = mStartValues.getInt(SkipUtil.VIEW_Y);
+//
+//            PointF pointFEnd;
+//
+//            Integer[] startSize
+//                    = {mStartValues.getInt(SkipUtil.VIEW_WIDTH), mStartValues.getInt(SkipUtil.VIEW_HEIGHT)};
+//
+////            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+////                pointFEnd = new PointF(0, ((UiUtil.getScreenHeight() - mLayoutHeight) / 2) + UiUtil.getStatusBarHeight());
+////            } else {
+//            pointFEnd = new PointF(0, (float) (UiUtil.getScreenHeight() - mLayoutHeight) / 2);
+////            }
+//
+//            Integer[] endSize = {UiUtil.getScreenWidth(), mLayoutHeight};
+//
+//            ValueAnimator translationAnimator = ValueAnimator.ofObject(
+//                    new BesselEvaluator(new PointF(0, (UiUtil.getScreenHeight() - mLayoutHeight) / 2 +
+//                            (deltaY / 4)), new PointF(deltaX / 4 * 3, deltaY)),
+//                    pointFEnd, new PointF(deltaX, deltaY));
+//
+//            translationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//                @Override
+//                public void onAnimationUpdate(ValueAnimator animation) {
+//                    PointF pointF = (PointF) animation.getAnimatedValue();
+//                    mAnimLayout.setTranslationX(pointF.x);
+//                    mAnimLayout.setTranslationY(pointF.y);
+//                }
+//            });
+//
+//            ValueAnimator widthAnimator
+//                    = ValueAnimator.ofObject(new SizeEvaluator(), endSize, startSize);
+//
+//            widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//                @Override
+//                public void onAnimationUpdate(ValueAnimator animation) {
+//                    Integer[] size = (Integer[]) animation.getAnimatedValue();
+//                    CoordinatorLayout.LayoutParams layoutParams =
+//                            (CoordinatorLayout.LayoutParams) mAnimLayout.getLayoutParams();
+//                    layoutParams.width = size[0];
+//                    layoutParams.height = size[1];
+//                    Log.d("TAG", "layoutParams.width : " + layoutParams.width);
+//                    Log.d("TAG", "layoutParams.height : " + layoutParams.height);
+//                    mAnimLayout.setLayoutParams(layoutParams);
+//                }
+//            });
+//
+//            AnimatorSet imgSet = new AnimatorSet();
+//            imgSet.playTogether(widthAnimator, translationAnimator,
+//                    ObjectAnimator.ofFloat(mBackground, "scaleX", 1f, 0f),
+//                    ObjectAnimator.ofFloat(mBackground, "scaleY", 1f, 0f),
+//                    ObjectAnimator.ofFloat(mToolBar, "alpha", 1f, 0f));
+//            imgSet.setDuration(350);
+//
+//            AnimatorSet set1 = new AnimatorSet();
+//            set1.play(ObjectAnimator.ofFloat(mAnimLayout, "alpha", 1f, 0f).setDuration(150))
+//                    .after(imgSet);
+//
+//            set1.addListener(new MyObjectAnimatorListener() {
+//                @Override
+//                public void onAnimationStart(Animator animation) {
+//                    mPhotoView.setAlpha(0f);
+//                    mAnimLayout.setVisibility(View.VISIBLE);
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    finish();
+//                    overridePendingTransition(0, 0);
+//                }
+//            });
+//            set1.start();
+//        } else {
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(ObjectAnimator.ofFloat(mBackground, "scaleX", 1f, 0f).setDuration(400),
+                ObjectAnimator.ofFloat(mBackground, "scaleY", 1f, 0f).setDuration(400),
+                ObjectAnimator.ofFloat(mToolBar, "alpha", 1f, 0f).setDuration(250),
+                ObjectAnimator.ofFloat(mPhotoView, "alpha", 1f, 0f).setDuration(250));
+        set.addListener(new MyObjectAnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                finish();
+                overridePendingTransition(0, 0);
             }
-
-            Integer[] endSize = {UiUtil.getScreenWidth(), mLayoutHeight};
-
-            ValueAnimator translationAnimator = ValueAnimator.ofObject(
-                    new BesselEvaluator(new PointF(0, (UiUtil.getScreenHeight() - mLayoutHeight) / 2 +
-                            (deltaY / 4)), new PointF(deltaX / 4 * 3, deltaY)),
-                    pointFEnd, new PointF(deltaX, deltaY));
-
-            translationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    PointF pointF = (PointF) animation.getAnimatedValue();
-                    mAnimLayout.setTranslationX(pointF.x);
-                    mAnimLayout.setTranslationY(pointF.y);
-                }
-            });
-
-            ValueAnimator widthAnimator
-                    = ValueAnimator.ofObject(new SizeEvaluator(), endSize, startSize);
-
-            widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    Integer[] size = (Integer[]) animation.getAnimatedValue();
-                    CoordinatorLayout.LayoutParams layoutParams =
-                            (CoordinatorLayout.LayoutParams) mAnimLayout.getLayoutParams();
-                    layoutParams.width = size[0];
-                    layoutParams.height = size[1];
-                    mAnimLayout.setLayoutParams(layoutParams);
-                }
-            });
-
-            AnimatorSet imgSet = new AnimatorSet();
-            imgSet.playTogether(widthAnimator, translationAnimator,
-                    ObjectAnimator.ofFloat(mBackground, "scaleX", 1f, 0f),
-                    ObjectAnimator.ofFloat(mBackground, "scaleY", 1f, 0f),
-                    ObjectAnimator.ofFloat(mToolBar, "alpha", 1f, 0f));
-            imgSet.setDuration(350);
-
-            AnimatorSet set1 = new AnimatorSet();
-            set1.play(ObjectAnimator.ofFloat(mAnimLayout, "alpha", 1f, 0f).setDuration(150))
-                    .after(imgSet);
-
-            set1.addListener(new MyObjectAnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    mPhotoView.setAlpha(0f);
-                    mAnimLayout.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    finish();
-                    overridePendingTransition(0, 0);
-                }
-            });
-            set1.start();
-        } else {
-            AnimatorSet set = new AnimatorSet();
-            set.playTogether(ObjectAnimator.ofFloat(mBackground, "scaleX", 1f, 0f).setDuration(400),
-                    ObjectAnimator.ofFloat(mBackground, "scaleY", 1f, 0f).setDuration(400),
-                    ObjectAnimator.ofFloat(mToolBar, "alpha", 1f, 0f).setDuration(250),
-                    ObjectAnimator.ofFloat(mPhotoView, "alpha", 1f, 0f).setDuration(250));
-            set.addListener(new MyObjectAnimatorListener() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    finish();
-                    overridePendingTransition(0, 0);
-                }
-            });
-            set.start();
-        }
+        });
+        set.start();
+//        }
     }
 
     @Override
@@ -407,7 +410,7 @@ public class PhotoActivity extends BaseActivity implements BaseView {
     }
 
     private void savePhoto() {
-        MyUtil.savePhoto(PhotoActivity.this, photoUrl, new DownListener() {
+        addSubscription(MyUtil.savePhoto(PhotoActivity.this, photoUrl, new DownListener() {
             @Override
             public void success() {
                 showSnackBar(getString(R.string.save_img_success));
@@ -417,6 +420,6 @@ public class PhotoActivity extends BaseActivity implements BaseView {
             public void error() {
                 showSnackBar(getString(R.string.save_img_error));
             }
-        });
+        }));
     }
 }

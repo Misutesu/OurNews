@@ -17,8 +17,7 @@ public class UiUtil {
 
     public static void initialize(Context context) {
         if (screenWidth == 0 || screenHeight == 0 || screenDensity == 0 || densityDpi == 0 || statusBarHeight == 0) {
-            if (context == null)
-                return;
+            if (context == null) return;
             DisplayMetrics metrics = new DisplayMetrics();
             WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             wm.getDefaultDisplay().getMetrics(metrics);

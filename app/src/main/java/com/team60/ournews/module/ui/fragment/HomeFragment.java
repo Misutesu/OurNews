@@ -75,6 +75,7 @@ public class HomeFragment extends BaseFragment implements HomeView {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
         EventBus.getDefault().register(this);
+        setStatistics(true);
         return view;
     }
 

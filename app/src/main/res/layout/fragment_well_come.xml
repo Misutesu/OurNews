@@ -2,6 +2,28 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
+             android:paddingBottom="?actionBarSize"
              tools:context="com.team60.ournews.module.ui.fragment.WellComeFragment">
 
+    <ImageView
+        android:id="@+id/fragment_well_come_img"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="80dp"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/fragment_well_come_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.4"
+        android:textColor="@color/white"
+        android:textSize="16sp"/>
 </FrameLayout>

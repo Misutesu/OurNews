@@ -139,6 +139,7 @@ public class MainActivity extends BaseActivity implements MainView {
         init(savedInstanceState);
         setListener();
         setUserInfo();
+        showWellCome();
         mPresenter.checkUpdate();
     }
 
@@ -190,8 +191,6 @@ public class MainActivity extends BaseActivity implements MainView {
         if (ThemeUtil.newInstance().isNightMode()) mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
 
         initViewPager();
-
-        showWellCome();
     }
 
 
