@@ -31,8 +31,6 @@ public class AdvertisementView extends RelativeLayout {
 
     private final int TIME = 5000;
 
-    private Context context;
-
     private ViewPager mViewPager;
 
     private PagerAdapter mAdapter;
@@ -80,8 +78,6 @@ public class AdvertisementView extends RelativeLayout {
     }
 
     private void init(final Context context) {
-        this.context = context;
-
         View view = LayoutInflater.from(context).inflate(R.layout.layout_advertisement_view, this, true);
 
         mViewPager = (ViewPager) view.findViewById(R.id.advertisement_view_view_pager);
@@ -125,17 +121,14 @@ public class AdvertisementView extends RelativeLayout {
                 switch (state) {
                     case ViewPager.SCROLL_STATE_DRAGGING:
                         isTouch = true;
-                        if (handler != null)
-                            handler.removeCallbacks(runnable);
+                        if (handler != null) handler.removeCallbacks(runnable);
                         break;
                     case ViewPager.SCROLL_STATE_IDLE:
                         if (isTouch) {
                             isTouch = false;
-                            if (handler != null)
-                                handler.postDelayed(runnable, TIME);
+                            if (handler != null) handler.postDelayed(runnable, TIME);
                         }
                         break;
-                    default:
                 }
             }
         });

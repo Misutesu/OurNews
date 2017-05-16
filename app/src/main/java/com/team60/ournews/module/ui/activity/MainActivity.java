@@ -81,6 +81,9 @@ public class MainActivity extends BaseActivity implements MainView {
 
     private final int NOTIFY_ID = 101;
 
+    private final int NO_ACTION = -1;
+    private final int CLICK_AVATAR_ACTION = 1;
+
     public final String[] titles = {"推荐", "ACG", "游戏", "社会", "娱乐", "科技"};
 
     private List<Fragment> fragments;
@@ -129,6 +132,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     private String mTaskName;
     private long lastOnBackTime;
+    private int drawerLayoutCloseAction = NO_ACTION;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,7 +192,8 @@ public class MainActivity extends BaseActivity implements MainView {
             mDrawerLayout.setClipToPadding(false);
         }
 
-        if (ThemeUtil.newInstance().isNightMode()) mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
+        if (ThemeUtil.newInstance().isNightMode())
+            mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
 
         initViewPager();
     }
@@ -196,6 +201,37 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void setListener() {
+        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                switch (drawerLayoutCloseAction) {
+                    case CLICK_AVATAR_ACTION:
+                        if (User.isLogin()) {
+                            startActivity(new Intent(MainActivity.this, UserActivity.class));
+                        } else {
+                            startActivityForResult(new Intent(MainActivity.this, LoginActivity.class), LoginActivity.CODE_LOGIN);
+                        }
+                        break;
+                }
+                drawerLayoutCloseAction = NO_ACTION;
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+
         mUserLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -206,14 +242,8 @@ public class MainActivity extends BaseActivity implements MainView {
         mHeaderUserAvatarImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (User.isLogin()) {
-                    startActivity(new Intent(MainActivity.this, UserActivity.class));
-                } else {
-                    startActivityForResult(new Intent(MainActivity.this, LoginActivity.class), LoginActivity.CODE_LOGIN);
-                }
-                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    mDrawerLayout.closeDrawer(GravityCompat.START);
-                }
+                drawerLayoutCloseAction = CLICK_AVATAR_ACTION;
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
@@ -229,9 +259,7 @@ public class MainActivity extends BaseActivity implements MainView {
                     EventBus.getDefault().post(
                             getChangeColorEvent(getTheme(), MainActivity.this, R.style.NightTheme));
                 }
-                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    mDrawerLayout.closeDrawer(GravityCompat.START);
-                }
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
@@ -254,9 +282,7 @@ public class MainActivity extends BaseActivity implements MainView {
                                     User.breakLogin();
                                     PushUtil.newInstance().logout(MainActivity.this);
                                     setUserInfo();
-                                    if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                                    }
+                                    mDrawerLayout.closeDrawer(GravityCompat.START);
                                 }
                             })
                             .setNegativeButton(getString(R.string.no), null)
