@@ -6,8 +6,8 @@ android {
         sign {
             keyAlias 'Misutesu'
             keyPassword '8189252'
-//            storeFile file('C:/MyFiles/MyAndroid/OurNews/keystore.jks')
-            storeFile file('D:/Wu/GitHub/OurNews/keystore.jks')
+            storeFile file('C:/MyFiles/MyAndroid/OurNews/keystore.jks')
+//            storeFile file('D:/Wu/GitHub/OurNews/keystore.jks')
             storePassword '8189252'
         }
     }
@@ -17,8 +17,8 @@ android {
         applicationId "com.team60.ournews"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 3
-        versionName "1.0.2"
+        versionCode 4
+        versionName "1.0.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
