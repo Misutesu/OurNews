@@ -51,6 +51,7 @@
             android:enabled="true">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/>
+
                 <category android:name="com.team60.ournews"/>
             </intent-filter>
         </receiver>
@@ -64,6 +65,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
+
+        <activity android:name=".module.ui.activity.SettingActivity">
+        </activity>
     </application>
 
 </manifest>

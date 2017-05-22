@@ -144,7 +144,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
             public void onClick(View view) {
                 if (mPhotoDialog == null) {
                     mPhotoDialog = ThemeUtil.getThemeDialogBuilder(EditUserActivity.this)
-                            .setTitle(getString(R.string.change_avatar))
+                            .setTitle(R.string.change_avatar)
                             .setItems(selectPhotoItems, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
@@ -186,7 +186,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
             public void onClick(View view) {
                 if (mSexDialog == null)
                     mSexDialog = ThemeUtil.getThemeDialogBuilder(EditUserActivity.this)
-                            .setTitle(getString(R.string.select_sex))
+                            .setTitle(R.string.select_sex)
                             .setItems(selectSexItems, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {

@@ -1,12 +1,10 @@
 package com.team60.ournews.module.ui.activity;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -19,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -52,23 +49,19 @@ import com.team60.ournews.module.model.CheckUpdateResult;
 import com.team60.ournews.module.presenter.MainPresenter;
 import com.team60.ournews.module.presenter.impl.MainPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
-import com.team60.ournews.module.ui.dialog.DownloadDialog;
-import com.team60.ournews.module.ui.dialog.UpdateDialog;
 import com.team60.ournews.module.ui.fragment.HomeFragment;
 import com.team60.ournews.module.ui.fragment.TypeFragment;
 import com.team60.ournews.module.view.MainView;
-import com.team60.ournews.util.DownloadManager;
-import com.team60.ournews.util.FileUtil;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.PushUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
+import com.team60.ournews.util.UpdataUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +86,7 @@ public class MainActivity extends BaseActivity implements MainView {
     private AppCompatTextView mHeaderUserNameText;
     private ImageView mHeaderNightModeImg;
     private LinearLayout mSelectThemeLayout;
+    private LinearLayout mSettingLayout;
     private LinearLayout mLogoutLayout;
 
     @BindView(R.id.activity_main_coordinator_layout)
@@ -122,15 +116,10 @@ public class MainActivity extends BaseActivity implements MainView {
 
     private ThemeSelectRecyclerViewAdapter mThemeAdapter;
 
-    private NotificationManager mManager;
-    private NotificationCompat.Builder mBuilder;
-
     private AlertDialog mThemeDialog;
     private AlertDialog mThemeHintDialog;
     private AlertDialog mLogoutDialog;
-    private DownloadDialog mDownloadDialog;
 
-    private String mTaskName;
     private long lastOnBackTime;
     private int drawerLayoutCloseAction = NO_ACTION;
 
@@ -149,8 +138,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected void onDestroy() {
-        DownloadManager.stopAllTask();
-        mManager.cancelAll();
+        UpdataUtil.newInstance().destroy();
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -159,14 +147,13 @@ public class MainActivity extends BaseActivity implements MainView {
     public void init(Bundle savedInstanceState) {
         mPresenter = new MainPresenterImpl(this, this);
 
-        mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
         View mHeaderView = mNavView.getHeaderView(0);
         mHeaderTopLayout = (RelativeLayout) mHeaderView.findViewById(R.id.header_top_layout);
         mHeaderUserAvatarImg = (SimpleDraweeView) mHeaderView.findViewById(R.id.header_user_avatar_img);
         mHeaderUserNameText = (AppCompatTextView) mHeaderView.findViewById(R.id.header_user_name_text);
         mHeaderNightModeImg = (ImageView) mHeaderView.findViewById(R.id.header_night_mode_img);
         mSelectThemeLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_theme_select_layout);
+        mSettingLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_setting_layout);
         mLogoutLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_logout_layout);
 
         if (mNavView != null) {
@@ -271,12 +258,19 @@ public class MainActivity extends BaseActivity implements MainView {
             }
         });
 
+        mSettingLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, SettingActivity.class));
+            }
+        });
+
         mLogoutLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mLogoutDialog == null) {
                     mLogoutDialog = ThemeUtil.getThemeDialogBuilder(MainActivity.this).setMessage(getString(R.string.are_you_sure_logout))
-                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     User.breakLogin();
@@ -285,7 +279,7 @@ public class MainActivity extends BaseActivity implements MainView {
                                     mDrawerLayout.closeDrawer(GravityCompat.START);
                                 }
                             })
-                            .setNegativeButton(getString(R.string.no), null)
+                            .setNegativeButton(R.string.no, null)
                             .create();
                 }
                 mLogoutDialog.show();
@@ -386,7 +380,7 @@ public class MainActivity extends BaseActivity implements MainView {
                                 mThemeHintDialog = ThemeUtil.getThemeDialogBuilder(MainActivity.this)
                                         .setTitle(getString(R.string.hint))
                                         .setMessage(getString(R.string.select_theme_hint))
-                                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 ThemeUtil.newInstance().setStyle(position);
@@ -398,7 +392,7 @@ public class MainActivity extends BaseActivity implements MainView {
                                                         getChangeColorEvent(getTheme(), MainActivity.this, ThemeUtil.newInstance().getStyle()));
                                             }
                                         })
-                                        .setNegativeButton(getString(R.string.no), null)
+                                        .setNegativeButton(R.string.no, null)
                                         .create();
                             mThemeHintDialog.show();
                         } else {
@@ -554,111 +548,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void hasNewVersion(final CheckUpdateResult result) {
-        int nowVersion = MyUtil.getVersionCode(this);
-        if (nowVersion != -1) {
-            final SharedPreferences versionSP = MyUtil.getSharedPreferences(MainActivity.this
-                    , SHARED_PREFERENCES_VERSION);
-            if (nowVersion < result.getData().getNowVersion()
-                    && versionSP.getInt("IgnoreVersion", -1) != result.getData().getNowVersion()) {
-                final boolean isForced = nowVersion < result.getData().getMinVersion();
-                UpdateDialog.create(this, isForced)
-                        .setUpdateInfo(result)
-                        .setOnClickListener(new UpdateDialog.OnClickListener() {
-                            @Override
-                            public void onUpdateClick() {
-                                if (!DownloadManager.isDownload(mTaskName)) {
-                                    downloadNewVersion(result.getData().getFileName(), isForced);
-                                }
-                            }
-
-                            @Override
-                            public void onIgnoreClick() {
-                                versionSP.edit().putInt("IgnoreVersion", result.getData().getNowVersion()).apply();
-                            }
-                        })
-                        .show();
-            }
-        }
-    }
-
-    private void downloadNewVersion(String url, final boolean isForced) {
-        String appName = getString(R.string.app_name);
-        File file = getExternalCacheDir();
-        file = new File(file, appName + File.separator + "NewVersion");
-        if (FileUtil.createDir(file)) {
-            file = new File(file, appName + ".apk");
-            if (FileUtil.deleteFile(file)) {
-                mTaskName = DownloadManager.create(url, file
-                        , new DownloadManager.DownloadManagerListener() {
-                            @Override
-                            public void onStart() {
-                                showDownloadDialog(isForced);
-                            }
-
-                            @Override
-                            public void onProgress(int progress) {
-                                if (mBuilder == null) {
-                                    mDownloadDialog.setProgress(progress);
-                                } else {
-                                    mBuilder.setProgress(100, progress, true)
-                                            .setContentText(getString(R.string.is_download_new_version) + " " + progress + "%");
-                                    mManager.notify(NOTIFY_ID, mBuilder.build());
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable t, File file) {
-                                t.printStackTrace();
-                                FileUtil.deleteFile(file);
-                                showSnackBar(getString(R.string.download_error));
-                            }
-
-                            @Override
-                            public void onSuccess(File file) {
-                                MyUtil.installAPK(MainActivity.this, file);
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                mManager.cancel(NOTIFY_ID);
-                                mDownloadDialog.dismiss();
-                                mBuilder = null;
-                            }
-                        }).start();
-            }
-        }
-    }
-
-    private void showDownloadDialog(boolean isForced) {
-        if (mDownloadDialog == null) {
-            mDownloadDialog = DownloadDialog.create(MainActivity.this);
-            mDownloadDialog.setOnClickListener(new DownloadDialog.OnClickListener() {
-                @Override
-                public void onCancelClick() {
-                    DownloadManager.stopTask(mTaskName);
-                }
-
-                @Override
-                public void onBackgroundClick() {
-                    mDownloadDialog.dismiss();
-                    showNotification();
-                }
-            });
-        }
-        mDownloadDialog.setForced(isForced);
-        mDownloadDialog.show();
-    }
-
-    private void showNotification() {
-        mBuilder = new NotificationCompat.Builder(MainActivity.this)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.is_download_new_version))
-                .setSmallIcon(R.drawable.min_logo)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setWhen(System.currentTimeMillis())
-                .setProgress(100, 0, true)
-                .setAutoCancel(false);
-        mManager.notify(NOTIFY_ID, mBuilder.build());
+        UpdataUtil.newInstance().showUpdataDialog(this, result);
     }
 
 //    private void checkPermission() {

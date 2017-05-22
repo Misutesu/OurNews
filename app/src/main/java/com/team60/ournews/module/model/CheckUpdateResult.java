@@ -11,7 +11,7 @@ public class CheckUpdateResult {
     /**
      * result : success
      * errorCode : 0
-     * data : {"nowVersion":1,"minVersion":1,"updateTime":1492685849000,"fileName":"OurNews.apk","fileSize":9000000,"description":"第一个版本"}
+     * data : {"nowVersion":1,"nowVersionName":"V1.0.2","minVersion":1,"updateTime":1492685849000,"fileName":"OurNews.apk","fileSize":9000000,"description":"第一个版本"}
      */
 
     private String result;
@@ -46,6 +46,7 @@ public class CheckUpdateResult {
     public static class DataBean {
         /**
          * nowVersion : 1
+         * nowVersionName : "V1.0.2"
          * minVersion : 1
          * updateTime : "2017年4月9日"
          * fileName : OurNews.apk
@@ -55,6 +56,8 @@ public class CheckUpdateResult {
 
         @SerializedName("now_version")
         private int nowVersion;
+        @SerializedName("now_version_name")
+        private String nowVersionName;
         @SerializedName("min_version")
         private int minVersion;
         @SerializedName("update_time")
@@ -71,6 +74,14 @@ public class CheckUpdateResult {
 
         public void setNowVersion(int nowVersion) {
             this.nowVersion = nowVersion;
+        }
+
+        public String getNowVersionName() {
+            return nowVersionName;
+        }
+
+        public void setNowVersionName(String nowVersionName) {
+            this.nowVersionName = nowVersionName;
         }
 
         public int getMinVersion() {

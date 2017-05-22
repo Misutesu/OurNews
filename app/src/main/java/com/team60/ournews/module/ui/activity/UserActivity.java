@@ -227,7 +227,7 @@ public class UserActivity extends BaseActivity implements UserView {
             loginName = "";
 
             if (!mOtherUser.getPhoto().equals("NoImage")) {
-                uri = FrescoLoader.getUri(MyUtil.getPhotoUrl(user.getPhoto()));
+                uri = FrescoLoader.getUri(MyUtil.getPhotoUrl(mOtherUser.getPhoto()));
             } else {
                 uri = FrescoLoader.getUri(R.drawable.user_default_avatar);
             }

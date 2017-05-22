@@ -256,15 +256,16 @@ public class NewActivity extends BaseActivity implements NewView {
                     startActivityForResult(intent, WriteCommentActivity.CODE_SEND);
                 } else {
                     if (mLoginDialog == null) {
-                        mLoginDialog = ThemeUtil.getThemeDialogBuilder(NewActivity.this).setTitle(getString(R.string.hint))
+                        mLoginDialog = ThemeUtil.getThemeDialogBuilder(NewActivity.this)
+                                .setTitle(R.string.hint)
                                 .setMessage(getString(R.string.no_login_do_you_login_now))
-                                .setPositiveButton(getString(R.string.go_to_login), new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.go_to_login, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         startActivityForResult(new Intent(NewActivity.this, LoginActivity.class), LoginActivity.CODE_LOGIN);
                                     }
                                 })
-                                .setNegativeButton(getString(R.string.no), null)
+                                .setNegativeButton(R.string.no, null)
                                 .create();
                     }
                     mLoginDialog.show();

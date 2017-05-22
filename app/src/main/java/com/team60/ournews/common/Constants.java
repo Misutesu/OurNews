@@ -8,6 +8,8 @@ public class Constants {
 
     public static final String KEY = "a0f33a00f12b4a8eb6f626f03a1f140a";
 
+    public static final String SHA1 = "6B:D7:77:81:62:17:7C:19:27:95:24:FF:47:55:FF:B3:64:9F:59:50";
+
     public static final int NEW_EVERY_PAGE_SIZE = 10;
 
     public static final int COMMENT_EVERY_PAGE_SIZE = 6;

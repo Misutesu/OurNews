@@ -4,10 +4,13 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="select_theme">选择主题</string>
+    <string name="more_setting">更多设置</string>
     <string name="logout">退出登录</string>
     <string name="are_you_sure_logout">您确定要退出登录吗?</string>
     <string name="select_theme_hint">您当前处于夜间模式下\n\n确定要退出夜间模式以便您选择的主题生效\n\n(否则您选择的主题将在退出夜间模式时生效)</string>
 
+    <string name="sign_error">签名不符,请卸载后从官网下载正确版本</string>
+    <string name="open_app_info_error">打开设置失败,请手动到 设置-应用 中卸载</string>
     <string name="internet_error">网络错误</string>
     <string name="server_error">返回参数错误</string>
     <string name="connect_time_out">连接超时</string>
@@ -22,6 +25,7 @@
     <string name="no_write_permission">没有读写权限</string>
     <string name="token_error">此账号自动登录过期或已在其他设备登录,请尝试重新登录</string>
 
+    <string name="exit">退出</string>
     <string name="ok">确定</string>
     <string name="no">取消</string>
     <string name="edit">编辑</string>
@@ -132,4 +136,5 @@
     <string name="download_error">下载更新失败</string>
 
     <string name="click_again_exit">再按一次退出</string>
+    <string name="uninstall">卸载</string>
 </resources>

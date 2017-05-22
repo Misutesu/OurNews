@@ -6,8 +6,8 @@ android {
         sign {
             keyAlias 'Misutesu'
             keyPassword '8189252'
-            storeFile file('C:/MyFiles/MyAndroid/OurNews/keystore.jks')
-//            storeFile file('D:/Wu/GitHub/OurNews/keystore.jks')
+//            storeFile file('C:/MyFiles/MyAndroid/OurNews/keystore.jks')
+            storeFile file('D:/Wu/GitHub/OurNews/keystore.jks')
             storePassword '8189252'
         }
     }
@@ -80,6 +80,7 @@ dependencies {
     compile 'cn.jiguang.sdk:jpush:3.0.3'
     compile 'cn.jiguang.sdk:janalytics:1.1.0'
     compile 'com.github.Misutesu:FrescoLoader:1.1.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.5.1'
 }
