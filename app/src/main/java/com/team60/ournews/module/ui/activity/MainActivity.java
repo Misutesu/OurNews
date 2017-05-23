@@ -159,7 +159,7 @@ public class MainActivity extends BaseActivity implements MainView {
         mSelectThemeLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_theme_select_layout);
         mPushLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_push_layout);
         mPushText = (AppCompatTextView) mHeaderView.findViewById(R.id.header_push_text);
-        mPushSwitch = (SwitchCompat) mHeaderView = findViewById(R.id.header_push_switch);
+        mPushSwitch = (SwitchCompat) mHeaderView.findViewById(R.id.header_push_switch);
         mSettingLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_setting_layout);
         mLogoutLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_logout_layout);
 
