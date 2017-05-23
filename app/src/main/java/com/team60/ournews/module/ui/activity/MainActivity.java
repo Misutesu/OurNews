@@ -24,6 +24,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -86,6 +87,9 @@ public class MainActivity extends BaseActivity implements MainView {
     private AppCompatTextView mHeaderUserNameText;
     private ImageView mHeaderNightModeImg;
     private LinearLayout mSelectThemeLayout;
+    private LinearLayout mPushLayout;
+    private AppCompatTextView mPushText;
+    private SwitchCompat mPushSwitch;
     private LinearLayout mSettingLayout;
     private LinearLayout mLogoutLayout;
 
@@ -153,6 +157,9 @@ public class MainActivity extends BaseActivity implements MainView {
         mHeaderUserNameText = (AppCompatTextView) mHeaderView.findViewById(R.id.header_user_name_text);
         mHeaderNightModeImg = (ImageView) mHeaderView.findViewById(R.id.header_night_mode_img);
         mSelectThemeLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_theme_select_layout);
+        mPushLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_push_layout);
+        mPushText = (AppCompatTextView) mHeaderView.findViewById(R.id.header_push_text);
+        mPushSwitch = (SwitchCompat) mHeaderView = findViewById(R.id.header_push_switch);
         mSettingLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_setting_layout);
         mLogoutLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_logout_layout);
 
