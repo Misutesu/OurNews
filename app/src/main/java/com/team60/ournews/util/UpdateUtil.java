@@ -22,8 +22,8 @@ import static com.team60.ournews.common.Constants.SHARED_PREFERENCES_VERSION;
  * Created on 2017/5/18 15:34
  */
 
-public class UpdataUtil {
-    private static UpdataUtil updataUtil;
+public class UpdateUtil {
+    private static UpdateUtil updateUtil;
 
     private final int NOTIFY_ID = 101;
 
@@ -32,18 +32,18 @@ public class UpdataUtil {
     private NotificationCompat.Builder mBuilder;
     private DownloadDialog mDownloadDialog;
 
-    public static UpdataUtil newInstance() {
-        if (updataUtil == null) {
-            synchronized (UpdataUtil.class) {
-                if (updataUtil == null) {
-                    updataUtil = new UpdataUtil();
+    public static UpdateUtil newInstance() {
+        if (updateUtil == null) {
+            synchronized (UpdateUtil.class) {
+                if (updateUtil == null) {
+                    updateUtil = new UpdateUtil();
                 }
             }
         }
-        return updataUtil;
+        return updateUtil;
     }
 
-    public void showUpdataDialog(final Context context, final CheckUpdateResult result) {
+    public void showUpdateDialog(final Context context, final CheckUpdateResult result) {
         if (mManager == null)
             mManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         int nowVersion = MyUtil.getVersionCode(context);

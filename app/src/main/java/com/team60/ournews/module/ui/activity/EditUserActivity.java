@@ -4,12 +4,15 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
@@ -19,22 +22,14 @@ import android.view.View;
 import android.widget.DatePicker;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.jph.takephoto.app.TakePhoto;
-import com.jph.takephoto.app.TakePhotoImpl;
-import com.jph.takephoto.compress.CompressConfig;
-import com.jph.takephoto.model.CropOptions;
-import com.jph.takephoto.model.InvokeParam;
-import com.jph.takephoto.model.TContextWrap;
-import com.jph.takephoto.model.TResult;
-import com.jph.takephoto.permission.InvokeListener;
-import com.jph.takephoto.permission.PermissionManager;
-import com.jph.takephoto.permission.TakePhotoInvocationHandler;
 import com.mistesu.frescoloader.FrescoLoader;
+import com.team60.ournews.BuildConfig;
 import com.team60.ournews.R;
 import com.team60.ournews.module.presenter.EditUserPresenter;
 import com.team60.ournews.module.presenter.impl.EditUserPresenterImpl;
 import com.team60.ournews.module.ui.activity.base.BaseActivity;
 import com.team60.ournews.module.view.EditUserView;
+import com.team60.ournews.util.FileUtil;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.ThemeUtil;
 
@@ -45,7 +40,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.wasabeef.fresco.processors.BlurPostprocessor;
 
-public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResultListener, InvokeListener, EditUserView {
+public class EditUserActivity extends BaseActivity implements EditUserView {
+
+    private final int SELECT_PHOTO_FROM_CAMERA_CODE = 100;
+    private final int SELECT_PHOTO_FROM_PHONE_CODE = 101;
+    private final int CROP_PHONE_CODE = 102;
+    private final String PHOTO_TEMP = "photoTemp.jpg";
+    private final String CROP_TEMP = "cropTemp.png";
 
     public final static int CODE_NICK_NAME = 106;
 
@@ -88,21 +89,11 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
     private DatePickerDialog mDateDialog;
     private ProgressDialog mProgressDialog;
 
-    private TakePhoto takePhoto;
-    private InvokeParam invokeParam;
-
     private boolean isSelectPhoto = false;
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        getTakePhoto().onSaveInstanceState(outState);
-        super.onSaveInstanceState(outState);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getTakePhoto().onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user);
         ButterKnife.bind(this);
         init(savedInstanceState);
@@ -112,11 +103,45 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        getTakePhoto().onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CODE_NICK_NAME) {
             if (resultCode == InputActivity.CODE_EDIT) {
                 mNickNameText.setText(data.getStringExtra("newText"));
+            }
+        } else if (requestCode == SELECT_PHOTO_FROM_CAMERA_CODE) {
+            File file = FileUtil.getImgCacheFile(this, PHOTO_TEMP);
+            if (file == null || !file.exists()) {
+                showSnackBar(getString(R.string.get_photo_error));
+            } else {
+                startCrop(file);
+            }
+        } else if (requestCode == SELECT_PHOTO_FROM_PHONE_CODE) {
+            if (data == null) {
+                showSnackBar(getString(R.string.get_photo_error));
+            } else {
+                Uri uri = data.getData();
+                if (uri == null) {
+                    showSnackBar(getString(R.string.get_photo_error));
+                } else {
+                    startCrop(uri);
+                }
+            }
+        } else if (requestCode == CROP_PHONE_CODE) {
+            File file = FileUtil.getImgCacheFile(this, CROP_TEMP);
+            if (!file.exists()) {
+                showSnackBar(getString(R.string.get_photo_error));
+            } else {
+                FrescoLoader.load(file)
+                        .setCircle()
+                        .setBorder(4, Color.WHITE)
+                        .clearImgCache()
+                        .into(mAvatarImg);
+                FrescoLoader.load(file)
+                        .resize(128, 64)
+                        .setPostprocessor(new BlurPostprocessor(EditUserActivity.this))
+                        .clearImgCache()
+                        .into(mAvatarBackgroundImg);
+                isSelectPhoto = true;
             }
         }
     }
@@ -148,21 +173,39 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
                             .setItems(selectPhotoItems, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
-                                    File file = new File(getCacheDir(), "photo");
-                                    if (!file.exists())
-                                        file.mkdirs();
-
-                                    CompressConfig compressConfig = new CompressConfig.Builder()
-                                            .setMaxSize(50 * 1024).setMaxPixel(1024).enableReserveRaw(false).create();
-                                    CropOptions cropOptions = new CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create();
-
-                                    TakePhoto takePhoto = getTakePhoto();
-
-                                    takePhoto.onEnableCompress(compressConfig, true);
+//                                    File file = new File(getCacheDir(), "photo");
+//                                    if (!file.exists())
+//                                        file.mkdirs();
+//
+//                                    CompressConfig compressConfig = new CompressConfig.Builder()
+//                                            .setMaxSize(50 * 1024).setMaxPixel(1024).enableReserveRaw(false).create();
+//                                    CropOptions cropOptions = new CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create();
+//
+//                                    TakePhoto takePhoto = getTakePhoto();
+//
+//                                    takePhoto.onEnableCompress(compressConfig, true);
+//                                    if (which == 0) {
+//                                        takePhoto.onPickFromCaptureWithCrop(Uri.fromFile(new File(file, "cache.png")), cropOptions);
+//                                    } else if (which == 1) {
+//                                        takePhoto.onPickFromGalleryWithCrop(Uri.fromFile(new File(file, "cache.png")), cropOptions);
+//                                    }
                                     if (which == 0) {
-                                        takePhoto.onPickFromCaptureWithCrop(Uri.fromFile(new File(file, "cache.png")), cropOptions);
+                                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                        File file = FileUtil.getImgCacheFile(EditUserActivity.this, PHOTO_TEMP);
+                                        Uri uri;
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                            uri = FileProvider.getUriForFile(EditUserActivity.this
+                                                    , BuildConfig.APPLICATION_ID + ".fileprovider", file);
+                                        } else {
+                                            uri = Uri.fromFile(file);
+                                        }
+                                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                                        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+                                        startActivityForResult(intent, SELECT_PHOTO_FROM_CAMERA_CODE);
                                     } else if (which == 1) {
-                                        takePhoto.onPickFromGalleryWithCrop(Uri.fromFile(new File(file, "cache.png")), cropOptions);
+                                        startActivityForResult(new Intent(Intent.ACTION_PICK,
+                                                MediaStore.Images.Media.INTERNAL_CONTENT_URI), SELECT_PHOTO_FROM_PHONE_CODE);
                                     }
                                 }
                             })
@@ -276,9 +319,7 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
 
                     String path = "";
                     if (isSelectPhoto) {
-                        path = getCacheDir().getAbsolutePath() + File.separator +
-                                "takephoto_cache" + File.separator +
-                                "cache.png";
+                        path = FileUtil.getImgCacheFile(EditUserActivity.this, CROP_TEMP).getAbsolutePath();
                     }
 
                     mPresenter.saveInfo(user.getId(), user.getToken(), nickName, sex, birthday, path);
@@ -327,62 +368,34 @@ public class EditUserActivity extends BaseActivity implements TakePhoto.TakeResu
         }
     }
 
-    public TakePhoto getTakePhoto() {
-        if (takePhoto == null) {
-            takePhoto = (TakePhoto) TakePhotoInvocationHandler.of(this).bind(new TakePhotoImpl(this, this));
-        }
-        return takePhoto;
-    }
-
-    @Override
-    public void takeSuccess(TResult result) {
-        if (result != null && result.getImage() != null) {
-            String path = result.getImage().getCompressPath();
-            if (path != null) {
-                File file = new File(path);
-                if (file.exists()) {
-                    FrescoLoader.load(file)
-                            .setCircle()
-                            .setBorder(4, Color.WHITE)
-                            .clearImgCache()
-                            .into(mAvatarImg);
-                    FrescoLoader.load(file)
-                            .resize(128, 64)
-                            .setPostprocessor(new BlurPostprocessor(EditUserActivity.this))
-                            .clearImgCache()
-                            .into(mAvatarBackgroundImg);
-                    isSelectPhoto = true;
-                    return;
-                }
+    private void startCrop(Object object) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.putExtra("aspectX", 1)
+                .putExtra("crop", "true")
+                .putExtra("aspectX", 1)
+                .putExtra("aspectY", 1)
+                .putExtra("outputX", 400)
+                .putExtra("outputY", 400)
+                .putExtra("scale", true)
+                .putExtra("return-data", false)
+                .putExtra("scaleUpIfNeeded", true);
+        if (object instanceof Uri) {
+            intent.setDataAndType((Uri) object, "image/*");
+        } else if (object instanceof File) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                intent.setDataAndType(FileUtil.getImageContentUri(this, (File) object), "image/*");
+//                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                Uri contentUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", (File) object);
+//                intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+            } else {
+                intent.setDataAndType(Uri.fromFile((File) object), "image/*");
             }
+        } else {
+            return;
         }
-        showSnackBar(getString(R.string.get_photo_error));
-    }
-
-    @Override
-    public void takeFail(TResult result, String msg) {
-        showSnackBar(getString(R.string.get_photo_error));
-    }
-
-    @Override
-    public void takeCancel() {
-
-    }
-
-    @Override
-    public PermissionManager.TPermissionType invoke(InvokeParam invokeParam) {
-        PermissionManager.TPermissionType type = PermissionManager.checkPermission(TContextWrap.of(this), invokeParam.getMethod());
-        if (PermissionManager.TPermissionType.WAIT.equals(type)) {
-            this.invokeParam = invokeParam;
-        }
-        return type;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionManager.TPermissionType type = PermissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionManager.handlePermissionsResult(this, type, invokeParam, this);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(FileUtil.getImgCacheFile(this, CROP_TEMP)));
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        startActivityForResult(intent, CROP_PHONE_CODE);
     }
 
     @Override

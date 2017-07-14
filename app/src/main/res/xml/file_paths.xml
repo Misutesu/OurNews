@@ -2,7 +2,10 @@
 <resources>
     <paths>
         <external-path
-            name="download_dir"
-            path="Android/data/com.team60.ournews/cache/OurNews/NewVersion/"/>
+            name="cache_dir"
+            path="Android/data/com.team60.ournews/cache/"/>
+        <external-path
+            name="img_cache_dir"
+            path="Android/data/com.team60.ournews/cache/"/>
     </paths>
 </resources>

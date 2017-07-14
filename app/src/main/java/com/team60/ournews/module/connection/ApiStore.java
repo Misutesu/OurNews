@@ -165,7 +165,6 @@ public interface ApiStore {
      * @param uid 当前登录用户id
      * @param token 当前登录用户token
      * @param type 收藏或取消收藏
-     * @return
      */
     @POST("collectNew")
     Flowable<NoDataResult> collectNew(@Query("nid") long nid,

@@ -53,7 +53,7 @@ public class PushUtil {
 
     public void setAlias(final Context context, String alias) {
         final SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(context, Constants.SHARED_PREFERENCES_PUSH);
-        if (!isStartSetAlias && !sharedPreferences.getBoolean("isSetAlias", false)) {
+        if (!JPushInterface.isPushStopped(context) && !isStartSetAlias && !sharedPreferences.getBoolean("isSetAlias", false)) {
             isStartSetAlias = true;
             JPushInterface.setAlias(context, alias, new TagAliasCallback() {
                 @Override
@@ -77,7 +77,7 @@ public class PushUtil {
     public void logout(final Context context) {
         isLogout = true;
         final SharedPreferences sharedPreferences = MyUtil.getSharedPreferences(context, Constants.SHARED_PREFERENCES_PUSH);
-        if (sharedPreferences.getBoolean("isSetAlias", false))
+        if (!JPushInterface.isPushStopped(context) && sharedPreferences.getBoolean("isSetAlias", false))
             JPushInterface.setAlias(context, "", new TagAliasCallback() {
                 @Override
                 public void gotResult(int code, String alias, Set<String> tags) {
@@ -88,5 +88,15 @@ public class PushUtil {
                     }
                 }
             });
+    }
+
+    public void setPushState(final Context context, final boolean state) {
+        if (state && JPushInterface.isPushStopped(context)) {
+            JPushInterface.resumePush(context);
+            SettingUtil.newInstance().setPushState(true);
+        } else if (!state && !JPushInterface.isPushStopped(context)) {
+            JPushInterface.stopPush(context);
+            SettingUtil.newInstance().setPushState(false);
+        }
     }
 }

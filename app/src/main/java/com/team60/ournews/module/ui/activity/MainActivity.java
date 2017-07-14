@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
@@ -31,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -55,9 +57,10 @@ import com.team60.ournews.module.ui.fragment.TypeFragment;
 import com.team60.ournews.module.view.MainView;
 import com.team60.ournews.util.MyUtil;
 import com.team60.ournews.util.PushUtil;
+import com.team60.ournews.util.SettingUtil;
 import com.team60.ournews.util.ThemeUtil;
 import com.team60.ournews.util.UiUtil;
-import com.team60.ournews.util.UpdataUtil;
+import com.team60.ournews.util.UpdateUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -90,7 +93,6 @@ public class MainActivity extends BaseActivity implements MainView {
     private LinearLayout mPushLayout;
     private AppCompatTextView mPushText;
     private SwitchCompat mPushSwitch;
-    private LinearLayout mSettingLayout;
     private LinearLayout mLogoutLayout;
 
     @BindView(R.id.activity_main_coordinator_layout)
@@ -142,7 +144,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected void onDestroy() {
-        UpdataUtil.newInstance().destroy();
+        UpdateUtil.newInstance().destroy();
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -160,7 +162,6 @@ public class MainActivity extends BaseActivity implements MainView {
         mPushLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_push_layout);
         mPushText = (AppCompatTextView) mHeaderView.findViewById(R.id.header_push_text);
         mPushSwitch = (SwitchCompat) mHeaderView.findViewById(R.id.header_push_switch);
-        mSettingLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_setting_layout);
         mLogoutLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_logout_layout);
 
         if (mNavView != null) {
@@ -188,6 +189,12 @@ public class MainActivity extends BaseActivity implements MainView {
 
         if (ThemeUtil.newInstance().isNightMode())
             mHeaderNightModeImg.setImageResource(R.drawable.night_mode);
+
+        if (!SettingUtil.newInstance().getPushState()) {
+            mPushSwitch.setChecked(false);
+            mPushText.setText(R.string.push_close);
+            PushUtil.newInstance().setPushState(this, false);
+        }
 
         initViewPager();
     }
@@ -265,10 +272,22 @@ public class MainActivity extends BaseActivity implements MainView {
             }
         });
 
-        mSettingLayout.setOnClickListener(new View.OnClickListener() {
+        mPushLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                mPushSwitch.setChecked(!mPushSwitch.isChecked());
+            }
+        });
+
+        mPushSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                PushUtil.newInstance().setPushState(MainActivity.this, isChecked);
+                if (isChecked) {
+                    mPushText.setText(R.string.push_open);
+                } else {
+                    mPushText.setText(R.string.push_close);
+                }
             }
         });
 
@@ -485,7 +504,9 @@ public class MainActivity extends BaseActivity implements MainView {
             @Override
             public void onColorChange(int color) {
                 ((ImageView) mSelectThemeLayout.findViewById(R.id.header_theme_img)).setColorFilter(color);
+                ((ImageView) mPushLayout.findViewById(R.id.header_push_img)).setColorFilter(color);
                 ((ImageView) mLogoutLayout.findViewById(R.id.header_logout_img)).setColorFilter(color);
+                mPushSwitch.setThumbTintList(ColorStateList.valueOf(color));
             }
         });
 
@@ -493,6 +514,7 @@ public class MainActivity extends BaseActivity implements MainView {
             @Override
             public void onColorChange(int color) {
                 ((TextView) mSelectThemeLayout.findViewById(R.id.header_theme_text)).setTextColor(color);
+                mPushText.setTextColor(color);
                 ((TextView) mLogoutLayout.findViewById(R.id.header_logout_text)).setTextColor(color);
             }
         });
@@ -555,7 +577,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void hasNewVersion(final CheckUpdateResult result) {
-        UpdataUtil.newInstance().showUpdataDialog(this, result);
+        UpdateUtil.newInstance().showUpdateDialog(this, result);
     }
 
 //    private void checkPermission() {

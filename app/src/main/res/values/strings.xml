@@ -53,7 +53,7 @@
     <string name="register_success">注册成功</string>
 
     <string name="edit_info">编辑信息</string>
-    <string name="get_photo_error">选择图片失败</string>
+    <string name="get_photo_error">没有选择图片</string>
     <string name="loginName">用户名</string>
     <string name="nickName">昵称</string>
     <string name="sex">性别</string>

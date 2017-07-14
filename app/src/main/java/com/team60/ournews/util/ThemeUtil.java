@@ -61,7 +61,7 @@ public class ThemeUtil {
     }
 
     public static void init(Context context) {
-        if (sharedPreferences == null)
+        if (sharedPreferences == null) {
             synchronized (ThemeUtil.class) {
                 if (sharedPreferences == null) {
                     sharedPreferences = MyUtil.getSharedPreferences(context, Constants.SHARED_PREFERENCES_THEME);
@@ -76,6 +76,7 @@ public class ThemeUtil {
                     styles[8] = R.style.BlackTheme;
                 }
             }
+        }
     }
 
     public static ThemeUtil newInstance() {
