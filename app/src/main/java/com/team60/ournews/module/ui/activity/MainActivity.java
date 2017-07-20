@@ -579,34 +579,4 @@ public class MainActivity extends BaseActivity implements MainView {
     public void hasNewVersion(final CheckUpdateResult result) {
         UpdateUtil.newInstance().showUpdateDialog(this, result);
     }
-
-//    private void checkPermission() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                    == PackageManager.PERMISSION_DENIED) {
-//                ActivityCompat.requestPermissions(MainActivity.this,
-//                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                        PERMISSION_CODE);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == PERMISSION_CODE) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//            } else {
-//                showSnackBar(getString(R.string.no_write_permission));
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-//        menu.findItem(R.id.tool_bar_save_img).setVisible(true);
-//        invalidateOptionsMenu();
-//        return super.onPrepareOptionsMenu(menu);
-//    }
 }
