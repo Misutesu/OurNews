@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,7 +81,20 @@ public class FirstActivity extends BaseActivity {
         if (mSignErrorDialog == null) {
             mSignErrorDialog = ThemeUtil.getThemeDialogBuilder(this)
                     .setTitle(R.string.sign_error)
-                    .setPositiveButton(R.string.uninstall, null)
+                    .setPositiveButton(R.string.uninstall, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            try {
+                                Intent intent = new Intent();
+                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                intent.setData(Uri.fromParts("package", getPackageName(), null));
+                                startActivity(intent);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(FirstActivity.this, R.string.open_app_info_error, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
                     .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -93,19 +105,10 @@ public class FirstActivity extends BaseActivity {
                     .create();
         }
         mSignErrorDialog.show();
-        mSignErrorDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent intent = new Intent();
-                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    intent.setData(Uri.fromParts("package", getPackageName(), null));
-                    startActivity(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(FirstActivity.this, R.string.open_app_info_error, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+//        mSignErrorDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//            }
+//        });
     }
 }
