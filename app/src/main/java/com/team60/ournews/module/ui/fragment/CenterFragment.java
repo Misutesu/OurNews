@@ -223,11 +223,7 @@ public class CenterFragment extends BaseFragment implements CenterView {
                 mRecyclerView.startAnimation(inAnimation);
 
                 this.page = 1;
-                if (this.news.size() < Constants.NEW_EVERY_PAGE_SIZE) {
-                    hasMore = false;
-                } else {
-                    hasMore = true;
-                }
+                hasMore = this.news.size() >= Constants.NEW_EVERY_PAGE_SIZE;
             }
         } else {
             if (news.isEmpty()) {
