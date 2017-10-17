@@ -185,7 +185,8 @@ public interface ApiStore {
      * @param uid 当前登录用户id
      */
     @POST("getNewContent")
-    Flowable<ContentResult> getNewContentUseId(@Query("nid") long id, @Query("uid") long uid);
+    Flowable<ContentResult> getNewContentUseId(@Query("nid") long id,
+                                               @Query("uid") long uid);
 
     /**
      * 发表新闻评论
