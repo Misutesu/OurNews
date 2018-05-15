@@ -21,8 +21,7 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         ndk {
-            abiFilters "armeabi-v7a"
-//            "armeabi", "armeabi-v8a", "x86", "x86_64"
+            abiFilters "armeabi-v7a", "armeabi", "armeabi-v8a", "x86", "x86_64"
         }
 
         manifestPlaceholders = [

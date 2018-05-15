@@ -33,7 +33,8 @@ public class LoginPresenterImpl implements LoginPresenter {
     @Override
     public void login(String loginName, String password) {
         long time = System.currentTimeMillis();
-        mView.addSubscription(RetrofitUtil.newInstance()
+        mView.addSubscription(
+                RetrofitUtil.newInstance()
                 .login(loginName, MD5Util.getMD5(Constants.KEY + password + time), time)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableSubscriber<LoginResult>() {
