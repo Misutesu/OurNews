@@ -154,15 +154,15 @@ public class MainActivity extends BaseActivity implements MainView {
         mPresenter = new MainPresenterImpl(this, this);
 
         View mHeaderView = mNavView.getHeaderView(0);
-        mHeaderTopLayout = (RelativeLayout) mHeaderView.findViewById(R.id.header_top_layout);
-        mHeaderUserAvatarImg = (SimpleDraweeView) mHeaderView.findViewById(R.id.header_user_avatar_img);
-        mHeaderUserNameText = (AppCompatTextView) mHeaderView.findViewById(R.id.header_user_name_text);
-        mHeaderNightModeImg = (ImageView) mHeaderView.findViewById(R.id.header_night_mode_img);
-        mSelectThemeLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_theme_select_layout);
-        mPushLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_push_layout);
-        mPushText = (AppCompatTextView) mHeaderView.findViewById(R.id.header_push_text);
-        mPushSwitch = (SwitchCompat) mHeaderView.findViewById(R.id.header_push_switch);
-        mLogoutLayout = (LinearLayout) mHeaderView.findViewById(R.id.header_logout_layout);
+        mHeaderTopLayout = mHeaderView.findViewById(R.id.header_top_layout);
+        mHeaderUserAvatarImg = mHeaderView.findViewById(R.id.header_user_avatar_img);
+        mHeaderUserNameText = mHeaderView.findViewById(R.id.header_user_name_text);
+        mHeaderNightModeImg = mHeaderView.findViewById(R.id.header_night_mode_img);
+        mSelectThemeLayout = mHeaderView.findViewById(R.id.header_theme_select_layout);
+        mPushLayout = mHeaderView.findViewById(R.id.header_push_layout);
+        mPushText = mHeaderView.findViewById(R.id.header_push_text);
+        mPushSwitch = mHeaderView.findViewById(R.id.header_push_switch);
+        mLogoutLayout = mHeaderView.findViewById(R.id.header_logout_layout);
 
         if (mNavView != null) {
             NavigationMenuView navigationMenuView = (NavigationMenuView) mNavView.getChildAt(0);
@@ -179,8 +179,11 @@ public class MainActivity extends BaseActivity implements MainView {
         mToolBar.setTitle("");
         setSupportActionBar(mToolBar);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            mTopView.setLayoutParams(new AppBarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtil.getStatusBarHeight()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ViewGroup.LayoutParams layoutParams = mTopView.getLayoutParams();
+            layoutParams.height = UiUtil.getStatusBarHeight();
+            mTopView.setLayoutParams(layoutParams);
+        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mDrawerLayout.setFitsSystemWindows(true);
